@@ -15,21 +15,28 @@ public:
 
 bool Sphere::Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const {
 	Vector3D m_oc = m_r.Origin() - m_center;
+	// Define variables for quadratic formula
 	double a = m_r.Direction().Dot(m_r.Direction());
 	double b = m_oc.Dot(m_r.Direction());
 	double c = m_oc.Dot(m_oc) - dRadius * dRadius;
 	double dDiscriminant = b * b - a * c;
 	if (dDiscriminant > 0) {
-		double temp = (-b - sqrt(b*b - a * c)) / a;
+		// Use quadratic formula to calculate intersections (-)
+		double temp = (-b - sqrt(dDiscriminant)) / a;
+		// If intersection falls within limits
 		if (temp < t_max && temp > t_min) {
+			// Record point
 			rec.dT = temp;
 			rec.m_p = m_r.PointAtParameter(rec.dT);
 			rec.m_normal = (rec.m_p - m_center) / dRadius;
 			rec.mat_ptr = m_mat_ptr;
 			return true;
 		}
-		temp = (-b + sqrt(b*b - a * c)) / a;
+		// Use quadratic formula to calculate intersections (+)
+		temp = (-b + sqrt(dDiscriminant)) / a;
+		// If intersection falls within limits
 		if (temp < t_max && temp > t_min) {
+			// Record point
 			rec.dT = temp;
 			rec.m_p = m_r.PointAtParameter(rec.dT);
 			rec.m_normal = (rec.m_p - m_center) / dRadius;

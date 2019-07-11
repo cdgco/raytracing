@@ -14,6 +14,7 @@ struct HitRecord {
 
 class Object {
 public:
+	// Prototype shape function
 	virtual bool Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const = 0;
 };
 

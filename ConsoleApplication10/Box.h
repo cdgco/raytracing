@@ -6,10 +6,10 @@
 class Box : public Object {
 public:
 	Box() {}
-	Box(Vector3D m_cen, double l) : m_center(m_cen), dSideLength(l) {};
+	Box(const Vector3D &m_bounds_1, const Vector3D &m_bounds_2, Material *m) : bound1(m_bounds_1), bound2(m_bounds_2), m_mat_ptr(m) {};
 	virtual bool Hit(const Ray& m_r, double tmin, double tmax, HitRecord& rec) const;
-	Vector3D m_center;
-	double dSideLength;
+	Vector3D bound1, bound2;
+	Material *m_mat_ptr;
 };
 
 bool Box::Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const {

@@ -8,6 +8,7 @@ struct HitRecord;
 
 #define drand48() ((double)rand()/RAND_MAX)
 
+// Produces random Vector3D (i.e. three values with range 0 - 1)
 Vector3D RandomInUnitSphere() {
 	Vector3D m_p;
 	do {
@@ -56,7 +57,8 @@ public:
 	}
 	Vector3D m_albedo;
 };
-
+// Vector3D coordinates
+// Fuzz level
 class Metal : public Material {
 public:
 	Metal(const Vector3D& m_a, double dF) : m_albedo(m_a) { 
@@ -73,8 +75,16 @@ public:
 	double fuzz;
 };
 
+// Refractive Index: 
+//	Air: 1.0
+//	Glass: 1.3 - 1.7
+//	Diamond: 2.4
 class Dielectric : public Material {
 public:
+	// Refractive Index: 
+//	Air: 1.0
+//	Glass: 1.3 - 1.7
+//	Diamond: 2.4
 	Dielectric(double dRI) : dRefIdx(dRI) {}
 	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const {
 		Vector3D m_outward_normal;
@@ -87,8 +97,7 @@ public:
 		if (m_r_in.Direction().Dot(rec.m_normal) > 0) {
 			m_outward_normal = -rec.m_normal;
 			ni_over_nt = dRefIdx;
-			dCosine = m_r_in.Direction().Dot(rec.m_normal) / m_r_in.Direction().Length();
-			dCosine = sqrt(1 - dRefIdx * dRefIdx*(1 - dCosine * dCosine));
+			dCosine = dRefIdx * StdDot(m_r_in.Direction(), rec.m_normal) / m_r_in.Direction().Length();
 		}
 		else {
 			m_outward_normal = rec.m_normal;
@@ -102,7 +111,7 @@ public:
 			dReflectProb = 1.0;
 		}
 		if (drand48() < dReflectProb) {
-			m_scattered = Ray(rec.m_p, m_refracted);
+			m_scattered = Ray(rec.m_p, m_reflected);
 		}
 		else {
 			m_scattered = Ray(rec.m_p, m_refracted);

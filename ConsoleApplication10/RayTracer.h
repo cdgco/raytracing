@@ -40,10 +40,16 @@ class RayTracer {
 public:
 	RayTracer() {}
 	// Initiate new Ray Tracer
-	// iWidth: Output Image Width in Pixels
-	// iHeight: Output Image Height in Pixels
+	// dims: Struct with output image dimensions 
 	// iRaysPerPixels: How many color samples to take per pixel rendered
-	RayTracer(const int iWidth, const int iHeight, const int iRaysPerPixel) {
+	// m_cam: Camera object
+	// world: object world
+	RayTracer(Dims &dims, const int iRaysPerPixel, Camera m_cam, Object *world) {
+
+		int iWidth = dims.X;
+		int iHeight = dims.Y;
+
+		double dR = cos(M_PI / 4);
 
 		// Open Image File
 		std::ofstream testFile("test.ppm");
@@ -51,28 +57,15 @@ public:
 
 			testFile << "P3\n" << iWidth << " " << iHeight << "\n255\n";
 
-			// Create list of Spheres
-			Object *list[5];
-			// Fill list with two spheres
-			list[0] = new Sphere(Vector3D(0, 0, -1), 0.5, new Lambertian(Vector3D(0.1, 0.2, 0.5)));
-			list[1] = new Sphere(Vector3D(0, -100.5, -1), 100, new Lambertian(Vector3D(0.8, 0.8, 0.0)));
-			list[2] = new Sphere(Vector3D(1, 0, -1), 0.5, new Metal(Vector3D(0.8, 0.6, 0.2), 1.0));
-			list[3] = new Sphere(Vector3D(-1, 0, -1), 0.5, new Dielectric(1.5));
-			list[4] = new Sphere(Vector3D(-1, 0, -1), -0.49, new Dielectric(1.5));
-			// Initiate world from object list
-			Object *world = new ObjectList(list, 5);
-			// Create new environment
-			Camera m_cam;
-			
 			// For each pixel on y axis
 			for (int j = iHeight - 1; j >= 0; j--) {
 				// For each pixel on x axis
 				for (int i = 0; i < iWidth; i++) {
 					// Initialize pixel
 					Vector3D m_col(0, 0, 0);
-					// for each sample within the pixel
+					// For each sample within the pixel
 					for (int s = 0; s < iRaysPerPixel; s++) {
-						// For each sample, randomize the location
+						// For each sample, choose a random location within the pixel
 						double u = double(i + drand48()) / double(iWidth);
 						double v = double(j + drand48()) / double(iHeight);
 						Ray m_r = m_cam.GetRay(u, v);
@@ -82,8 +75,9 @@ public:
 					}
 					// Average the color from all samples
 					m_col /= double(iRaysPerPixel);
+					// Create vector from averaged color samples, take square root to gamma correct color
 					m_col = Vector3D(sqrt(m_col[0]), sqrt(m_col[1]), sqrt(m_col[2]));
-					// Convert RGB values from 0 - 1 scale to 0 - 255 scale
+					// Convert RGB values from 0 - 1 vector scale to 0 - 255 decimal color scale
 					int iRed = int(255.99*m_col[0]);
 					int iGreen = int(255.99*m_col[1]);
 					int iBlue = int(255.99*m_col[2]);

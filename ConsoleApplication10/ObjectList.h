@@ -16,7 +16,9 @@ bool ObjectList::Hit(const Ray& m_r, double tmin, double tmax, HitRecord& rec) c
 	HitRecord temp_rec;
 	bool bHitAnything = false;
 	double dClosestSoFar = tmax;
+	// For each object in world
 	for (int i = 0; i < iListSize; i++) {
+		// If ray hit object
 		if (list[i]->Hit(m_r, tmin, dClosestSoFar, temp_rec)) {
 			bHitAnything = true;
 			dClosestSoFar = temp_rec.dT;
