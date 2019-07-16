@@ -34,7 +34,6 @@ public:
 	double ySign = (InvDirection().y() < 0);
 	double zSign = (InvDirection().z() < 0);
 
-
 	Vector3D A;
 	Vector3D B;
 };

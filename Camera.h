@@ -3,8 +3,6 @@
 
 #include "Ray.h"
 
-#define drand48() ((double)rand()/RAND_MAX)
-
 // Dimensions of output file 
 // X: Width in pixels
 // Y: Height in pixels

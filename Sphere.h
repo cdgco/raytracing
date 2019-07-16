@@ -46,4 +46,5 @@ bool Sphere::Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) con
 	}
 	return false;
 }
+
 #endif // SPHEREH

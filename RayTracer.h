@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "Camera.h"
 #include "Material.h"
+#include "Box.h"
 #include <fstream>
 #include <windows.h>
 #include <cfloat>
@@ -24,7 +25,7 @@ void NewItem(std::vector<Object*> &vector, Object* object) {
 }
 
 // Calculate if rays hit objects in array
-bool VectorHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
+bool SphereHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
 	HitRecord temp_rec;
 	bool bHitAnything = false;
 	double dClosestSoFar = tmax;
@@ -42,10 +43,9 @@ bool VectorHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double
 Vector3D Color(const Ray& m_r, std::vector<Object*> &vector, int iDepth) {
 	HitRecord rec;
 
-	if (VectorHit(vector, m_r, 0.001, DBL_MAX, rec)) {
+	if (SphereHit(vector, m_r, 0.001, DBL_MAX, rec)) {
 		Ray m_scattered;
 		Vector3D m_attenuation;
-
 		if (iDepth < 50 && rec.mat_ptr->Scatter(m_r, rec, m_attenuation, m_scattered)) {
 			return m_attenuation * Color(m_scattered, vector, iDepth + 1);
 		}

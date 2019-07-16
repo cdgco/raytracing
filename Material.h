@@ -6,8 +6,6 @@ struct HitRecord;
 #include "Ray.h"
 #include "Object.h"
 
-#define drand48() ((double)rand()/RAND_MAX)
-
 // Produces random Vector3D (i.e. three values with range 0 - 1)
 Vector3D RandomInUnitSphere() {
 	Vector3D m_p;

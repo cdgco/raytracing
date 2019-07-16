@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#define drand48() ((double)rand()/RAND_MAX)
+
 class Vector3D {
 public:
 
