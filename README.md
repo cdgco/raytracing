@@ -10,7 +10,7 @@ Then use the following format for each object in the render: `NewItem(VectorArra
 
 Next, set the dimensions of the output image (Width x Height): `Dim a = { 200, 100 }`.
  
-Finally, call the ray tracer: `RayTracer(DIMENSIONS, QUALITY, CAMERA, VectorArray)`.
+Finally, call the ray tracer: `RayTracer(DIMENSIONS, QUALITY, CAMERA, VectorArray, FILENAME)`.
  
 Example:
 ```
@@ -21,7 +21,7 @@ int main() {
 	std::vector<Object*> r1;
 	NewItem(r1, &Sphere(Vector3D(0, 0, 0), 0.5, new Lambertian(Vector3D(0.8, 0.3, 0.3))));
 	Dim a = { 200, 100 };
-	RayTracer(a, 30, Camera(a, Vector3D(3, 1, 3)), r1);
+	RayTracer(a, 30, Camera(a, Vector3D(3, 1, 3)), r1, "RayTracer");
 
 	return 0;
 }
@@ -52,3 +52,4 @@ Variable Descriptions:
   * `UP` (Optional): (X,Y,Z) location of camera y-shift (Vector3D).
   * `APERTURE` (Optional): Camera lens aperture (double).
   * `FOV` (Optional): Camera lens field of view in degrees (double).
+* `FILENAME`: Name for ouput ppm file. Do not include `.ppm` (string).
