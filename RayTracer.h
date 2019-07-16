@@ -9,12 +9,6 @@
 #include <windows.h>
 #include <cfloat>
 #include <vector>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
-#define drand48() ((double)rand()/RAND_MAX)
 
 // Enable (1) / Disable (0) Console Progress Bar 
 // Slight Performance Drop When Enabled
@@ -24,6 +18,7 @@
 #include "ProgressBar.hpp"
 #endif
 
+#define drand48() ((double)rand()/RAND_MAX)
 
 void NewItem(std::vector<Object*> &vector, Object* object) {
 	vector.push_back(object);
