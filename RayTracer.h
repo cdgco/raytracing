@@ -8,6 +8,7 @@
 #include <windows.h>
 #include <cfloat>
 #include <vector>
+#include <string>
 
 // Enable (1) / Disable (0) Console Progress Bar 
 // Slight Performance Drop When Enabled
@@ -17,11 +18,13 @@
 #include "ProgressBar.hpp"
 #endif
 
+// Link objects to arrays
 void NewItem(std::vector<Object*> &vector, Object* object) {
 	vector.push_back(object);
 }
 
-bool WorldHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
+// Calculate if rays hit objects in array
+bool VectorHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
 	HitRecord temp_rec;
 	bool bHitAnything = false;
 	double dClosestSoFar = tmax;
@@ -39,8 +42,7 @@ bool WorldHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double 
 Vector3D Color(const Ray& m_r, std::vector<Object*> &vector, int iDepth) {
 	HitRecord rec;
 
-	// If Ray hit Sphere
-	if (WorldHit(vector, m_r, 0.001, DBL_MAX, rec)) {
+	if (VectorHit(vector, m_r, 0.001, DBL_MAX, rec)) {
 		Ray m_scattered;
 		Vector3D m_attenuation;
 
@@ -65,19 +67,20 @@ public:
 	// dims: Struct with output image dimensions 
 	// iRaysPerPixels: How many color samples to take per pixel rendered
 	// m_cam: Camera object
-	RayTracer(Dim &dims, const int iRaysPerPixel, Camera m_cam, std::vector<Object*> &vector) {
+	// vector: Vector Array of Objects
+	// filename: name of output ppm file
+	RayTracer(Dim &dims, const int iRaysPerPixel, Camera m_cam, std::vector<Object*> &vector, std::string filename) {
 
 		int iWidth = dims.X;
 		int iHeight = dims.Y;
 		#if PROGRESSBAR == 1
 		ProgressBar progressBar(iHeight, 70);
 		#endif
-		
 
 		double dR = cos(M_PI / 4);
 
 		// Open Image File
-		std::ofstream image("RayTracer.ppm");
+		std::ofstream image(filename + (std::string)".ppm");
 		if (image.is_open()) {
 
 			image << "P3\n" << iWidth << " " << iHeight << "\n255\n";
@@ -121,7 +124,7 @@ public:
 			#if PROGRESSBAR == 1
 			progressBar.done();
 			#endif
-			system("start RayTracer.ppm");
+			system(("start " + filename + ".ppm").c_str());
 		}
 	}
 };
