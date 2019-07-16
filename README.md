@@ -10,7 +10,7 @@ Then use the following format for each object in the render: `NewItem(VectorArra
 
 Next, set the dimensions of the output image (Width x Height): `Dim a = { 200, 100 }`.
  
-Finally, call the ray tracer: `RayTracer(DIMENSINOS, QUALITY, CAMERA, VectorArray)`.
+Finally, call the ray tracer: `RayTracer(DIMENSIONS, QUALITY, CAMERA, VectorArray)`.
  
 Example:
 ```
@@ -32,12 +32,23 @@ Variable Descriptions:
 * `SIZE`: Sphere radius (double).
 * `MATERIAL`:
   * `Lambertian`
-    * Example: `new Lambertian(Vector3D(COLOR))`
-    * `COLOR`: (R,G,B) color value, 0.0 - 1.0 (double).
+    * Example: `new Lambertian(Vector3D(COLOR))`.
+    * `COLOR`: (R,G,B) color value, 0.0 - 1.0 (Vector3D).
   * `Metal`
-    * Example: `new Metal(Vector3D(COLOR), FUZZ)`
-    * `COLOR`: (R,G,B) color value, 0.0 - 1.0 (double).
+    * Example: `new Metal(Vector3D(COLOR), FUZZ)`.
+    * `COLOR`: (R,G,B) color value, 0.0 - 1.0 (Vector3D).
     * `FUZZ`: Fuzz / Blur Level, 0.1 - 1.0 (double).
   * `Dialectric`: 
-    * Example: ` new Dielectric(REFIDX)`
+    * Example: `new Dielectric(REFIDX)`.
     * `REFIDX`: Refractive Index. Recommended 1.0 - 2.4 (double).
+* `DIMENSIONS`: Dims struct name (Dims).
+* `QUALITY`: Number of rays per pixel (double).
+* `CAMERA`
+  * Format: Camera(DIMS, LOOKFROM, LOOKAT, UP, APERTURE, FOV) 
+  * Example: `Camera(dims, Vector3D(3, 1, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0), 0.1, 30)`
+  * `DIMS`: Dims struct name (Dims).
+  * `LOOKFROM`: (X,Y,Z) location of camera (Vector3D).
+  * `LOOKAT`: (X,Y,Z) location where camera is pointed (Vector3D).
+  * `UP`: (X,Y,Z) location of camera y-shift (Vector3D).
+  * `APERTURE`: Camera lens aperture (double).
+  * `FOV`: Camera lens field of view in degrees (double).
