@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "RayTracer.h"
 
 using namespace std;
@@ -13,7 +12,7 @@ int main() {
 	NewItem(r1, &Sphere(Vector3D(-1, 0, -1), 0.5, new Dielectric(1.5)));
 	NewItem(r1, &Sphere(Vector3D(-1, 0, -1), -0.45, new Dielectric(1.5)));
 
-	Dim a = { 1080, 540 };
+	Dim a = { 200, 100 };
 	RayTracer(a, 30, Camera(a, Vector3D(3, 1, 3)), r1);
 
 	return 0;

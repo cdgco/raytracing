@@ -72,7 +72,7 @@ public:
 		#if PROGRESSBAR == 1
 		ProgressBar progressBar(iHeight, 70);
 		#endif
-
+		
 
 		double dR = cos(M_PI / 4);
 
@@ -94,7 +94,7 @@ public:
 						double u = double(i + drand48()) / double(iWidth);
 						double v = double(j + drand48()) / double(iHeight);
 						Ray m_r = m_cam.GetRay(u, v);
-
+						
 						// sum all samples taken within pixel
 						m_col += Color(m_r, vector, 0);
 					}
