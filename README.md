@@ -48,7 +48,7 @@ Variable Descriptions:
   * Example: `Camera(dims, Vector3D(3, 1, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0), 0.1, 30)`
   * `DIMS`: Dims struct name (Dims).
   * `LOOKFROM`: (X,Y,Z) location of camera (Vector3D).
-  * `LOOKAT`: (X,Y,Z) location where camera is pointed (Vector3D).
-  * `UP`: (X,Y,Z) location of camera y-shift (Vector3D).
-  * `APERTURE`: Camera lens aperture (double).
-  * `FOV`: Camera lens field of view in degrees (double).
+  * `LOOKAT` (Optional): (X,Y,Z) location where camera is pointed (Vector3D).
+  * `UP` (Optional): (X,Y,Z) location of camera y-shift (Vector3D).
+  * `APERTURE` (Optional): Camera lens aperture (double).
+  * `FOV` (Optional): Camera lens field of view in degrees (double).
