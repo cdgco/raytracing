@@ -4,7 +4,6 @@
 #include "Sphere.h"
 #include "Camera.h"
 #include "Material.h"
-#include "Box.h"
 #include <fstream>
 #include <windows.h>
 #include <cfloat>
@@ -22,44 +21,6 @@ class RayTracer {
 public:
 	RayTracer() {}
 
-	// Calculate if rays hit objects in array
-	bool VectorHit(vList &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
-		HitRecord temp_rec;
-		bool bHitAnything = false;
-		double dClosestSoFar = tmax;
-		for (size_t i = 0; i < vector.size(); i++) {
-			if (vector[i]->Hit(m_r, tmin, dClosestSoFar, temp_rec)) {
-				bHitAnything = true;
-				dClosestSoFar = temp_rec.dT;
-				rec = temp_rec;
-			}
-		}
-		return bHitAnything;
-	}
-
-	// If ray hits sphere, change color based on position
-	Vector3D Color(const Ray& m_r, vList &vector, int iDepth) {
-		HitRecord rec;
-
-		if (VectorHit(vector, m_r, 0.001, DBL_MAX, rec)) {
-			Ray m_scattered;
-			Vector3D m_attenuation;
-			if (iDepth < 50 && rec.mat_ptr->Scatter(m_r, rec, m_attenuation, m_scattered)) {
-				return m_attenuation * Color(m_scattered, vector, iDepth + 1);
-			}
-			else {
-				return Vector3D(0, 0, 0);
-			}
-		}
-		else {
-			Vector3D m_unit_direction = UnitVector(m_r.Direction());
-			double dT = 0.5*(m_unit_direction.y() + 1.0);
-			return (1.0 - dT)*Vector3D(1.0, 1.0, 1.0) + dT * Vector3D(0.5, 0.7, 1.0);
-		}
-	}
-
-
-
 	// Initiate new Ray Tracer
 	// dims: Struct with output image dimensions 
 	// iRaysPerPixels: How many color samples to take per pixel rendered
@@ -68,10 +29,8 @@ public:
 	// filename: name of output ppm file
 	RayTracer(SDim &dims, const int iRaysPerPixel, Camera m_cam, vList &vector, std::string filename) {
 
-		int iWidth = dims.iX;
-		int iHeight = dims.iY;
 		#if PROGRESSBAR == 1
-		ProgressBar progressBar(iHeight, 70);
+		ProgressBar progressBar(dims.iY, 70);
 		#endif
 
 		double dR = cos(M_PI / 4);
@@ -79,23 +38,20 @@ public:
 		// Open Image File
 		std::ofstream image(filename + (std::string)".ppm");
 		if (image.is_open()) {
-
-			image << "P3\n" << iWidth << " " << iHeight << "\n255\n";
+			image << "P3\n" << dims.iX << " " << dims.iY << "\n255\n";
 
 			// For each pixel on y axis
-			for (int j = iHeight - 1; j >= 0; j--) {
+			for (int j = dims.iY - 1; j >= 0; j--) {
 				// For each pixel on x axis
-				for (int i = 0; i < iWidth; i++) {
-					//if (j == 50 && i == 100) {
-					//	std::cout << "stop";
-					//}
+				for (int i = 0; i < dims.iX; i++) {
+	
 					// Initialize pixel
 					Vector3D m_col(0, 0, 0);
 					// For each sample within the pixel
 					for (int s = 0; s < iRaysPerPixel; s++) {
 						// For each sample, choose a random location within the pixel
-						double u = double(i + drand48()) / double(iWidth);
-						double v = double(j + drand48()) / double(iHeight);
+						double u = double(i + drand48()) / double(dims.iX);
+						double v = double(j + drand48()) / double(dims.iY);
 						Ray m_r = m_cam.GetRay(u, v);
 						
 						// sum all samples taken within pixel
@@ -125,6 +81,37 @@ public:
 			progressBar.done();
 			#endif
 			system(("start " + filename + ".ppm").c_str());
+		}
+	}
+
+	// If ray hits sphere, change color based on position
+	Vector3D Color(const Ray& m_r, vList &vector, int iDepth) {
+		HitRecord temp_rec, rec;
+		bool bHitAnything = false;
+		double dClosestSoFar = DBL_MAX;
+		for (size_t i = 0; i < vector.size(); i++) {
+			if (vector[i]->Hit(m_r, 0.001, dClosestSoFar, temp_rec)) {
+				bHitAnything = true;
+				dClosestSoFar = temp_rec.dT;
+				rec = temp_rec;
+			}
+		}
+
+		if (bHitAnything) {
+			Ray m_scattered;
+			Vector3D m_attenuation;
+			if (iDepth < 50 && rec.mat_ptr->Scatter(m_r, rec, m_attenuation, m_scattered)) {
+				return m_attenuation * Color(m_scattered, vector, iDepth + 1);
+			}
+			else {
+				return Vector3D(0);
+			}
+		}
+
+		else {
+			Vector3D m_unit_direction = UnitVector(m_r.Direction());
+			double dT = 0.5*(m_unit_direction.y() + 1.0);
+			return (1.0 - dT)*Vector3D(1.0, 1.0, 1.0) + dT * Vector3D(0.5, 0.7, 1.0);
 		}
 	}
 };

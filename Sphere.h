@@ -14,7 +14,7 @@ public:
 	Sphere() {}
 	Sphere(Vector3D m_cen, double r, Material *m) : m_center(m_cen), dRadius(r), m_mat_ptr(m) {};
 	virtual bool Hit(const Ray& m_r, double tmin, double tmax, HitRecord& rec) const;
-	inline Box BBox(vList &vector,  Material *material) {
+	inline Box BBox(vList &vector,  Material *material = new Lambertian(Vector3D(0, 0, 0))) {
 		NewItem(vector, this);
 		return Box(m_center - dRadius, m_center + dRadius, material);
 	}
