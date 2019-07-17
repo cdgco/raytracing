@@ -45,12 +45,18 @@ public:
 };
 
 bool Box::Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const {
-	if (BoxIntersect(m_r, t_min)) {
-		rec.dT = t_min;
-		rec.m_p = m_r.PointAtParameter(rec.dT);
-		rec.mat_ptr = m_mat_ptr;
-		return true;
-	}
+	double t;
+	//if (t < t_max && t > t_min) {
+		if (BoxIntersect(m_r, t)) {
+			rec.dT = t;
+			rec.m_p = m_r.PointAtParameter(rec.dT);
+			rec.mat_ptr = m_mat_ptr;
+			return true;
+		}
+	//}
+	//else {
+		//return false;
+	//}
 	
 }
 #endif // BOXH
