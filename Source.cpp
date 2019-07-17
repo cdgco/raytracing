@@ -2,7 +2,7 @@
 
 int main() {
 
-	vArray r1;
+	vList r1;
 
 	// Sphere Only
 	// NewItem(r1, &Sphere(Vector3D(0), 1, new Lambertian(Vector3D(0.51, 0.7, 1.0))));

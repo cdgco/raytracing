@@ -3,9 +3,9 @@
 
 #include "Object.h"
 #include "Box.h"
-typedef std::vector<Object*> vArray;
+typedef std::vector<Object*> vList;
 
-void NewItem(vArray &vector, Object* object) {
+void NewItem(vList &vector, Object* object) {
 	vector.push_back(object);
 }
 
@@ -14,7 +14,7 @@ public:
 	Sphere() {}
 	Sphere(Vector3D m_cen, double r, Material *m) : m_center(m_cen), dRadius(r), m_mat_ptr(m) {};
 	virtual bool Hit(const Ray& m_r, double tmin, double tmax, HitRecord& rec) const;
-	inline Box BBox(vArray &vector,  Material *material) {
+	inline Box BBox(vList &vector,  Material *material) {
 		NewItem(vector, this);
 		return Box(m_center - dRadius, m_center + dRadius, material);
 	}

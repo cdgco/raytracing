@@ -23,7 +23,7 @@ public:
 	RayTracer() {}
 
 	// Calculate if rays hit objects in array
-	bool VectorHit(vArray &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
+	bool VectorHit(vList &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
 		HitRecord temp_rec;
 		bool bHitAnything = false;
 		double dClosestSoFar = tmax;
@@ -38,7 +38,7 @@ public:
 	}
 
 	// If ray hits sphere, change color based on position
-	Vector3D Color(const Ray& m_r, vArray &vector, int iDepth) {
+	Vector3D Color(const Ray& m_r, vList &vector, int iDepth) {
 		HitRecord rec;
 
 		if (VectorHit(vector, m_r, 0.001, DBL_MAX, rec)) {
@@ -66,7 +66,7 @@ public:
 	// m_cam: Camera object
 	// vector: Vector Array of Objects
 	// filename: name of output ppm file
-	RayTracer(SDim &dims, const int iRaysPerPixel, Camera m_cam, vArray &vector, std::string filename) {
+	RayTracer(SDim &dims, const int iRaysPerPixel, Camera m_cam, vList &vector, std::string filename) {
 
 		int iWidth = dims.iX;
 		int iHeight = dims.iY;
