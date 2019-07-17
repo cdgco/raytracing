@@ -1,6 +1,7 @@
 # C++ Ray Tracer
 C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 
+![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo3.jpg)
 ### Usage
 The ray tracer function is contained in the RayTracer.h file.
 
