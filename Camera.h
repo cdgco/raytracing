@@ -6,9 +6,9 @@
 // Dimensions of output file 
 // X: Width in pixels
 // Y: Height in pixels
-struct Dim {
-	int X;
-	int Y;
+struct SDim {
+	int iX;
+	int iY;
 };
 
 Vector3D RandomInUnitDisk() {
@@ -29,10 +29,10 @@ Vector3D RandomInUnitDisk() {
 //		double dVFOV: Field of View
 class Camera {
 public:
-	Camera(Dim &dims, Vector3D m_look_from, Vector3D m_look_at = Vector3D(0, 0, 0), Vector3D m_v_up = Vector3D(0, 1, 0), double dAperture = 0.1, double dVFOV = 40) {
+	Camera(SDim &dims, Vector3D m_look_from, Vector3D m_look_at = Vector3D(0, 0, 0), Vector3D m_v_up = Vector3D(0, 1, 0), double dAperture = 0.1, double dVFOV = 40) {
 
 		dLensRadius = dAperture / 2;
-		double dAspect = dims.X / dims.Y;
+		double dAspect = dims.iX / dims.iY;
 		double dTheta = dVFOV*M_PI/180;
 		double dHalfHeight = tan(dTheta/2);
 		double dHalfWidth = dAspect * dHalfHeight;

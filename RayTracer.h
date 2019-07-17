@@ -19,60 +19,58 @@
 #include "ProgressBar.hpp"
 #endif
 
-// Link objects to arrays
-void NewItem(std::vector<Object*> &vector, Object* object) {
-	vector.push_back(object);
-}
-
-// Calculate if rays hit objects in array
-bool VectorHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
-	HitRecord temp_rec;
-	bool bHitAnything = false;
-	double dClosestSoFar = tmax;
-	for (size_t i = 0; i < vector.size(); i++) {
-		if (vector[i]->Hit(m_r, tmin, dClosestSoFar, temp_rec)) {
-			bHitAnything = true;
-			dClosestSoFar = temp_rec.dT;
-			rec = temp_rec;
-		}
-	}
-	return bHitAnything;
-}
-
-// If ray hits sphere, change color based on position
-Vector3D Color(const Ray& m_r, std::vector<Object*> &vector, int iDepth) {
-	HitRecord rec;
-
-	if (VectorHit(vector, m_r, 0.001, DBL_MAX, rec)) {
-		Ray m_scattered;
-		Vector3D m_attenuation;
-		if (iDepth < 50 && rec.mat_ptr->Scatter(m_r, rec, m_attenuation, m_scattered)) {
-			return m_attenuation * Color(m_scattered, vector, iDepth + 1);
-		}
-		else {
-			return Vector3D(0, 0, 0);
-		}
-	}
-	else {
-		Vector3D m_unit_direction = UnitVector(m_r.Direction());
-		double dT = 0.5*(m_unit_direction.y() + 1.0);
-		return (1.0 - dT)*Vector3D(1.0, 1.0, 1.0) + dT * Vector3D(0.5, 0.7, 1.0);
-	}
-}
-
 class RayTracer {
 public:
 	RayTracer() {}
+
+	// Calculate if rays hit objects in array
+	bool VectorHit(std::vector<Object*> &vector, const Ray& m_r, double tmin, double tmax, HitRecord& rec) {
+		HitRecord temp_rec;
+		bool bHitAnything = false;
+		double dClosestSoFar = tmax;
+		for (size_t i = 0; i < vector.size(); i++) {
+			if (vector[i]->Hit(m_r, tmin, dClosestSoFar, temp_rec)) {
+				bHitAnything = true;
+				dClosestSoFar = temp_rec.dT;
+				rec = temp_rec;
+			}
+		}
+		return bHitAnything;
+	}
+
+	// If ray hits sphere, change color based on position
+	Vector3D Color(const Ray& m_r, std::vector<Object*> &vector, int iDepth) {
+		HitRecord rec;
+
+		if (VectorHit(vector, m_r, 0.001, DBL_MAX, rec)) {
+			Ray m_scattered;
+			Vector3D m_attenuation;
+			if (iDepth < 50 && rec.mat_ptr->Scatter(m_r, rec, m_attenuation, m_scattered)) {
+				return m_attenuation * Color(m_scattered, vector, iDepth + 1);
+			}
+			else {
+				return Vector3D(0, 0, 0);
+			}
+		}
+		else {
+			Vector3D m_unit_direction = UnitVector(m_r.Direction());
+			double dT = 0.5*(m_unit_direction.y() + 1.0);
+			return (1.0 - dT)*Vector3D(1.0, 1.0, 1.0) + dT * Vector3D(0.5, 0.7, 1.0);
+		}
+	}
+
+
+
 	// Initiate new Ray Tracer
 	// dims: Struct with output image dimensions 
 	// iRaysPerPixels: How many color samples to take per pixel rendered
 	// m_cam: Camera object
 	// vector: Vector Array of Objects
 	// filename: name of output ppm file
-	RayTracer(Dim &dims, const int iRaysPerPixel, Camera m_cam, std::vector<Object*> &vector, std::string filename) {
+	RayTracer(SDim &dims, const int iRaysPerPixel, Camera m_cam, std::vector<Object*> &vector, std::string filename) {
 
-		int iWidth = dims.X;
-		int iHeight = dims.Y;
+		int iWidth = dims.iX;
+		int iHeight = dims.iY;
 		#if PROGRESSBAR == 1
 		ProgressBar progressBar(iHeight, 70);
 		#endif
@@ -89,6 +87,9 @@ public:
 			for (int j = iHeight - 1; j >= 0; j--) {
 				// For each pixel on x axis
 				for (int i = 0; i < iWidth; i++) {
+					//if (j == 50 && i == 100) {
+					//	std::cout << "stop";
+					//}
 					// Initialize pixel
 					Vector3D m_col(0, 0, 0);
 					// For each sample within the pixel

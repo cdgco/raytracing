@@ -2,12 +2,22 @@
 #define SPHEREH
 
 #include "Object.h"
+#include "Box.h"
+#include <vector>
+
+void NewItem(std::vector<Object*> &vector, Object* object) {
+	vector.push_back(object);
+}
 
 class Sphere : public Object {
 public: 
 	Sphere() {}
 	Sphere(Vector3D m_cen, double r, Material *m) : m_center(m_cen), dRadius(r), m_mat_ptr(m) {};
 	virtual bool Hit(const Ray& m_r, double tmin, double tmax, HitRecord& rec) const;
+	inline Box BBox(std::vector<Object*> &vector,  Material *material) {
+		NewItem(vector, this);
+		return Box(m_center - dRadius, m_center + dRadius, material);
+	}
 	Vector3D m_center;
 	double dRadius;
 	Material *m_mat_ptr;

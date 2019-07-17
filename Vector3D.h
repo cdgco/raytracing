@@ -87,8 +87,16 @@ inline Vector3D operator+(const  Vector3D &v1, const  Vector3D &v2) {
 	return  Vector3D(v1.e[0] + v2.e[0], v1.e[1] + v2.e[1], v1.e[2] + v2.e[2]);
 }
 
+inline Vector3D operator+(const Vector3D &v1, const int &i2) {
+	return Vector3D(v1.e[0] + i2, v1.e[1] + i2, v1.e[2] + i2);
+}
+
 inline Vector3D operator-(const Vector3D &v1, const Vector3D &v2) {
 	return Vector3D(v1.e[0] - v2.e[0], v1.e[1] - v2.e[1], v1.e[2] - v2.e[2]);
+}
+
+inline Vector3D operator-(const Vector3D &v1, const int &i2) {
+	return Vector3D(v1.e[0] - i2, v1.e[1] - i2, v1.e[2] - i2);
 }
 
 inline Vector3D operator*(const Vector3D &v1, const Vector3D &v2) {
@@ -165,6 +173,12 @@ inline Vector3D UnitVector(Vector3D v) {
 
 inline double StdDot(const Vector3D &v1, const Vector3D &v2) { 
 	return v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v2.e[2]; 
+}
+
+inline Vector3D StdCross(const Vector3D &v1, const Vector3D &v2) {
+	return Vector3D((v1.e[1] * v2.e[2] - v1.e[2] * v2.e[1]),
+		(-(v1.e[0] * v2.e[2] - v1.e[2] * v2.e[0])),
+		(v1.e[0] * v2.e[1] - v1.e[1] * v2.e[0]));
 }
 
 #endif // VECTOR3DH

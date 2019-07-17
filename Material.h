@@ -20,9 +20,9 @@ Vector3D Reflect(const Vector3D& m_v, const Vector3D& m_n) {
 }
 
 double Schlick(double dCosine, double dRefIdx) {
-	double r0 = (1 - dRefIdx) / (1 + dRefIdx);
-	r0 = r0 * r0;
-	return r0 + (1 - r0)*pow((1 - dCosine), 5);
+	double d0 = (1 - dRefIdx) / (1 + dRefIdx);
+	d0 = d0 * d0;
+	return d0 + (1 - d0)*pow((1 - dCosine), 5);
 }
 
 bool Refract(const Vector3D& m_v, const Vector3D& m_n, double ni_over_nt, Vector3D& m_refracted) {
@@ -60,17 +60,17 @@ public:
 class Metal : public Material {
 public:
 	Metal(const Vector3D& m_a, double dF) : m_albedo(m_a) { 
-		if (dF < 1) { fuzz = dF; }  
-		else { fuzz = 1; }
+		if (dF < 1) { dFuzz = dF; }  
+		else { dFuzz = 1; }
 }
 	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const {
 		Vector3D m_reflected = Reflect(UnitVector(m_r_in.Direction()), rec.m_normal);
-		m_scattered = Ray(rec.m_p, m_reflected + fuzz*RandomInUnitSphere());
+		m_scattered = Ray(rec.m_p, m_reflected + dFuzz*RandomInUnitSphere());
 		m_attenuation = m_albedo;
 		return (m_scattered.Direction().Dot(rec.m_normal) > 0);
 	}
 	Vector3D m_albedo;
-	double fuzz;
+	double dFuzz;
 };
 
 // Refractive Index: 
@@ -83,22 +83,22 @@ public:
 	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const {
 		Vector3D m_outward_normal;
 		Vector3D m_reflected = Reflect(m_r_in.Direction(), rec.m_normal);
-		double ni_over_nt;
+		double dNiOverNt;
 		m_attenuation = Vector3D(1.0, 1.0, 1.0);
 		Vector3D m_refracted;
 		double dReflectProb;
 		double dCosine;
 		if (m_r_in.Direction().Dot(rec.m_normal) > 0) {
 			m_outward_normal = -rec.m_normal;
-			ni_over_nt = dRefIdx;
+			dNiOverNt = dRefIdx;
 			dCosine = dRefIdx * StdDot(m_r_in.Direction(), rec.m_normal) / m_r_in.Direction().Length();
 		}
 		else {
 			m_outward_normal = rec.m_normal;
-			ni_over_nt = 1.0 / dRefIdx;
+			dNiOverNt = 1.0 / dRefIdx;
 			dCosine = -(m_r_in.Direction().Dot(rec.m_normal)) / m_r_in.Direction().Length();
 		}
-		if (Refract(m_r_in.Direction(), m_outward_normal, ni_over_nt, m_refracted)) {
+		if (Refract(m_r_in.Direction(), m_outward_normal, dNiOverNt, m_refracted)) {
 			dReflectProb = Schlick(dCosine, dRefIdx);
 		}
 		else {

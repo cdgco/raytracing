@@ -17,7 +17,7 @@
 class Ray {
 public:
 	Ray() {}
-	Ray(const Vector3D& a, const Vector3D& b) { A = a; B = b; }
+	Ray(const Vector3D& a, const Vector3D& b) { A = a; B = b; InvDir = 1 / B; sign[0] = (InvDir.x() < 0); sign[1] = (InvDir.y() < 0); sign[2] = (InvDir.z() < 0); }
 
 	// Starting Vector of Ray
 	Vector3D Origin() const { return A; }
@@ -29,10 +29,10 @@ public:
 
 	// Vector at point t along Ray
 	Vector3D PointAtParameter(double t) const { return A + t * B; }
+	
+	Vector3D InvDir;
 
-	double xSign = (InvDirection().x() < 0);
-	double ySign = (InvDirection().y() < 0);
-	double zSign = (InvDirection().z() < 0);
+	int sign[3];
 
 	Vector3D A;
 	Vector3D B;

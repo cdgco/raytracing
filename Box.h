@@ -6,29 +6,24 @@
 class Box : public Object {
 public:
 	Box() {}
-	Box(Vector3D m_bounds1, Vector3D m_bounds2, Material *ptr) : min(m_bounds1), max(m_bounds2), m_mat_ptr(ptr) {};
+	Box(Vector3D m_bounds1, Vector3D m_bounds2, Material *ptr) :  m_mat_ptr(ptr) { bounds[0] = m_bounds1; bounds[1] = m_bounds2; };
 	virtual bool Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const;
-	Vector3D min, max;
-	Material *m_mat_ptr;
 
 	inline bool BoxIntersect(const Ray& m_r, double &t) const {
-		double tmin = (min.x() - m_r.Origin().x()) / m_r.Direction().x();
-		double tmax = (max.x() - m_r.Origin().x()) / m_r.Direction().x();
+		double tmin, tmax, tymin, tymax, tzmin, tzmax;
 
-		if (tmin > tmax) std::swap(tmin, tmax);
+		tmin = (bounds[m_r.sign[0]].x() - m_r.Origin().x()) * m_r.InvDir.x();
+		tmax = (bounds[1-m_r.sign[0]].x() - m_r.Origin().x()) * m_r.InvDir.x();
+		tymin = (bounds[m_r.sign[1]].y() - m_r.Origin().y()) * m_r.InvDir.y();
+		tymax = (bounds[1-m_r.sign[1]].y() - m_r.Origin().y()) * m_r.InvDir.y();
 
-		double tymin = (min.y() - m_r.Origin().y()) / m_r.Direction().y();
-		double tymax = (max.y() - m_r.Origin().y()) / m_r.Direction().y();
-
-		if (tymin > tymax) std::swap(tymin, tymax);
-		if ((tmin > tymin) || (tymin > tmax)) return false;
+		if ((tmin > tymax) || (tymin > tmax)) return false;
 		if (tymin > tmin) tmin = tymin;
 		if (tymax < tmax) tmax = tymax;
 
-		double tzmin = (min.z() - m_r.Origin().z()) / m_r.Direction().z();
-		double tzmax = (max.z() - m_r.Origin().z()) / m_r.Direction().z();
+		tzmin = (bounds[m_r.sign[2]].z() - m_r.Origin().z()) * m_r.InvDir.z();
+		tzmax = (bounds[1 - m_r.sign[2]].z() - m_r.Origin().z()) * m_r.InvDir.z();
 
-		if (tzmin > tzmax) std::swap(tzmin, tzmax);
 		if ((tmin > tzmax) || (tzmin > tmax)) return false;
 		if (tzmin > tmin) tmin = tzmin;
 		if (tzmax < tmax) tmax = tzmax;
@@ -39,24 +34,22 @@ public:
 			t = tmax;
 			if (t < 0) return false;
 		}
-
 		return true;
 	}
+
+	Material *m_mat_ptr;
+	Vector3D bounds[2];
 };
 
 bool Box::Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const {
-	double t;
-	//if (t < t_max && t > t_min) {
-		if (BoxIntersect(m_r, t)) {
+	double t = t_min;
+	if (BoxIntersect(m_r, t)) {
 			rec.dT = t;
 			rec.m_p = m_r.PointAtParameter(rec.dT);
+			rec.m_normal = (rec.m_p - StdCross(bounds[0], bounds[1]));
 			rec.mat_ptr = m_mat_ptr;
 			return true;
 		}
-	//}
-	//else {
-		//return false;
-	//}
-	
 }
+
 #endif // BOXH
