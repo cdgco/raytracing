@@ -25,6 +25,7 @@ public:
 	//	Cross(Vector3D v2): Cross Product of two vectors
 	//	MakeUnitVector(): Synonym for global function UnitVector(v)
 	//
+	Vector3D(double e0) { e[0] = e0; e[1] = e0; e[2] = e0; }
 	Vector3D(double e0, double e1, double e2) { e[0] = e0; e[1] = e1; e[2] = e2; }
 	// Return numerical paramater for location or color
 	inline double x() const { return e[0]; }
