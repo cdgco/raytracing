@@ -1,8 +1,9 @@
-#ifndef SPHEREH
-#define SPHEREH
+#ifndef SPHERE_H
+#define SPHERE_H
 
-#include "Object.h"
-#include "Box.h"
+#include "material.h"
+#include "box.h"
+
 typedef std::vector<Object*> vList;
 
 void NewItem(vList &vector, Object* object) {
@@ -12,49 +13,41 @@ void NewItem(vList &vector, Object* object) {
 class Sphere : public Object {
 public: 
 	Sphere() {}
-	Sphere(Vector3D m_cen, double r, Material *m) : m_center(m_cen), dRadius(r), m_mat_ptr(m) {};
-	virtual bool Hit(const Ray& m_r, double tmin, double tmax, HitRecord& rec) const;
-	inline Box BBox(vList &vector,  Material *material = new Lambertian(Vector3D(0, 0, 0))) {
-		NewItem(vector, this);
-		return Box(m_center - dRadius, m_center + dRadius, material);
-	}
-	Vector3D m_center;
-	double dRadius;
-	Material *m_mat_ptr;
+	Sphere(Vector3D cen, double r, Material *pm) : m_vCenter(cen), dRadius(r), pmCurMat(pm) {};
+	virtual bool Hit(const Ray& r, double tMin, double tMax, HitRecord& rec) const;
+	virtual Box BBox(vList &vector, Material *pm = new Lambertian(Vector3D(0, 0, 0)));
+	Vector3D m_vCenter; double dRadius; Material *pmCurMat;
 };
 
-bool Sphere::Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const {
-	Vector3D m_oc = m_r.Origin() - m_center;
-	// Define variables for quadratic formula
-	double a = m_r.Direction().Dot(m_r.Direction());
-	double b = m_oc.Dot(m_r.Direction());
-	double c = m_oc.Dot(m_oc) - dRadius * dRadius;
-	double dDiscriminant = b * b - a * c;
+bool Sphere::Hit(const Ray& r, double tMin, double tMax, HitRecord& rec) const {
+	Vector3D m_vOC = r.Origin() - m_vCenter;
+	double dA = r.Direction().Dot(r.Direction());
+	double dB = m_vOC.Dot(r.Direction());
+	double dC = m_vOC.Dot(m_vOC) - dRadius * dRadius;
+	double dDiscriminant = dB * dB - dA * dC;
 	if (dDiscriminant > 0) {
-		// Use quadratic formula to calculate intersections (-)
-		double temp = (-b - sqrt(dDiscriminant)) / a;
-		// If intersection falls within limits
-		if (temp < t_max && temp > t_min) {
-			// Record point
-			rec.dT = temp;
-			rec.m_p = m_r.PointAtParameter(rec.dT);
-			rec.m_normal = (rec.m_p - m_center) / dRadius;
-			rec.mat_ptr = m_mat_ptr;
+		double dTemp = (-dB - sqrt(dDiscriminant)) / dA;
+		if (dTemp < tMax && dTemp > tMin) {
+			rec.dT = dTemp;
+			rec.m_vP = r.PointAtParameter(rec.dT);
+			rec.m_vNormal = (rec.m_vP - m_vCenter) / dRadius;
+			rec.pmCurMat = pmCurMat;
 			return true;
 		}
-		// Use quadratic formula to calculate intersections (+)
-		temp = (-b + sqrt(dDiscriminant)) / a;
-		// If intersection falls within limits
-		if (temp < t_max && temp > t_min) {
-			// Record point
-			rec.dT = temp;
-			rec.m_p = m_r.PointAtParameter(rec.dT);
-			rec.m_normal = (rec.m_p - m_center) / dRadius;
-			rec.mat_ptr = m_mat_ptr;
+		dTemp = (-dB + sqrt(dDiscriminant)) / dA;
+		if (dTemp < tMax && dTemp > tMin) {
+			rec.dT = dTemp;
+			rec.m_vP = r.PointAtParameter(rec.dT);
+			rec.m_vNormal = (rec.m_vP - m_vCenter) / dRadius;
+			rec.pmCurMat = pmCurMat;
 			return true;
 		}
 	}
 	return false;
 }
 
-#endif // SPHEREH
+inline Box Sphere::BBox(vList &vector, Material *pm) {
+	NewItem(vector, this);
+	return Box(m_vCenter - dRadius, m_vCenter + dRadius, pm);
+}
+#endif // SPHERE_H
