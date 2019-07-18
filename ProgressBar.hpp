@@ -6,21 +6,21 @@
 
 class ProgressBar {
 private:
-    unsigned int ticks = 0;
+    int ticks = 0;
 
-    const unsigned int total_ticks;
-    const unsigned int bar_width;
+    const int total_ticks;
+    const int bar_width;
     const char complete_char = '=';
     const char incomplete_char = ' ';
     const std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
 
 public:
-    ProgressBar(unsigned int total, unsigned int width, char complete, char incomplete) :
+    ProgressBar(int total, int width, char complete, char incomplete) :
             total_ticks {total}, bar_width {width}, complete_char {complete}, incomplete_char {incomplete} {}
 
-    ProgressBar(unsigned int total, unsigned int width) : total_ticks {total}, bar_width {width} {}
+    ProgressBar(int total, int width) : total_ticks {total}, bar_width {width} {}
 
-    unsigned int operator++() { return ++ticks; }
+    int operator++() { return ++ticks; }
 
     void display() const
     {
