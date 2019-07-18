@@ -7,13 +7,13 @@ C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 ### Usage
 The ray tracer function is contained in the RayTracer.h file.
 
-To initialize a ray tracer, create a new Vector Array by calling: `vArray VectorName`.
+To initialize a ray tracer, create a new Vector Array by calling: `vector<Object*> VectorArray`.
 
-Then use the following format for each object in the render: `NewItem(VectorName, &OBJECT)`.
+Then use the following format for each object in the render: `NewItem(VectorArray, &Sphere(Vector3D(LOCATION), SIZE, new MATERIAL))`.
 
 Next, set the dimensions of the output image (Width x Height): `Dim a = { 200, 100 }`.
  
-Finally, call the ray tracer: `RayTracer(DIMENSIONS, QUALITY, CAMERA, VectorName, FILENAME)`.
+Finally, call the ray tracer: `RayTracer(DIMENSIONS, QUALITY, CAMERA, VectorArray, FILENAME)`.
  
 Example:
 ```
@@ -32,19 +32,6 @@ int main() {
 <hr>
 
 ### Variable Descriptions
-* `OBJECT`:
-  * `Sphere`:
-    * Description: Sphere Object
-    * Format: `Sphere(Vector3D(LOCATION), SIZE, MATERIAL)`
-    * Example: `Sphere(Vector3D(0), 1, new Lambertian(Vector3D(0.51, 0.7, 1.0)))`
-  * `Box`
-    * Description: Box Object
-    * Format: `Box(Vector3D(BOUND1), Vector3D(BOUND2), MATERIAL)`
-    * Example: `Box(Vector3D(-1), Vector3D(1), new Lambertian(Vector3D(1, 0, 0)))`
-  * `Sphere.BBox`
-    * Description: Sphere Object with surrounding bounding Box
-    * Format: `Sphere(Vector3D(LOCATION),SIZE, MATERIAL).BBox(VectorName)`
-    * Example: `Sphere(Vector3D(0), 1, new Lambertian(Vector3D(0.51, 0.7, 1.0))).BBox(VectorName)`
 * `LOCATION`: (X,Y,Z) location of object (double).
 * `SIZE`: Sphere radius (double).
 * `MATERIAL`:
@@ -70,5 +57,3 @@ int main() {
   * `APERTURE` (Optional): Camera lens aperture (double).
   * `FOV` (Optional): Camera lens field of view in degrees (double).
 * `FILENAME`: Name for ouput ppm file. Do not include `.ppm` (string).
-
-Note: Vector3D can be intialized with one or three paramaters. If one paramater is supplied, all three will use that value. i.e: Vector3D(1) == Vector3D(1,1,1).
