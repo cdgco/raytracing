@@ -1,118 +1,101 @@
-#ifndef MATERIALH
-#define MATERIALH
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
 struct HitRecord;
 
-#include "Ray.h"
 #include "Object.h"
 
-// Produces random Vector3D (i.e. three values with range 0 - 1)
 Vector3D RandomInUnitSphere() {
-	Vector3D m_p;
+	Vector3D m_vP;
 	do {
-		m_p = 2.0*Vector3D(drand48(), drand48(), drand48()) - Vector3D(1, 1, 1);
-	} while (m_p.SquaredLength() >= 1.0);
-	return m_p;
+		m_vP = 2.0*Vector3D(drand48(), drand48(), drand48()) - Vector3D(1);
+	} while (m_vP.SquaredLength() >= 1.0);
+	return m_vP;
 }
 
-Vector3D Reflect(const Vector3D& m_v, const Vector3D& m_n) {
-	return m_v - 2 * StdDot(m_v, m_n)*m_n;
+Vector3D Reflect(const Vector3D &v, const Vector3D &n) {
+	return v - 2 * StdDot(v, n)*n;
 }
 
-double Schlick(double dCosine, double dRefIdx) {
-	double d0 = (1 - dRefIdx) / (1 + dRefIdx);
+double Schlick(double cosine, double refid) {
+	double d0 = (1 - refid) / (1 + refid);
 	d0 = d0 * d0;
-	return d0 + (1 - d0)*pow((1 - dCosine), 5);
+	return d0 + (1 - d0)*pow((1 - cosine), 5);
 }
 
-bool Refract(const Vector3D& m_v, const Vector3D& m_n, double ni_over_nt, Vector3D& m_refracted) {
-	Vector3D m_uv = UnitVector(m_v);
-	double dDT = m_uv.Dot(m_n);
-	double discriminant = 1.0 - (ni_over_nt * ni_over_nt * (1 - dDT * dDT));
+bool Refract(const Vector3D& v, const Vector3D& n, double NiOverNt, Vector3D& refracted) {
+	Vector3D m_vUV = UnitVector(v);
+	double dDT = m_vUV.Dot(n);
+	double discriminant = 1.0 - (NiOverNt * NiOverNt * (1 - dDT * dDT));
 	if (discriminant > 0) {
-		m_refracted = ni_over_nt * (m_uv - (m_n * dDT)) - (m_n * sqrt(discriminant));
+		refracted = NiOverNt * (m_vUV - (n * dDT)) - (n * sqrt(discriminant));
 		return true;
 	}
-	else {
-		return false;
-	}
+	else return false;
 }
 
 class Material {
 public:
-	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const = 0;
-
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3D& attenuation, Ray& scattered) const = 0;
 };
 
 class Lambertian : public Material {
 public: 
-	Lambertian(const Vector3D& m_a) : m_albedo(m_a) {}
-	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const {
-		Vector3D m_target = rec.m_p + rec.m_normal + RandomInUnitSphere();
-		m_scattered = Ray(rec.m_p, m_target - rec.m_p);
-		m_attenuation = m_albedo;
+	Lambertian(const Vector3D& a) : m_vAlbedo(a) {}
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3D& attenuation, Ray& scattered) const {
+		Vector3D m_vTarget = rec.m_vP + rec.m_vNormal + RandomInUnitSphere();
+		scattered = Ray(rec.m_vP, m_vTarget - rec.m_vP);
+		attenuation = m_vAlbedo;
 		return true;
 	}
-	Vector3D m_albedo;
+	Vector3D m_vAlbedo;
 };
-// Vector3D coordinates
-// Fuzz level
 class Metal : public Material {
 public:
-	Metal(const Vector3D& m_a, double dF) : m_albedo(m_a) { 
-		if (dF < 1) { dFuzz = dF; }  
+	Metal(const Vector3D& a, double f) : m_vAlbedo(a) {
+		if (f < 1) { dFuzz = f; }
 		else { dFuzz = 1; }
 }
-	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const {
-		Vector3D m_reflected = Reflect(UnitVector(m_r_in.Direction()), rec.m_normal);
-		m_scattered = Ray(rec.m_p, m_reflected + dFuzz*RandomInUnitSphere());
-		m_attenuation = m_albedo;
-		return (m_scattered.Direction().Dot(rec.m_normal) > 0);
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3D& attenuation, Ray& scattered) const {
+		Vector3D m_vReflected = Reflect(UnitVector(r_in.Direction()), rec.m_vNormal);
+		scattered = Ray(rec.m_vP, m_vReflected + dFuzz * RandomInUnitSphere());
+		attenuation = m_vAlbedo;
+		return (scattered.Direction().Dot(rec.m_vNormal) > 0);
 	}
-	Vector3D m_albedo;
+	Vector3D m_vAlbedo;
 	double dFuzz;
 };
 
-// Refractive Index: 
-//	Air: 1.0
-//	Glass: 1.3 - 1.7
-//	Diamond: 2.4
 class Dielectric : public Material {
 public:
-	Dielectric(double dRI) : dRefIdx(dRI) {}
-	virtual bool Scatter(const Ray& m_r_in, const HitRecord& rec, Vector3D& m_attenuation, Ray& m_scattered) const {
-		Vector3D m_outward_normal;
-		Vector3D m_reflected = Reflect(m_r_in.Direction(), rec.m_normal);
+	Dielectric(double ri) : dRefId(ri) {}
+	virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Vector3D& attenuation, Ray& scattered) const {
+		Vector3D m_vOutwardNormal;
+		Vector3D m_vReflected = Reflect(r_in.Direction(), rec.m_vNormal);
 		double dNiOverNt;
-		m_attenuation = Vector3D(1.0, 1.0, 1.0);
+		attenuation = Vector3D(1.0);
 		Vector3D m_refracted;
 		double dReflectProb;
 		double dCosine;
-		if (m_r_in.Direction().Dot(rec.m_normal) > 0) {
-			m_outward_normal = -rec.m_normal;
-			dNiOverNt = dRefIdx;
-			dCosine = dRefIdx * StdDot(m_r_in.Direction(), rec.m_normal) / m_r_in.Direction().Length();
+		if (r_in.Direction().Dot(rec.m_vNormal) > 0) {
+			m_vOutwardNormal = -rec.m_vNormal;
+			dNiOverNt = dRefId;
+			dCosine = dRefId * StdDot(r_in.Direction(), rec.m_vNormal) / r_in.Direction().Length();
 		}
 		else {
-			m_outward_normal = rec.m_normal;
-			dNiOverNt = 1.0 / dRefIdx;
-			dCosine = -(m_r_in.Direction().Dot(rec.m_normal)) / m_r_in.Direction().Length();
+			m_vOutwardNormal = rec.m_vNormal;
+			dNiOverNt = 1.0 / dRefId;
+			dCosine = -(r_in.Direction().Dot(rec.m_vNormal)) / r_in.Direction().Length();
 		}
-		if (Refract(m_r_in.Direction(), m_outward_normal, dNiOverNt, m_refracted)) {
-			dReflectProb = Schlick(dCosine, dRefIdx);
+		if (Refract(r_in.Direction(), m_vOutwardNormal, dNiOverNt, m_refracted)) {
+			dReflectProb = Schlick(dCosine, dRefId);
 		}
-		else {
-			dReflectProb = 1.0;
-		}
-		if (drand48() < dReflectProb) {
-			m_scattered = Ray(rec.m_p, m_reflected);
-		}
-		else {
-			m_scattered = Ray(rec.m_p, m_refracted);
-		}
+		else dReflectProb = 1.0;
+		if (drand48() < dReflectProb) scattered = Ray(rec.m_vP, m_vReflected);
+		else scattered = Ray(rec.m_vP, m_refracted);
 		return true;
 	}
-	double dRefIdx;
+	double dRefId;
 };
 
-#endif // MATERIALH
+#endif // MATERIAL_H

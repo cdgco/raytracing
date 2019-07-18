@@ -1,9 +1,9 @@
-#ifndef VECTOR3DH
-#define VECTOR3DH
+#ifndef VECTOR3D_H
+#define VECTOR3D_H
 
 #define _USE_MATH_DEFINES
-#include <cmath>
-#include <cstdlib>
+#include <math.h>
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 
@@ -13,22 +13,9 @@ class Vector3D {
 public:
 
 	Vector3D() {}
-	// 
-	// Creates an object consisting of three doubles representing location or color
-	// 
-	// Member Functions:
-	//	x() / r(): First vector parameter
-	//	y() / g(): Second vector parameter
-	//	z() / b(): Third vector parameter
-	//	Length(): Length of Vector
-	//	SquaredLength(): Squared length of vector
-	//	Dot(Vector3D v2): Dot product of two vectors
-	//	Cross(Vector3D v2): Cross Product of two vectors
-	//	MakeUnitVector(): Synonym for global function UnitVector(v)
-	//
 	Vector3D(double e0) { e[0] = e0; e[1] = e0; e[2] = e0; }
 	Vector3D(double e0, double e1, double e2) { e[0] = e0; e[1] = e1; e[2] = e2; }
-	// Return numerical paramater for location or color
+	
 	inline double x() const { return e[0]; }
 	inline double y() const { return e[1]; }
 	inline double z() const { return e[2]; }
@@ -36,7 +23,6 @@ public:
 	inline double g() const { return e[1]; }
 	inline double b() const { return e[2]; }
 
-	// Prototype Operator Functions
 	inline const Vector3D& operator+() const { return *this; }
 	inline Vector3D operator-() const { return Vector3D(-e[0], -e[1], -e[2]); }
 	inline double operator[](int i) const { return e[i]; }
@@ -48,23 +34,16 @@ public:
 	inline Vector3D& operator*=(const double t);
 	inline Vector3D& operator/=(const double t);
 
-	// Returns length of Vector
 	inline double Length() const { return sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]); }
-	
-	// Returns squared lenght of vector
 	inline double SquaredLength() const { return e[0] * e[0] + e[1] * e[1] + e[2] * e[2]; }
-	
-	// Returns dot product of two vectors
 	inline double Dot(const Vector3D &v2) { return e[0] * v2.e[0] + e[1] * v2.e[1] + e[2] * v2.e[2]; }
 
-	// Returns cross product of two vectors
 	inline Vector3D Cross(const Vector3D &v2) {
 		return Vector3D((e[1] * v2.e[2] - e[2] * v2.e[1]),
 			(-(e[0] * v2.e[2] - e[2] * v2.e[0])),
 			(e[0] * v2.e[1] - e[1] * v2.e[0]));
 	}
 
-	// Prototype Unit Vector Member Function
 	inline void MakeUnitVector();
 
 	double e[3];
@@ -93,11 +72,19 @@ inline Vector3D operator+(const Vector3D &v1, const int &i2) {
 	return Vector3D(v1.e[0] + i2, v1.e[1] + i2, v1.e[2] + i2);
 }
 
+inline Vector3D operator+(const Vector3D &v1, const double &i2) {
+	return Vector3D(v1.e[0] + i2, v1.e[1] + i2, v1.e[2] + i2);
+}
+
 inline Vector3D operator-(const Vector3D &v1, const Vector3D &v2) {
 	return Vector3D(v1.e[0] - v2.e[0], v1.e[1] - v2.e[1], v1.e[2] - v2.e[2]);
 }
 
 inline Vector3D operator-(const Vector3D &v1, const int &i2) {
+	return Vector3D(v1.e[0] - i2, v1.e[1] - i2, v1.e[2] - i2);
+}
+
+inline Vector3D operator-(const Vector3D &v1, double &i2) {
 	return Vector3D(v1.e[0] - i2, v1.e[1] - i2, v1.e[2] - i2);
 }
 
@@ -183,4 +170,4 @@ inline Vector3D StdCross(const Vector3D &v1, const Vector3D &v2) {
 		(v1.e[0] * v2.e[1] - v1.e[1] * v2.e[0]));
 }
 
-#endif // VECTOR3DH
+#endif // VECTOR3D_H
