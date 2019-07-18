@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Main Page</title>
+<title>C++ Raytracer: C++ Ray Tracer</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -84,11 +84,81 @@ $(document).ready(function(){initNavTree('index.html','');});
 </iframe>
 </div>
 
-<div class="header">
+<div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">C++ Raytracer Documentation</div>  </div>
+<div class="title">C++ <a class="el" href="class_ray.html">Ray</a> Tracer </div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p>C++ <a class="el" href="class_ray.html">Ray</a> Tracer based on Peter Shirley's <a class="el" href="class_ray.html">Ray</a> Tracing in One Weekend</p>
+<img src="https://raw.githubusercontent.com/cdgco/raytracing/master/BoxDemo.jpg" alt="VWI Banner" class="inline"/>
+<hr/>
+<h3>Overview</h3>
+<p>This project is a C++ <a class="el" href="class_ray.html">Ray</a> Tracer based off of Peter Shirley's ray tracer in the book <a class="el" href="class_ray.html">Ray</a> Tracing in One Weekend.</p>
+<p>The project has been adapted from floats to doubles with new class names, a box object (based off of ScratchAPixel's <a class="el" href="class_ray.html">Ray</a> Tracer) and a single class wrapper which handles the ray tracer from a single function.</p>
+<h3>Usage</h3>
+<p>The ray tracer function is contained in the RayTracer.h file.</p>
+<p>To initialize a ray tracer, create a new Vector Array by calling: </p><div class="fragment"><div class="line">vArray VectorName</div></div><!-- fragment --><p>Then use the following format for each object in the render: </p><div class="fragment"><div class="line">NewItem(VectorName, &amp;OBJECT)</div></div><!-- fragment --><p>Next, set the dimensions of the output image (Width x Height): </p><div class="fragment"><div class="line">Dim a = { 200, 100 }</div></div><!-- fragment --><p>Finally, call the ray tracer: </p><div class="fragment"><div class="line"><a class="code" href="class_ray_tracer.html">RayTracer</a>(DIMENSIONS, QUALITY, CAMERA, VectorName, FILENAME)</div></div><!-- fragment --><p>Example: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;RayTracer.h&quot;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line"></div><div class="line">    std::vector&lt;Object*&gt; r1;</div><div class="line">    NewItem(r1, &amp;<a class="code" href="class_sphere.html">Sphere</a>(<a class="code" href="class_vector3_d.html">Vector3D</a>(0, 0, 0), 0.5, <span class="keyword">new</span> <a class="code" href="class_lambertian.html">Lambertian</a>(<a class="code" href="class_vector3_d.html">Vector3D</a>(0.8, 0.3, 0.3))));</div><div class="line">    Dim a = { 200, 100 };</div><div class="line">    <a class="code" href="class_ray_tracer.html">RayTracer</a>(a, 30, <a class="code" href="class_camera.html">Camera</a>(a, <a class="code" href="class_vector3_d.html">Vector3D</a>(3, 1, 3)), r1, <span class="stringliteral">&quot;RayTracer&quot;</span>);</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> <hr/>
+<h3>Variable Descriptions</h3>
+<ul>
+<li><code>OBJECT</code>:<ul>
+<li><code><a class="el" href="class_sphere.html">Sphere</a></code>:<ul>
+<li>Description: <a class="el" href="class_sphere.html">Sphere</a> <a class="el" href="class_object.html">Object</a></li>
+<li>Format: <code><a class="el" href="class_sphere.html">Sphere(Vector3D(LOCATION), SIZE, MATERIAL)</a></code></li>
+<li>Example: <code><a class="el" href="class_sphere.html">Sphere</a>(<a class="el" href="class_vector3_d.html">Vector3D(0)</a>, 1, new <a class="el" href="class_lambertian.html">Lambertian</a>(<a class="el" href="class_vector3_d.html">Vector3D</a>(0.51, 0.7, 1.0)))</code></li>
+</ul>
+</li>
+<li><code><a class="el" href="class_box.html">Box</a></code><ul>
+<li>Description: <a class="el" href="class_box.html">Box</a> <a class="el" href="class_object.html">Object</a></li>
+<li>Format: <code><a class="el" href="class_box.html">Box</a>(<a class="el" href="class_vector3_d.html">Vector3D(BOUND1)</a>, <a class="el" href="class_vector3_d.html">Vector3D(BOUND2)</a>, MATERIAL)</code></li>
+<li>Example: <code><a class="el" href="class_box.html">Box</a>(<a class="el" href="class_vector3_d.html">Vector3D</a>(-1), <a class="el" href="class_vector3_d.html">Vector3D(1)</a>, new <a class="el" href="class_lambertian.html">Lambertian(Vector3D(1, 0, 0))</a>)</code></li>
+</ul>
+</li>
+<li><code><a class="el" href="class_sphere.html#aff6bb01182e5812599384166e0e7ae3d">Sphere.BBox</a></code><ul>
+<li>Description: <a class="el" href="class_sphere.html">Sphere</a> <a class="el" href="class_object.html">Object</a> with surrounding bounding <a class="el" href="class_box.html">Box</a></li>
+<li>Format: <code><a class="el" href="class_sphere.html">Sphere(Vector3D(LOCATION),SIZE, MATERIAL)</a>.BBox(VectorName)</code></li>
+<li>Example: <code><a class="el" href="class_sphere.html">Sphere</a>(<a class="el" href="class_vector3_d.html">Vector3D(0)</a>, 1, new <a class="el" href="class_lambertian.html">Lambertian</a>(<a class="el" href="class_vector3_d.html">Vector3D</a>(0.51, 0.7, 1.0))).BBox(VectorName)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>LOCATION</code>: (X,Y,Z) location of object (double).</li>
+<li><code>SIZE</code>: <a class="el" href="class_sphere.html">Sphere</a> radius (double).</li>
+<li><code>MATERIAL</code>:<ul>
+<li><code><a class="el" href="class_lambertian.html">Lambertian</a></code><ul>
+<li>Example: <code>new <a class="el" href="class_lambertian.html">Lambertian(Vector3D(COLOR))</a></code>.</li>
+<li><code>COLOR</code>: (R,G,B) color value, 0.0 - 1.0 (<a class="el" href="class_vector3_d.html">Vector3D</a>).</li>
+</ul>
+</li>
+<li><code><a class="el" href="class_metal.html">Metal</a></code><ul>
+<li>Example: <code>new <a class="el" href="class_metal.html">Metal(Vector3D(COLOR), FUZZ)</a></code>.</li>
+<li><code>COLOR</code>: (R,G,B) color value, 0.0 - 1.0 (<a class="el" href="class_vector3_d.html">Vector3D</a>).</li>
+<li><code>FUZZ</code>: Fuzz / Blur Level, 0.1 - 1.0 (double).</li>
+</ul>
+</li>
+<li><code>Dialectric</code>:<ul>
+<li>Example: <code>new <a class="el" href="class_dielectric.html">Dielectric(REFIDX)</a></code>.</li>
+<li><code>REFIDX</code>: Refractive Index. Recommended 1.0 - 2.4 (double).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>DIMENSIONS</code>: Dims struct name (<a class="el" href="struct_s_dim.html">SDim</a>).</li>
+<li><code>QUALITY</code>: Number of rays per pixel (double).</li>
+<li><code>CAMERA</code><ul>
+<li>Format: <a class="el" href="class_camera.html">Camera(DIMS, LOOKFROM, LOOKAT, UP, APERTURE, FOV)</a></li>
+<li>Example: <code><a class="el" href="class_camera.html">Camera</a>(dims, <a class="el" href="class_vector3_d.html">Vector3D(3, 1, 3)</a>, <a class="el" href="class_vector3_d.html">Vector3D(0, 0, 0)</a>, <a class="el" href="class_vector3_d.html">Vector3D(0, 1, 0)</a>, 0.1, 30)</code></li>
+<li><code>DIMS</code>: Dim struct name (<a class="el" href="struct_s_dim.html">SDim</a>).</li>
+<li><code>LOOKFROM</code>: (X,Y,Z) location of camera (<a class="el" href="class_vector3_d.html">Vector3D</a>).</li>
+<li><code>LOOKAT</code> (Optional): (X,Y,Z) location where camera is pointed (<a class="el" href="class_vector3_d.html">Vector3D</a>).</li>
+<li><code>UP</code> (Optional): (X,Y,Z) location of camera y-shift (<a class="el" href="class_vector3_d.html">Vector3D</a>).</li>
+<li><code>APERTURE</code> (Optional): <a class="el" href="class_camera.html">Camera</a> lens aperture (double).</li>
+<li><code>FOV</code> (Optional): <a class="el" href="class_camera.html">Camera</a> lens field of view in degrees (double).</li>
+</ul>
+</li>
+<li><code>FILENAME</code>: Name for ouput ppm file. Do not include <code>.ppm</code> (string).</li>
+</ul>
+<p>Note: <a class="el" href="class_vector3_d.html">Vector3D</a> can be intialized with one or three paramaters. If one paramater is supplied, all three will use that value. i.e: <a class="el" href="class_vector3_d.html">Vector3D(1)</a> == <a class="el" href="class_vector3_d.html">Vector3D(1,1,1)</a>. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

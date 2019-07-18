@@ -24,7 +24,7 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "C++ Raytracer", "index.html", [
-    [ "C++ Ray Tracer", "md__r_e_a_d_m_e.html", null ],
+    [ "C++ Ray Tracer", "index.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
