@@ -1,5 +1,5 @@
-#ifndef RAYTRACER_H
-#define RAYTRACER_H
+#ifndef RAY_TRACER_H
+#define RAY_TRACER_H
 
 #include <cfloat>
 #include <string>
@@ -92,4 +92,4 @@ public:
 		}
 	}
 };
-#endif // RAYTRACER_H
+#endif // RAY_TRACER_H

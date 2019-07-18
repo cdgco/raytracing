@@ -1,5 +1,5 @@
-#ifndef VECTOR3D_H
-#define VECTOR3D_H
+#ifndef VECTOR_H
+#define VECTOR_H
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -170,4 +170,4 @@ inline Vector3D StdCross(const Vector3D &v1, const Vector3D &v2) {
 		(v1.e[0] * v2.e[1] - v1.e[1] * v2.e[0]));
 }
 
-#endif // VECTOR3D_H
+#endif // VECTOR_H

@@ -1,7 +1,7 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "Object.h"
+#include "object.h"
 
 class Box : public Object {
 public:

@@ -3,7 +3,7 @@
 
 struct HitRecord;
 
-#include "Object.h"
+#include "object.h"
 
 Vector3D RandomInUnitSphere() {
 	Vector3D m_vP;

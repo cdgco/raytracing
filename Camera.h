@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Ray.h"
+#include "ray.h"
 
 struct SDim {
 	int iX;

@@ -1,8 +1,8 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "Material.h"
-#include "Box.h"
+#include "material.h"
+#include "box.h"
 typedef std::vector<Object*> vList;
 
 void NewItem(vList &vector, Object* object) {
