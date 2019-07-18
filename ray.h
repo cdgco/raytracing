@@ -3,6 +3,7 @@
 
 #include "vector.h"
 
+/** Ray function. */
 class Ray {
 public:
 	Ray() {}

@@ -12,6 +12,7 @@ struct SDim {
 	int iY; ///< Height in pixels
 };
 
+/** Perspective and ray generating functions. */
 class Camera {
 public:
 	Camera() {}
@@ -32,9 +33,8 @@ public:
 
 
 	*/
-	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom) {
+	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), dAperture(aperture) {
 
-		dLensRadius = aperture / 2;
 		double dHalfHeight = tan(Fov*M_PI / 360);
 		double dHalfWidth = (dims.iX / dims.iY) * dHalfHeight;
 		double dFocusDist = (lookFrom - lookAt).Length();
@@ -52,7 +52,7 @@ public:
 		    GetRay(x, y);
 	*/
 	Ray GetRay(double s, double t) {
-		Vector3D m_vRD = dLensRadius * RandomInUnitDisk();
+		Vector3D m_vRD = (dAperture / 2) * RandomInUnitDisk();
 		Vector3D m_vOffset = m_vU * m_vRD.x() + m_vV * m_vRD.y();
 		return Ray(m_vOrigin + m_vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - m_vOffset);
 	}
@@ -71,8 +71,14 @@ public:
 		return m_vP;
 	}
 
-	Vector3D m_vU, m_vV, m_vW, m_vLowerLeftCorner, m_vHorizontal, m_vVertical, m_vOrigin;
-	double dLensRadius;
+	Vector3D m_vU; ///< Vector3D distance from camera origin to target
+	Vector3D m_vV; ///< Vector3D distance adjusted for viewup
+	Vector3D m_vW; ///< Vector3D cross product of distance and viewUp
+	Vector3D m_vLowerLeftCorner; ///< Vector3D lower left corner of grid
+	Vector3D m_vHorizontal; ///< Vector3D width of grid
+	Vector3D m_vVertical; ///< Vector3D height of grid
+	Vector3D m_vOrigin; ///< Vector3D center of grid
+	double dAperture; ///< Aperture of camera lens
 };
 
 #endif // CAMERA_H

@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['randominunitdisk',['RandomInUnitDisk',['../class_camera.html#a91415f33582b57c1c9bf43cf3219d4d9',1,'Camera']]],
-  ['ray',['Ray',['../class_ray.html',1,'Ray'],['../class_ray.html#a4d5c4b12e9375750324726bd184d4ba5',1,'Ray::Ray()']]],
-  ['raytracer',['RayTracer',['../class_ray_tracer.html',1,'RayTracer'],['../class_ray_tracer.html#a2a157d0ac693d10760053236c84fed5e',1,'RayTracer::RayTracer()']]]
+  ['pmcurmat',['pmCurMat',['../class_box.html#a66e3dd69b59f2602631f6b2c9b9113b5',1,'Box::pmCurMat()'],['../struct_hit_record.html#aff5a261638e0f540eb7c491a68086a42',1,'HitRecord::pmCurMat()'],['../class_sphere.html#abbd8e823caab223cac063cb38ee31685',1,'Sphere::pmCurMat()']]],
+  ['pointatparameter',['PointAtParameter',['../class_ray.html#a9cd52c7c64e0cea73cb6e5f0f5948d31',1,'Ray']]]
 ];

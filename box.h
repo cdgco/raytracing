@@ -2,7 +2,7 @@
 #define BOX_H
 
 #include "object.h"
-
+/** Box creation and intersection functions */
 class Box : public Object {
 public:
 	Box() {}

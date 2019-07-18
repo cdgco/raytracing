@@ -15,6 +15,7 @@
 #include "progressbar.hpp"
 #endif
 
+/** Ray Tracing wrapper; intialization and calculation functions. */
 class RayTracer {
 public:
 	RayTracer() {}
