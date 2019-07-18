@@ -1,20 +1,21 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef OBJECTH
+#define OBJECTH
 
-#include "ray.h"
+#include "Ray.h"
 
 class Material;
 
 struct HitRecord {
 	double dT;
-	Vector3D m_vP;
-	Vector3D m_vNormal;
-	Material *pmCurMat;
+	Vector3D m_p;
+	Vector3D m_normal;
+	Material *mat_ptr;
 };
 
 class Object {
 public:
-	virtual bool Hit(const Ray &r, double tMin, double tMax, HitRecord &rec) const = 0;
+	// Prototype shape function
+	virtual bool Hit(const Ray& m_r, double t_min, double t_max, HitRecord& rec) const = 0;
 };
 
-#endif // OBJECT_H
+#endif // OBJECTH
