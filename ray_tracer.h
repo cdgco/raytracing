@@ -1,7 +1,6 @@
 #ifndef RAY_TRACER_H
 #define RAY_TRACER_H
 
-#include <cfloat>
 #include <string>
 #include <algorithm>
 #include <fstream>
@@ -19,6 +18,12 @@
 class RayTracer {
 public:
 	RayTracer() {}
+	/** Initiate a ray tracer instance
+
+	Example:
+
+		RayTracer(dimensions, 100, cam, vecList, "ray_tracer");
+	*/
 	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera cam, vList &vector, std::string strFileName) {
 
 		#if PROGRESSBAR == 1
@@ -63,13 +68,18 @@ public:
 			system(("start " + strFileName + ".ppm").c_str());
 		}
 	}
+	/** Return Color Vector3D if ray intersects object.
 
-	Vector3D Color(const Ray& r, vList &vector, int iDepth) {
+	Example:
+
+		Color(ray, vectorList, 0);
+	*/
+	Vector3D Color(const Ray &r, vList &vector, int iDepth) {
 		HitRecord temp_rec, rec;
 		bool bHitAnything = false;
 		double dClosestSoFar = DBL_MAX;
 		for (size_t i = 0; i < vector.size(); i++) {
-			if (vector[i]->Hit(r, 0.001, dClosestSoFar, temp_rec)) {
+			if (vector[i]->Hit(r, temp_rec, 0.001, dClosestSoFar)) {
 				bHitAnything = true;
 				dClosestSoFar = temp_rec.dT;
 				rec = temp_rec;

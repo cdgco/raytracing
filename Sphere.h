@@ -13,12 +13,12 @@ class Sphere : public Object {
 public: 
 	Sphere() {}
 	Sphere(Vector3D cen, double r, Material *pm) : m_vCenter(cen), dRadius(r), pmCurMat(pm) {};
-	virtual bool Hit(const Ray& r, double tMin, double tMax, HitRecord& rec) const;
+	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
 	virtual Box BBox(vList &vector, Material *pm = new Lambertian(Vector3D(0, 0, 0)));
 	Vector3D m_vCenter; double dRadius; Material *pmCurMat;
 };
 
-bool Sphere::Hit(const Ray& r, double tMin, double tMax, HitRecord& rec) const {
+bool Sphere::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	Vector3D m_vOC = r.Origin() - m_vCenter;
 	double dA = r.Direction().Dot(r.Direction());
 	double dB = m_vOC.Dot(r.Direction());

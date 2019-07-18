@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdlib.h>
+#include <cfloat>
 #include <iostream>
 #include <vector>
 
@@ -49,12 +50,12 @@ public:
 	double e[3];
 };
 
-inline std::istream& operator>>(std::istream &is, Vector3D &t) {
+inline std::istream &operator>>(std::istream &is, Vector3D &t) {
 	is >> t.e[0] >> t.e[1] >> t.e[2];
 	return is;
 }
 
-inline std::ostream& operator<<(std::ostream &os, const  Vector3D &t) {
+inline std::ostream &operator<<(std::ostream &os, const  Vector3D &t) {
 	os << t.e[0] << " " << t.e[1] << " " << t.e[2];
 	return os;
 }
@@ -112,42 +113,42 @@ inline Vector3D operator*(const Vector3D &v, double t) {
 	return Vector3D(t*v.e[0], t*v.e[1], t*v.e[2]);
 }
 
-inline Vector3D& Vector3D::operator+=(const Vector3D &v) {
+inline Vector3D &Vector3D::operator+=(const Vector3D &v) {
 	e[0] += v.e[0];
 	e[1] += v.e[1];
 	e[2] += v.e[2];
 	return *this;
 }
 
-inline Vector3D& Vector3D::operator*=(const Vector3D &v) {
+inline Vector3D &Vector3D::operator*=(const Vector3D &v) {
 	e[0] *= v.e[0];
 	e[1] *= v.e[1];
 	e[2] *= v.e[2];
 	return *this;
 }
 
-inline Vector3D& Vector3D::operator/=(const Vector3D &v) {
+inline Vector3D &Vector3D::operator/=(const Vector3D &v) {
 	e[0] /= v.e[0];
 	e[1] /= v.e[1];
 	e[2] /= v.e[2];
 	return *this;
 }
 
-inline Vector3D& Vector3D::operator-=(const Vector3D& v) {
+inline Vector3D &Vector3D::operator-=(const Vector3D& v) {
 	e[0] -= v.e[0];
 	e[1] -= v.e[1];
 	e[2] -= v.e[2];
 	return *this;
 }
 
-inline Vector3D& Vector3D::operator*=(const double t) {
+inline Vector3D &Vector3D::operator*=(const double t) {
 	e[0] *= t;
 	e[1] *= t;
 	e[2] *= t;
 	return *this;
 }
 
-inline Vector3D& Vector3D::operator/=(const double t) {
+inline Vector3D &Vector3D::operator/=(const double t) {
 	double k = 1.0 / t;
 
 	e[0] *= k;

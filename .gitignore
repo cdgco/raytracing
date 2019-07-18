@@ -8,3 +8,8 @@ ConsoleApplication10.vcxproj.filters
 ConsoleApplication10.vcxproj.user
 BVH.h
 .vs/
+doxygen.exe
+doxyindexer.exe
+doxysearch.cgi.exe
+config
+libclang.dll

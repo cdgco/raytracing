@@ -3,33 +3,66 @@
 
 #include "ray.h"
 
+/** Integer structure storing output image size in pixels
+	Example:
+		SDim dimensions = { width, height };
+*/
 struct SDim {
-	int iX;
-	int iY;
+	int iX; ///< Width in pixels
+	int iY; ///< Height in pixels
 };
 
 class Camera {
 public:
 	Camera() {}
-	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0, 0, 0), Vector3D vertUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom) {
+	/** Sets perspective for output image.
+
+		Camera location, subject, viewport, field of view, focus and aperture can be adjusted.
+
+		Example:
+
+			Camera(dimensions, Vector3D(5,0,0));
+
+		Default values:
+
+		- lookAt: Vector3D(0);\n
+		- vertUp: Vector3D(0, 1, 0);\n
+		- aperture: (double) 0.1;\n
+		- Fov: (double) 40;\n\n
+
+
+	*/
+	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom) {
 
 		dLensRadius = aperture / 2;
 		double dHalfHeight = tan(Fov*M_PI / 360);
 		double dHalfWidth = (dims.iX / dims.iY) * dHalfHeight;
 		double dFocusDist = (lookFrom - lookAt).Length();
 		m_vW = UnitVector(lookFrom - lookAt);
-		m_vU = UnitVector(vertUp.Cross(m_vW));
+		m_vU = UnitVector(viewUp.Cross(m_vW));
 		m_vV = m_vW.Cross(m_vU);
 		m_vLowerLeftCorner = m_vOrigin - dHalfWidth * dFocusDist * m_vU - dHalfHeight * dFocusDist * m_vV - dFocusDist * m_vW;
 		m_vHorizontal = 2 * dHalfWidth*dFocusDist*m_vU;
 		m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
 	}
+	/** For each pixel sample, create a ray using a given x and y value, mapped from the camera to the target.
+
+		Example:
+
+		    GetRay(x, y);
+	*/
 	Ray GetRay(double s, double t) {
 		Vector3D m_vRD = dLensRadius * RandomInUnitDisk();
 		Vector3D m_vOffset = m_vU * m_vRD.x() + m_vV * m_vRD.y();
 		return Ray(m_vOrigin + m_vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - m_vOffset);
 	}
 
+	/** Returns a random vector with a dot product greater than 1.0. 
+
+		Example: 
+
+		    RandomInUnitDisk();
+	*/
 	Vector3D RandomInUnitDisk() {
 		Vector3D m_vP;
 		do {
