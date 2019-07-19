@@ -1,7 +1,7 @@
 # C++ Ray Tracer
 C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 
-![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/BoxDemo.jpg)
+![Ray Tracer Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.jpg)
 <hr>
 
 ### Usage
