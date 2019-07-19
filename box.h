@@ -44,10 +44,7 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	double dT = tmin;
 	if (dT < 0) { dT = tmax; if (dT < 0) return false; }
 
-	rec.dT = dT;
-	rec.m_vP = r.PointAtParameter(rec.dT);
-	rec.m_vNormal = (rec.m_vP - StdCross(m_vBounds[0], m_vBounds[1])) / 1.3;
-	rec.pmCurMat = pmCurMat;
+	rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - StdCross(m_vBounds[0], m_vBounds[1])), pmCurMat };
 	return true;
 }
 #endif // BOXH

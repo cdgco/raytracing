@@ -40,20 +40,16 @@ bool Sphere::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	double dC = m_vOC.Dot(m_vOC) - dRadius * dRadius;
 	double dDiscriminant = dB * dB - dA * dC;
 	if (dDiscriminant > 0) {
-		double dTemp = (-dB - sqrt(dDiscriminant)) / dA;
-		if (dTemp < tMax && dTemp > tMin) {
-			rec.dT = dTemp;
-			rec.m_vP = r.PointAtParameter(rec.dT);
-			rec.m_vNormal = (rec.m_vP - m_vCenter) / dRadius;
-			rec.pmCurMat = pmCurMat;
+		double dT = (-dB - sqrt(dDiscriminant)) / dA;
+		if (dT < tMax && dT > tMin) {
+			HitRecord tempRec = { dT,  r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter) / dRadius, pmCurMat };
+			rec = tempRec;
 			return true;
 		}
-		dTemp = (-dB + sqrt(dDiscriminant)) / dA;
-		if (dTemp < tMax && dTemp > tMin) {
-			rec.dT = dTemp;
-			rec.m_vP = r.PointAtParameter(rec.dT);
-			rec.m_vNormal = (rec.m_vP - m_vCenter) / dRadius;
-			rec.pmCurMat = pmCurMat;
+		dT = (-dB + sqrt(dDiscriminant)) / dA;
+		if (dT < tMax && dT > tMin) {
+			HitRecord tempRec = { dT,  r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter) / dRadius, pmCurMat };
+			rec = tempRec;
 			return true;
 		}
 	}

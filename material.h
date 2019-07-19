@@ -23,12 +23,6 @@ Vector3D Reflect(const Vector3D &v, const Vector3D &n) {
 	return v - 2 * StdDot(v, n)*n;
 }
 
-double Schlick(double cosine, double refid) {
-	double d0 = (1 - refid) / (1 + refid);
-	d0 = d0 * d0;
-	return d0 + (1 - d0)*pow((1 - cosine), 5);
-}
-
 bool Refract(const Vector3D &v, const Vector3D &n, double NiOverNt, Vector3D &refracted) {
 	Vector3D m_vUV = UnitVector(v);
 	double dDT = m_vUV.Dot(n);
@@ -99,13 +93,10 @@ public:
 	*/
 	Dielectric(double ri) : dRefId(ri) {}
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const {
-		Vector3D m_vOutwardNormal;
+		Vector3D m_vOutwardNormal, m_refracted;
+		double dNiOverNt, dReflectProb, dCosine;
 		Vector3D m_vReflected = Reflect(r_in.Direction(), rec.m_vNormal);
-		double dNiOverNt;
 		attenuation = Vector3D(1.0);
-		Vector3D m_refracted;
-		double dReflectProb;
-		double dCosine;
 		if (r_in.Direction().Dot(rec.m_vNormal) > 0) {
 			m_vOutwardNormal = -rec.m_vNormal;
 			dNiOverNt = dRefId;
@@ -117,7 +108,9 @@ public:
 			dCosine = -(r_in.Direction().Dot(rec.m_vNormal)) / r_in.Direction().Length();
 		}
 		if (Refract(r_in.Direction(), m_vOutwardNormal, dNiOverNt, m_refracted)) {
-			dReflectProb = Schlick(dCosine, dRefId);
+				double d0 = (1 - dRefId) / (1 + dRefId);
+				d0 = d0 * d0;
+				dReflectProb = d0 + (1 - d0)*pow((1 - dCosine), 5);
 		}
 		else dReflectProb = 1.0;
 		if (drand48() < dReflectProb) scattered = Ray(rec.m_vP, m_vReflected);
