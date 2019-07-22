@@ -47,7 +47,7 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 
 	// Still need to fix the box color (2nd & 3rd parameters in structure).
 	rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - StdCross(m_vBounds[0], m_vBounds[1])), pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
-	// rec = { dT, r.PointAtParameter(rec.dT), (r.PointAtParameter(rec.dT) - StdCross(m_vBounds[0], m_vBounds[1])), pmCurMat }; // Renders correct color if there is nothing behind the box and camera is off axis
+	//rec = { dT, r.PointAtParameter(rec.dT), (r.PointAtParameter(rec.dT) - StdCross(m_vBounds[0], m_vBounds[1])), pmCurMat }; // Renders correct color if there is nothing behind the box and camera is off axis
 	return true;
 }
 #endif // BOXH
