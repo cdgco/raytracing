@@ -8,8 +8,8 @@
 		SDim dimensions = { width, height };
 */
 struct SDim {
-	int iX; ///< Width in pixels
-	int iY; ///< Height in pixels
+	int m_iX; ///< Width in pixels
+	int m_iY; ///< Height in pixels
 };
 
 /** Perspective and ray generating functions. */
@@ -30,13 +30,11 @@ public:
 		- vertUp: Vector3D(0, 1, 0);\n
 		- aperture: (double) 0.1;\n
 		- Fov: (double) 40;\n\n
-
-
 	*/
 	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), m_dAperture(aperture) {
 
 		double dHalfHeight = tan(Fov*M_PI / 360);
-		double dHalfWidth = (dims.iX / dims.iY) * dHalfHeight;
+		double dHalfWidth = (dims.m_iX / dims.m_iY) * dHalfHeight;
 		double dFocusDist = (lookFrom - lookAt).Length();
 		m_vW = UnitVector(lookFrom - lookAt);
 		m_vU = UnitVector(viewUp.Cross(m_vW));

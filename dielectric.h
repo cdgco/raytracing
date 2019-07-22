@@ -12,6 +12,11 @@ public:
 			Dielectric(1.3);
 	*/
 	Dielectric(double ri) : m_dRefId(ri) {}
+	/** Return boolean value for input vectors. If vector was refracted returns true.
+
+	Example:
+			Refract(ray_direction, normal, NiOverNt, refracted_vector);
+	*/
 	static bool Refract(const Vector3D &v, const Vector3D &n, double NiOverNt, Vector3D &refracted) {
 		Vector3D m_vUV = UnitVector(v);
 		double dDT = m_vUV.Dot(n);

@@ -1,11 +1,17 @@
 var searchData=
 [
+  ['m_5fcamera',['m_camera',['../class_ray_tracer.html#aac767b22c0adf5fd85e03c3130d3fea4',1,'RayTracer']]],
   ['m_5fdaperture',['m_dAperture',['../class_camera.html#a4410e14f90dbff7f2ae14892bc77bde5',1,'Camera']]],
   ['m_5fde',['m_dE',['../class_vector3_d.html#a4fc192a4b8239cff36e6b0f88822fa69',1,'Vector3D']]],
   ['m_5fdfuzz',['m_dFuzz',['../class_metal.html#aff23e44ce7ae8a29b0ceebceebc6fcf7',1,'Metal']]],
+  ['m_5fdims',['m_dims',['../class_ray_tracer.html#a118507c48ddd69a9c2ec208cde403ded',1,'RayTracer']]],
   ['m_5fdradius',['m_dRadius',['../class_sphere.html#a700cbe897277b993a46b8ce29ed25dcd',1,'Sphere']]],
   ['m_5fdrefid',['m_dRefId',['../class_dielectric.html#ae16e57e88fe9c8f6e2364f424be1dadc',1,'Dielectric']]],
   ['m_5fdt',['m_dT',['../struct_hit_record.html#a19ca0909b37730b44c3914a76e41c3f7',1,'HitRecord']]],
+  ['m_5firaysperpixel',['m_iRaysPerPixel',['../class_ray_tracer.html#aa065350a257f7ce144cd792001f65d57',1,'RayTracer']]],
+  ['m_5fix',['m_iX',['../struct_s_dim.html#a3b7818230960d905e6f9c4bb4cc19d02',1,'SDim']]],
+  ['m_5fiy',['m_iY',['../struct_s_dim.html#ad07ee609369f9cfe8b0fdab88a584667',1,'SDim']]],
+  ['m_5flist',['m_list',['../class_ray_tracer.html#ae0778dc62cc58b7a50314ac81c02ba0b',1,'RayTracer']]],
   ['m_5fpmcurmat',['m_pmCurMat',['../class_box.html#a537270475e233fdadf9da24dc75fd24c',1,'Box::m_pmCurMat()'],['../struct_hit_record.html#a038e6ab2fa0529e5ce2c504ea1acf57a',1,'HitRecord::m_pmCurMat()'],['../class_sphere.html#a39de784614d5fde2eff137e7c236d377',1,'Sphere::m_pmCurMat()']]],
   ['m_5fvalbedo',['m_vAlbedo',['../class_lambertian.html#a85ee6109887971f74021e08d46d20bd9',1,'Lambertian::m_vAlbedo()'],['../class_metal.html#af803d7f06cf86e6993a56613b4b4dee4',1,'Metal::m_vAlbedo()']]],
   ['m_5fvbounds',['m_vBounds',['../class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00',1,'Box']]],

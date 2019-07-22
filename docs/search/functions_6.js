@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['makeunitvector',['MakeUnitVector',['../class_vector3_d.html#a1ccb8f460798069aa3fc86b53287d69c',1,'Vector3D']]],
-  ['metal',['Metal',['../class_metal.html#a62a0a25fb987ea0a309954e18906bddc',1,'Metal']]]
+  ['lambertian',['Lambertian',['../class_lambertian.html#a18404393ce4347b7f32aeb82d115b9ba',1,'Lambertian']]],
+  ['length',['Length',['../class_vector3_d.html#ab69b3409aca58559cf28207756cd5472',1,'Vector3D']]]
 ];

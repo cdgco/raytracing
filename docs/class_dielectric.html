@@ -115,12 +115,10 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a0883e90e42f70d07458e2de57a9c2c73"><td class="memItemLeft" align="right" valign="top"><a id="a0883e90e42f70d07458e2de57a9c2c73"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>Refract</b> (const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;v, const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;n, double NiOverNt, <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;refracted)</td></tr>
+<tr class="memitem:a0883e90e42f70d07458e2de57a9c2c73"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dielectric.html#a0883e90e42f70d07458e2de57a9c2c73">Refract</a> (const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;v, const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;n, double NiOverNt, <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;refracted)</td></tr>
 <tr class="separator:a0883e90e42f70d07458e2de57a9c2c73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_class_material"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_material')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="class_material.html">Material</a></td></tr>
-<tr class="memitem:a61e2546b09a6c761d137910e76c60f52 inherit pub_static_methods_class_material"><td class="memItemLeft" align="right" valign="top"><a id="a61e2546b09a6c761d137910e76c60f52"></a>
-static <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Reflect</b> (const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;v, const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;n)</td></tr>
+<tr class="memitem:a61e2546b09a6c761d137910e76c60f52 inherit pub_static_methods_class_material"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_material.html#a61e2546b09a6c761d137910e76c60f52">Reflect</a> (const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;v, const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;n)</td></tr>
 <tr class="separator:a61e2546b09a6c761d137910e76c60f52 inherit pub_static_methods_class_material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a714b7d7c4c2a9871183bbed2ea5ed5b6 inherit pub_static_methods_class_material"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_material.html#a714b7d7c4c2a9871183bbed2ea5ed5b6">RandomInUnitSphere</a> ()</td></tr>
 <tr class="separator:a714b7d7c4c2a9871183bbed2ea5ed5b6 inherit pub_static_methods_class_material"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,6 +162,56 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0883e90e42f70d07458e2de57a9c2c73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0883e90e42f70d07458e2de57a9c2c73">&#9670;&nbsp;</a></span>Refract()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool Dielectric::Refract </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>NiOverNt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_vector3_d.html">Vector3D</a> &amp;&#160;</td>
+          <td class="paramname"><em>refracted</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return boolean value for input vectors. If vector was refracted returns true.</p>
+<p>Example: Refract(ray_direction, normal, NiOverNt, refracted_vector); </p>
+
+</div>
+</div>
 <a id="a35115b364fd9e660a799d5b4bfdb7587"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a35115b364fd9e660a799d5b4bfdb7587">&#9670;&nbsp;</a></span>Scatter()</h2>
 

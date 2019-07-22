@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['g',['g',['../class_vector3_d.html#a415458c55d5808b126a4d8cec2ae5797',1,'Vector3D']]],
-  ['getray',['GetRay',['../class_camera.html#afc79d24b2046136de5210185bb9e01aa',1,'Camera']]]
+  ['dielectric',['Dielectric',['../class_dielectric.html#ac374becfc9c50157be7ab7c305a0d6ed',1,'Dielectric']]],
+  ['direction',['Direction',['../class_ray.html#adc34da9e6ca5d925f3e0494e40db0fae',1,'Ray']]],
+  ['dot',['Dot',['../class_vector3_d.html#a3326efc744d307f18e98434bb9892f23',1,'Vector3D']]]
 ];

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['lambertian',['Lambertian',['../class_lambertian.html#a18404393ce4347b7f32aeb82d115b9ba',1,'Lambertian']]],
-  ['length',['Length',['../class_vector3_d.html#ab69b3409aca58559cf28207756cd5472',1,'Vector3D']]]
+  ['hit',['Hit',['../class_box.html#a4bd2091ead3712b2cc8ee27704d324f2',1,'Box::Hit()'],['../class_object.html#a2fbb0f11aeffb9d3f7943abda2791618',1,'Object::Hit()'],['../class_sphere.html#a87ddf107085f97a6c9827faadef8b3f4',1,'Sphere::Hit()']]]
 ];

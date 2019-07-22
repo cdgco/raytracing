@@ -28,26 +28,39 @@ C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 
 ![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.jpg)
 
-<hr>
-
-### Overview
-This project is a C++ Ray Tracer based off of Peter Shirley's ray tracer in the book Ray Tracing in One Weekend. 
-
-The project has been adapted from floats to doubles with new class names, a box object (based off of ScratchAPixel's Ray Tracer) and a single class wrapper which handles the ray tracer from a single function.
-
 */
 
 /** Ray Tracing wrapper; intialization and calculation functions. */
 class RayTracer {
 public:
+	/** Link renderable objects to ray tracer instance 
+	
+		Example:
+		
+			ray_tracer->AddItem(&Sphere(Vector3D(0), 1, new Lambertian(Vector3D(1)));
+	*/
 	void AddItem(Object* object) {
 		m_list.push_back(object);
 	}
+	/** Remove all objects from ray tracer instance vector list 
+		
+		Example:
+			ray_tracer->ClearItems();
+			
+			delete ray_tracer;
+	
+	*/
 	void ClearItems() {
 		m_list.erase(m_list.begin(), m_list.end()); // Remove elements from vector and invalidate iterators
 	}
-	void SetCamera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) {
-		m_camera = Camera(dims, lookFrom, lookAt, viewUp, aperture, Fov);
+	/** Specify the desired perspective of the output image for the instance. 
+		Only necessary if camera object not passed through inline initialization. 
+		
+		Example: ray_tracer->SetCamera(Vector3D(10, 0, 0));
+		
+	*/
+	void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) {
+		m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
 	}
 
 	/** Initiate a ray tracer instance
@@ -55,17 +68,31 @@ public:
 	Example:
 
 		RayTracer();
+	*/
+	RayTracer();
+	/** Initiate a ray tracer instance
+
+	Example:
 
 		RayTracer(dimensions, 100);
+	*/
+	RayTracer(const SDim &dims, const int iRaysPerPixel) : m_dims(dims), m_iRaysPerPixel(iRaysPerPixel) {}
+	/** Initiate a ray tracer instance
+
+	Example:
 
 		RayTracer(dimensions, 100, cam);
 	*/
-	RayTracer();
-	RayTracer(const SDim &dims, const int iRaysPerPixel) : m_Dims(dims), m_iRaysPerPixel(iRaysPerPixel) {}
-	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera &cam) : m_Dims(dims), m_iRaysPerPixel(iRaysPerPixel), m_camera(cam) {}
+	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera &cam) : m_dims(dims), m_iRaysPerPixel(iRaysPerPixel), m_camera(cam) {}
 	~RayTracer() { ClearItems(); };
 	virtual void Render(const std::string &strFileName);
 
+	/** Return Color Vector3D if ray intersects object.
+
+		Example:
+
+			Color(ray, vectorList, 0);
+	*/
 	static Vector3D Color(const Ray &r, vList &vector, int iDepth) {
 		HitRecord temp_rec, rec;
 		bool bHitAnything = false;
@@ -93,38 +120,37 @@ public:
 			return (1.0 - dT)*Vector3D(1.0) + dT * Vector3D(0.5, 0.7, 1.0);
 		}
 	}
-	const SDim m_Dims;
-	vList m_list;
-	Camera m_camera;
-	int m_iRaysPerPixel;
+	const SDim m_dims; ///< Struct containing the dimensions of the desired output image {x, y} (in pixels)
+	vList m_list; ///< Vector list of objects to be rendered
+	Camera m_camera; ///< Camera object specifying the desired perspective of the output image
+	int m_iRaysPerPixel; ///< Number of anti-aliasing samples to take per pixel
 };
 
+/** Calculations and image output function for ray tracer instance.
+
+	Example:
+
+		ray_tracer->Render("image");
+*/
 void RayTracer::Render(const std::string &strFileName) {
 
 	#if PROGRESSBAR == 1
 	ProgressBar progressBar(dims.iY, 70);
 	#endif
 
-	/** Return Color Vector3D if ray intersects object.
-
-	Example:
-
-		Color(ray, vectorList, 0);
-	*/
-
 	double time0, time1, kilaPixels; // Initialize Performance Variables
 
 	std::ofstream ofImage(strFileName + (std::string)".ppm"); // Open Image File
 	if (ofImage.is_open()) {
-		ofImage << "P3\n" << m_Dims.iX << " " << m_Dims.iY << "\n255\n"; // PPM Header with dimensions and color index
+		ofImage << "P3\n" << m_dims.m_iX << " " << m_dims.m_iY << "\n255\n"; // PPM Header with dimensions and color index
 		time0 = omp_get_wtime(); // Start tracking performance
-		for (int j = m_Dims.iY - 1; j >= 0; j--) { // For each row of pixels (height)
-			for (int i = 0; i < m_Dims.iX; i++) { // For each pixel in row (width)
+		for (int j = m_dims.m_iY - 1; j >= 0; j--) { // For each row of pixels (height)
+			for (int i = 0; i < m_dims.m_iX; i++) { // For each pixel in row (width)
 
 				Vector3D m_col(0, 0, 0); // Initialize pixel color
 				for (int s = 0; s < m_iRaysPerPixel; s++) { // For each anti-aliasing sample
-					double u = double(i + drand48()) / double(m_Dims.iX); // Randomize location of ray within pixel (x)
-					double v = double(j + drand48()) / double(m_Dims.iY); // Randomize location of ray within pixel (y)
+					double u = double(i + drand48()) / double(m_dims.m_iX); // Randomize location of ray within pixel (x)
+					double v = double(j + drand48()) / double(m_dims.m_iY); // Randomize location of ray within pixel (y)
 					Ray m_r = m_camera.GetRay(u, v); // Create ray from randomized location
 
 					m_col += Color(m_r, m_list, 0); // Sum all anti-aliased rays
@@ -146,9 +172,9 @@ void RayTracer::Render(const std::string &strFileName) {
 			#endif
 		}
 		time1 = omp_get_wtime(); // Stop tracking performance
-		kilaPixels = (m_Dims.iX * m_Dims.iY) / (time1 - time0) / 1000; // Calculate Performance
+		kilaPixels = (m_dims.m_iX * m_dims.m_iY) / (time1 - time0) / 1000; // Calculate Performance
 		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
-		printf("%d x %d\t%d\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_Dims.iX, m_Dims.iY, m_list.size(), m_iRaysPerPixel, kilaPixels, (time1 - time0));
+		printf("%d x %d\t%d\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, kilaPixels, (time1 - time0));
 
 		ofImage.close(); // Close image file
 		#if PROGRESSBAR == 1

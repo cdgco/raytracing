@@ -7,9 +7,9 @@ var class_ray_tracer =
     [ "AddItem", "class_ray_tracer.html#aa06183ba7829e1200a1bb56da8d90cf6", null ],
     [ "ClearItems", "class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362", null ],
     [ "Render", "class_ray_tracer.html#adee1b8956b5522d79fa34a3491af9bb7", null ],
-    [ "SetCamera", "class_ray_tracer.html#ae6e92c21de2d1b15b6408ca487a95b10", null ],
+    [ "SetCamera", "class_ray_tracer.html#af204216a38d9b97561fd473140314a3e", null ],
     [ "m_camera", "class_ray_tracer.html#aac767b22c0adf5fd85e03c3130d3fea4", null ],
-    [ "m_Dims", "class_ray_tracer.html#ab84c6683edb83b506831e3db5baeba36", null ],
+    [ "m_dims", "class_ray_tracer.html#a118507c48ddd69a9c2ec208cde403ded", null ],
     [ "m_iRaysPerPixel", "class_ray_tracer.html#aa065350a257f7ce144cd792001f65d57", null ],
     [ "m_list", "class_ray_tracer.html#ae0778dc62cc58b7a50314ac81c02ba0b", null ]
 ];
