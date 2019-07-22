@@ -13,8 +13,8 @@ public:
 	*/
 	Lambertian(const Vector3D& a) : m_vAlbedo(a) {}
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const {
-		Vector3D m_vTarget = rec.m_vP + rec.m_vNormal + RandomInUnitSphere();
-		scattered = Ray(rec.m_vP, m_vTarget - rec.m_vP);
+		Vector3D vTarget = rec.m_vP + rec.m_vNormal + RandomInUnitSphere();
+		scattered = Ray(rec.m_vP, vTarget - rec.m_vP);
 		attenuation = m_vAlbedo;
 		return true;
 	}

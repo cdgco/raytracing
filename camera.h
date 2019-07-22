@@ -50,9 +50,9 @@ public:
 		    GetRay(x, y);
 	*/
 	Ray GetRay(double s, double t) {
-		Vector3D m_vRD = (m_dAperture / 2) * RandomInUnitDisk();
-		Vector3D m_vOffset = m_vU * m_vRD.x() + m_vV * m_vRD.y();
-		return Ray(m_vOrigin + m_vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - m_vOffset);
+		Vector3D vRD = (m_dAperture / 2) * RandomInUnitDisk();
+		Vector3D vOffset = m_vU * vRD.x() + m_vV * vRD.y();
+		return Ray(m_vOrigin + vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - vOffset);
 	}
 
 	/** Returns a random vector with a dot product greater than 1.0. 
@@ -62,11 +62,11 @@ public:
 		    RandomInUnitDisk();
 	*/
 	Vector3D RandomInUnitDisk() {
-		Vector3D m_vP;
+		Vector3D vP;
 		do {
-			m_vP = 2.0*Vector3D(drand48(), drand48(), 0) - Vector3D(1, 1, 0);
-		} while (m_vP.Dot(m_vP) >= 1.0);
-		return m_vP;
+			vP = 2.0*Vector3D(drand48(), drand48(), 0) - Vector3D(1, 1, 0);
+		} while (vP.Dot(vP) >= 1.0);
+		return vP;
 	}
 
 	Vector3D m_vU; ///< Vector3D distance from camera origin to target

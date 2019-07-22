@@ -76,9 +76,9 @@ Vector3D RayTracer::Color(const Ray &r, vList &vector, int iDepth) {
 */
 void RayTracer::Render(const std::string &strFileName) {
 
-#if PROGRESSBAR == 1
+	#if PROGRESSBAR == 1
 	ProgressBar progressBar(dims.iY, 70);
-#endif
+	#endif
 
 	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
 
@@ -103,10 +103,10 @@ void RayTracer::Render(const std::string &strFileName) {
 				// Convert pixel color values to 8-bit color depth (0-255) and write to file
 				ofImage << int(255.99*col[0]) << " " << int(255.99*col[1]) << " " << int(255.99*col[2]) << "\n";
 			}
-#if PROGRESSBAR == 1
+			#if PROGRESSBAR == 1
 			++progressBar;
 			progressBar.display();
-#endif
+			#endif
 		}
 		dEndTime = omp_get_wtime(); // Stop tracking performance
 		dKilaPixels = (m_dims.m_iX * m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
@@ -114,9 +114,9 @@ void RayTracer::Render(const std::string &strFileName) {
 		printf("%d x %d\t%d\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
 
 		ofImage.close(); // Close image file
-#if PROGRESSBAR == 1
+		#if PROGRESSBAR == 1
 		progressBar.done();
-#endif
+		#endif
 		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 	}
 }

@@ -16,8 +16,8 @@ public:
 		else { m_dFuzz = 1; } // If fuzz is disabled, do not alter reflection.
 	}
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const {
-		Vector3D m_vReflected = Reflect(UnitVector(r_in.Direction()), rec.m_vNormal);
-		scattered = Ray(rec.m_vP, m_vReflected + m_dFuzz * RandomInUnitSphere()); 
+		Vector3D vReflected = Reflect(UnitVector(r_in.Direction()), rec.m_vNormal);
+		scattered = Ray(rec.m_vP, vReflected + m_dFuzz * RandomInUnitSphere()); 
 		attenuation = m_vAlbedo;
 		return (scattered.Direction().Dot(rec.m_vNormal) > 0);
 	}
