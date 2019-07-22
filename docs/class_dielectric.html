@@ -87,6 +87,7 @@ $(document).ready(function(){initNavTree('class_dielectric.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_dielectric-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -112,12 +113,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a35115b364fd9e660a799d5b4bfdb7587"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dielectric.html#a35115b364fd9e660a799d5b4bfdb7587">Scatter</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r_in, const <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;attenuation, <a class="el" href="class_ray.html">Ray</a> &amp;scattered) const</td></tr>
 <tr class="separator:a35115b364fd9e660a799d5b4bfdb7587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a0883e90e42f70d07458e2de57a9c2c73"><td class="memItemLeft" align="right" valign="top"><a id="a0883e90e42f70d07458e2de57a9c2c73"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>Refract</b> (const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;v, const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;n, double NiOverNt, <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;refracted)</td></tr>
+<tr class="separator:a0883e90e42f70d07458e2de57a9c2c73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_class_material"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_material')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="class_material.html">Material</a></td></tr>
+<tr class="memitem:a61e2546b09a6c761d137910e76c60f52 inherit pub_static_methods_class_material"><td class="memItemLeft" align="right" valign="top"><a id="a61e2546b09a6c761d137910e76c60f52"></a>
+static <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Reflect</b> (const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;v, const <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;n)</td></tr>
+<tr class="separator:a61e2546b09a6c761d137910e76c60f52 inherit pub_static_methods_class_material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a714b7d7c4c2a9871183bbed2ea5ed5b6 inherit pub_static_methods_class_material"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_material.html#a714b7d7c4c2a9871183bbed2ea5ed5b6">RandomInUnitSphere</a> ()</td></tr>
+<tr class="separator:a714b7d7c4c2a9871183bbed2ea5ed5b6 inherit pub_static_methods_class_material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab73cee5d9a9f9295e68010c1db882d45"><td class="memItemLeft" align="right" valign="top"><a id="ab73cee5d9a9f9295e68010c1db882d45"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dielectric.html#ab73cee5d9a9f9295e68010c1db882d45">dRefId</a></td></tr>
-<tr class="memdesc:ab73cee5d9a9f9295e68010c1db882d45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Refractive index of <a class="el" href="class_dielectric.html">Dielectric</a>. Air = 1.0; Glass = 1.3 - 1.7; Diamond = 2.4. <br /></td></tr>
-<tr class="separator:ab73cee5d9a9f9295e68010c1db882d45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae16e57e88fe9c8f6e2364f424be1dadc"><td class="memItemLeft" align="right" valign="top"><a id="ae16e57e88fe9c8f6e2364f424be1dadc"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dielectric.html#ae16e57e88fe9c8f6e2364f424be1dadc">m_dRefId</a></td></tr>
+<tr class="memdesc:ae16e57e88fe9c8f6e2364f424be1dadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Refractive index of <a class="el" href="class_dielectric.html">Dielectric</a>. Air = 1.0; Glass = 1.3 - 1.7; Diamond = 2.4. <br /></td></tr>
+<tr class="separator:ae16e57e88fe9c8f6e2364f424be1dadc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_dielectric.html">Dielectric</a> (water, glass, diamond) refractive type <a class="el" href="class_material.html">Material</a>. </p>

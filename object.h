@@ -12,10 +12,10 @@ class Material;
 		HitRecord rec { dT, r.PointAtParameter(rec.dT), (rec.m_vP - m_vCenter) / dRadius, pmCurMat };
 */
 struct HitRecord {
-	double dT; ///< Position along ray where intersection takes place.
+	double m_dT; ///< Position along ray where intersection takes place.
 	Vector3D m_vP; ///< Vector3D location of intersection.
 	Vector3D m_vNormal; ///< Vector3D normal to point of intersection.
-	Material *pmCurMat; ///< Pointer to Material that the specified pixel should render.
+	Material *m_pmCurMat; ///< Pointer to Material that the specified pixel should render.
 };
 
 /** Renderable object which may be hit by rays */
@@ -30,4 +30,5 @@ public:
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const = 0;
 };
 
+typedef std::vector<Object*> vList;
 #endif // OBJECT_H

@@ -33,7 +33,7 @@ public:
 
 
 	*/
-	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), dAperture(aperture) {
+	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), m_dAperture(aperture) {
 
 		double dHalfHeight = tan(Fov*M_PI / 360);
 		double dHalfWidth = (dims.iX / dims.iY) * dHalfHeight;
@@ -52,7 +52,7 @@ public:
 		    GetRay(x, y);
 	*/
 	Ray GetRay(double s, double t) {
-		Vector3D m_vRD = (dAperture / 2) * RandomInUnitDisk();
+		Vector3D m_vRD = (m_dAperture / 2) * RandomInUnitDisk();
 		Vector3D m_vOffset = m_vU * m_vRD.x() + m_vV * m_vRD.y();
 		return Ray(m_vOrigin + m_vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - m_vOffset);
 	}
@@ -78,7 +78,7 @@ public:
 	Vector3D m_vHorizontal; ///< Vector3D width of grid
 	Vector3D m_vVertical; ///< Vector3D height of grid
 	Vector3D m_vOrigin; ///< Vector3D center of grid
-	double dAperture; ///< Aperture of camera lens
+	double m_dAperture; ///< Aperture of camera lens
 };
 
 #endif // CAMERA_H

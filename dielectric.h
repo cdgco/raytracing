@@ -3,17 +3,6 @@
 
 #include "material.h"
 
-bool Refract(const Vector3D &v, const Vector3D &n, double NiOverNt, Vector3D &refracted) {
-	Vector3D m_vUV = UnitVector(v);
-	double dDT = m_vUV.Dot(n);
-	double discriminant = 1.0 - (NiOverNt * NiOverNt * (1 - dDT * dDT));
-	if (discriminant > 0) {
-		refracted = NiOverNt * (m_vUV - (n * dDT)) - (n * sqrt(discriminant));
-		return true;
-	}
-	else return false;
-}
-
 /** Dielectric (water, glass, diamond) refractive type Material. */
 class Dielectric : public Material {
 public:
@@ -22,7 +11,18 @@ public:
 	Example:
 			Dielectric(1.3);
 	*/
-	Dielectric(double ri) : dRefId(ri) {}
+	Dielectric(double ri) : m_dRefId(ri) {}
+	static bool Refract(const Vector3D &v, const Vector3D &n, double NiOverNt, Vector3D &refracted) {
+		Vector3D m_vUV = UnitVector(v);
+		double dDT = m_vUV.Dot(n);
+		double discriminant = 1.0 - (NiOverNt * NiOverNt * (1 - dDT * dDT));
+		if (discriminant > 0) {
+			refracted = NiOverNt * (m_vUV - (n * dDT)) - (n * sqrt(discriminant));
+			return true;
+		}
+		else return false;
+	}
+
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const {
 		Vector3D m_vOutwardNormal, m_refracted;
 		double dNiOverNt, dReflectProb, dCosine;
@@ -30,16 +30,16 @@ public:
 		attenuation = Vector3D(1.0);
 		if (r_in.Direction().Dot(rec.m_vNormal) > 0) {
 			m_vOutwardNormal = -rec.m_vNormal;
-			dNiOverNt = dRefId;
-			dCosine = dRefId * StdDot(r_in.Direction(), rec.m_vNormal) / r_in.Direction().Length();
+			dNiOverNt = m_dRefId;
+			dCosine = m_dRefId * StdDot(r_in.Direction(), rec.m_vNormal) / r_in.Direction().Length();
 		}
 		else {
 			m_vOutwardNormal = rec.m_vNormal;
-			dNiOverNt = 1.0 / dRefId;
+			dNiOverNt = 1.0 / m_dRefId;
 			dCosine = -(r_in.Direction().Dot(rec.m_vNormal)) / r_in.Direction().Length();
 		}
 		if (Refract(r_in.Direction(), m_vOutwardNormal, dNiOverNt, m_refracted)) {
-			double d0 = (1 - dRefId) / (1 + dRefId);
+			double d0 = (1 - m_dRefId) / (1 + m_dRefId);
 			d0 = d0 * d0;
 			dReflectProb = d0 + (1 - d0)*pow((1 - dCosine), 5);
 		}
@@ -48,6 +48,6 @@ public:
 		else scattered = Ray(rec.m_vP, m_refracted);
 		return true;
 	}
-	double dRefId; ///< Refractive index of Dielectric. Air = 1.0; Glass = 1.3 - 1.7; Diamond = 2.4.
+	double m_dRefId; ///< Refractive index of Dielectric. Air = 1.0; Glass = 1.3 - 1.7; Diamond = 2.4.
 };
 #endif // DIELECTRIC_H

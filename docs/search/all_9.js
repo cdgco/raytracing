@@ -1,18 +1,12 @@
 var searchData=
 [
-  ['m_5fvalbedo',['m_vAlbedo',['../class_lambertian.html#a85ee6109887971f74021e08d46d20bd9',1,'Lambertian::m_vAlbedo()'],['../class_metal.html#af803d7f06cf86e6993a56613b4b4dee4',1,'Metal::m_vAlbedo()']]],
-  ['m_5fvbounds',['m_vBounds',['../class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00',1,'Box']]],
-  ['m_5fvcenter',['m_vCenter',['../class_sphere.html#ade29546cc2a206bbc239e676363b1184',1,'Sphere']]],
-  ['m_5fvhorizontal',['m_vHorizontal',['../class_camera.html#ac49dd13b4a8dce43d37ff0f8b4c15582',1,'Camera']]],
-  ['m_5fvlowerleftcorner',['m_vLowerLeftCorner',['../class_camera.html#afbd53e1b7cd4f3551ce09a314d3d8ca3',1,'Camera']]],
-  ['m_5fvnormal',['m_vNormal',['../struct_hit_record.html#a8790518bf3d0fb655c60392072119f86',1,'HitRecord']]],
-  ['m_5fvorigin',['m_vOrigin',['../class_camera.html#a718a86d359ad3ba387d6ac484fcd199b',1,'Camera']]],
-  ['m_5fvp',['m_vP',['../struct_hit_record.html#a65c6b7c62ca2561634b07864f07d1965',1,'HitRecord']]],
-  ['m_5fvu',['m_vU',['../class_camera.html#ad998739f5956e9814f92d830208ac334',1,'Camera']]],
-  ['m_5fvv',['m_vV',['../class_camera.html#af5278af0e59ae108fed03ed4de202864',1,'Camera']]],
-  ['m_5fvvertical',['m_vVertical',['../class_camera.html#a279cc1ce5d00b273bf772c470b6ffea6',1,'Camera']]],
-  ['m_5fvw',['m_vW',['../class_camera.html#a11d2a2f6d60478b00132e2ae318872ce',1,'Camera']]],
-  ['makeunitvector',['MakeUnitVector',['../class_vector3_d.html#a1ccb8f460798069aa3fc86b53287d69c',1,'Vector3D']]],
-  ['material',['Material',['../class_material.html',1,'']]],
-  ['metal',['Metal',['../class_metal.html',1,'Metal'],['../class_metal.html#a62a0a25fb987ea0a309954e18906bddc',1,'Metal::Metal()']]]
+  ['object',['Object',['../class_object.html',1,'']]],
+  ['operator_20_2a_3d',['operator *=',['../class_vector3_d.html#af75dcb559424735d74c87758ac1bcc9b',1,'Vector3D::operator *=(const Vector3D &amp;v2)'],['../class_vector3_d.html#a3aff2cbf012f986843f3a175bb3d5c86',1,'Vector3D::operator *=(const double t)']]],
+  ['operator_2b',['operator+',['../class_vector3_d.html#a9d2a8bc3c75c77e46bdb4d1c870e3dd0',1,'Vector3D']]],
+  ['operator_2b_3d',['operator+=',['../class_vector3_d.html#a960e441b3f3b2dd3e9b087bf1d501a52',1,'Vector3D']]],
+  ['operator_2d',['operator-',['../class_vector3_d.html#aead48e707aa7876e61ed5dc4589f8f78',1,'Vector3D']]],
+  ['operator_2d_3d',['operator-=',['../class_vector3_d.html#a9ad48e34c6f1a31704f4f0e8b62fb69f',1,'Vector3D']]],
+  ['operator_2f_3d',['operator/=',['../class_vector3_d.html#a445f80c212f2bf8f3965d27217f42836',1,'Vector3D::operator/=(const Vector3D &amp;v2)'],['../class_vector3_d.html#a660a25ad22afee2680dfdfbd6a9f5308',1,'Vector3D::operator/=(const double t)']]],
+  ['operator_5b_5d',['operator[]',['../class_vector3_d.html#afe5b7a31ea91bc3ce01d7e81a388d8ff',1,'Vector3D::operator[](int i) const'],['../class_vector3_d.html#a0a5d243fdebf58e9173277bc5008ff34',1,'Vector3D::operator[](int i)']]],
+  ['origin',['Origin',['../class_ray.html#aac8b12f03aee36a7ae639eaf68538233',1,'Ray']]]
 ];

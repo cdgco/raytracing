@@ -24,5 +24,5 @@ var class_vector3_d =
     [ "x", "class_vector3_d.html#ac86d9a556616f4c51fecbaf7d8658ce8", null ],
     [ "y", "class_vector3_d.html#a7146d35db2c1bf7606c8290282a423ec", null ],
     [ "z", "class_vector3_d.html#af4ae427e82a23af845f804106daed509", null ],
-    [ "e", "class_vector3_d.html#aae0f7b6cc177a959e2a8184ce3f3c83f", null ]
+    [ "m_dE", "class_vector3_d.html#a4fc192a4b8239cff36e6b0f88822fa69", null ]
 ];

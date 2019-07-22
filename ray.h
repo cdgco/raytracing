@@ -25,5 +25,4 @@ public:
 	Vector3D InvDir; ///< Inverted direction of Ray.
 	Vector3D UnitDirection; ///< UnitVector Vector3D of Ray Direction.
 };
-
 #endif // RAY_H
