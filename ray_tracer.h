@@ -48,7 +48,7 @@ public:
 
 		RayTracer(dimensions, 100, cam, vecList, "ray_tracer");
 	*/
-	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera cam, vList &vector, std::string strFileName) {
+	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera &cam, vList &vector, std::string &strFileName) {
 
 		#if PROGRESSBAR == 1
 		ProgressBar progressBar(dims.iY, 70);
@@ -96,7 +96,7 @@ public:
 			#if PROGRESSBAR == 1
 			progressBar.done();
 			#endif
-			//system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
+			system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 		}
 	}
 	/** Return Color Vector3D if ray intersects object.
