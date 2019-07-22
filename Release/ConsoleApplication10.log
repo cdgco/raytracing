@@ -1,3 +1,7 @@
 ﻿  main.cpp
-c:\users\hungsh\source\repos\consoleapplication10\raytracing\main.cpp(13): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'RayTracer'
-  c:\users\hungsh\source\repos\consoleapplication10\raytracing\main.cpp(13): note: No constructor could take the source type, or constructor overload resolution was ambiguous
+  Generating code
+  1 of 279 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  ConsoleApplication10.vcxproj -> C:\Users\hungsh\source\repos\ConsoleApplication10\Release\ConsoleApplication10.exe

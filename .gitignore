@@ -3,7 +3,6 @@ test.ppm
 RayTracer1.ppm
 ObjectList.h
 Debug/
-Release/
 ConsoleApplication10.vcxproj
 ConsoleApplication10.vcxproj.filters
 ConsoleApplication10.vcxproj.user
