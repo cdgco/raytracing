@@ -40,30 +40,30 @@ void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, d
 
 		Color(ray, vectorList, 0);
 */
-Vector3D RayTracer::Color(const Ray &r, vList &vector, int iDepth) {
+Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 	HitRecord temp_rec, rec;
 	bool bHitAnything = false;
 	double dClosestSoFar = DBL_MAX;
-	for (size_t i = 0; i < vector.size(); i++) {
-		if (vector[i]->Hit(r, temp_rec, 0.001, dClosestSoFar)) {
+	for (size_t i = 0; i < m_list.size(); i++) {
+		if (m_list[i]->Hit(r, temp_rec, 0.001, dClosestSoFar)) {
 			bHitAnything = true;
 			dClosestSoFar = temp_rec.m_dT;
 			rec = temp_rec;
 		}
 	}
-	if (bHitAnything == true) {
-		Ray m_scattered;
-		Vector3D m_attenuation;
-		if (iDepth < 50 && rec.m_pmCurMat->Scatter(r, rec, m_attenuation, m_scattered)) {
-			return m_attenuation * Color(m_scattered, vector, iDepth + 1);
+	if (bHitAnything) {
+		Ray rScattered;
+		Vector3D vAttenuation;
+		if (iDepth < 50 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
+			return vAttenuation * Color(rScattered, iDepth + 1);
 		}
 		else {
 			return Vector3D(0);
 		}
 	}
 	else {
-		Vector3D m_unit_direction = UnitVector(r.Direction());
-		double dT = 0.5*(m_unit_direction.y() + 1.0);
+		Vector3D vUnitDirection = UnitVector(r.Direction());
+		double dT = 0.5*(vUnitDirection.y() + 1.0);
 		return (1.0 - dT)*Vector3D(1.0) + dT * Vector3D(0.5, 0.7, 1.0);
 	}
 }
@@ -95,7 +95,7 @@ void RayTracer::Render(const std::string &strFileName) {
 					double v = double(j + drand48()) / double(m_dims.m_iY); // Randomize location of ray within pixel (y)
 					Ray m_r = m_camera.GetRay(u, v); // Create ray from randomized location
 
-					col += Color(m_r, m_list, 0); // Sum all anti-aliased rays
+					col += Color(m_r, 0); // Sum all anti-aliased rays
 				}
 				col /= double(m_iRaysPerPixel); // Get average color from all samples taken (anti-aliasing)
 				col = Vector3D(sqrt(col[0]), sqrt(col[1]), sqrt(col[2])); // Correct gamma of pixel

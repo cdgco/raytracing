@@ -88,9 +88,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
 <h3><a id="index_a"></a>- a -</h3><ul>
-<li>A
-: <a class="el" href="class_ray.html#a24cf0de5155b3de5da2f95da7ecbae0b">Ray</a>
-</li>
 <li>AddItem()
 : <a class="el" href="class_ray_tracer.html#aa06183ba7829e1200a1bb56da8d90cf6">RayTracer</a>
 </li>
@@ -98,9 +95,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 
 
 <h3><a id="index_b"></a>- b -</h3><ul>
-<li>B
-: <a class="el" href="class_ray.html#a9343f490f7df2c9604ba18fc14633f85">Ray</a>
-</li>
 <li>b()
 : <a class="el" href="class_vector3_d.html#a09e14fee7edb98ba4bcd36a852db9cbe">Vector3D</a>
 </li>
@@ -118,7 +112,7 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362">RayTracer</a>
 </li>
 <li>Color()
-: <a class="el" href="class_ray_tracer.html#a15dfcb32cbe42afbdfe1266046ae8e13">RayTracer</a>
+: <a class="el" href="class_ray_tracer.html#a3c3f043e7dd6e67ff234f7791282848a">RayTracer</a>
 </li>
 <li>Cross()
 : <a class="el" href="class_vector3_d.html#aea3a9fdfc0d832925cf15176db04d5c2">Vector3D</a>
@@ -154,13 +148,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="class_box.html#a4bd2091ead3712b2cc8ee27704d324f2">Box</a>
 , <a class="el" href="class_object.html#a2fbb0f11aeffb9d3f7943abda2791618">Object</a>
 , <a class="el" href="class_sphere.html#a87ddf107085f97a6c9827faadef8b3f4">Sphere</a>
-</li>
-</ul>
-
-
-<h3><a id="index_i"></a>- i -</h3><ul>
-<li>InvDir
-: <a class="el" href="class_ray.html#a4455bbbdae2faf7a05c9dbf1bebbf5e2">Ray</a>
 </li>
 </ul>
 
@@ -203,6 +190,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>m_iRaysPerPixel
 : <a class="el" href="class_ray_tracer.html#aa065350a257f7ce144cd792001f65d57">RayTracer</a>
 </li>
+<li>m_iSign
+: <a class="el" href="class_ray.html#a90db1d1bdf97ae414bd395192af0d058">Ray</a>
+</li>
 <li>m_iX
 : <a class="el" href="struct_s_dim.html#a3b7818230960d905e6f9c4bb4cc19d02">SDim</a>
 </li>
@@ -217,9 +207,15 @@ $(document).ready(function(){initNavTree('functions.html','');});
 , <a class="el" href="struct_hit_record.html#a038e6ab2fa0529e5ce2c504ea1acf57a">HitRecord</a>
 , <a class="el" href="class_sphere.html#a39de784614d5fde2eff137e7c236d377">Sphere</a>
 </li>
+<li>m_vA
+: <a class="el" href="class_ray.html#a484aa0cd432eb01b262705e38c438f53">Ray</a>
+</li>
 <li>m_vAlbedo
 : <a class="el" href="class_lambertian.html#a85ee6109887971f74021e08d46d20bd9">Lambertian</a>
 , <a class="el" href="class_metal.html#af803d7f06cf86e6993a56613b4b4dee4">Metal</a>
+</li>
+<li>m_vB
+: <a class="el" href="class_ray.html#a7623b738a013585c1cbd5fa3bc86a7d1">Ray</a>
 </li>
 <li>m_vBounds
 : <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">Box</a>
@@ -229,6 +225,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 </li>
 <li>m_vHorizontal
 : <a class="el" href="class_camera.html#ac49dd13b4a8dce43d37ff0f8b4c15582">Camera</a>
+</li>
+<li>m_vInvDir
+: <a class="el" href="class_ray.html#af844069a5e30a68afe21148d17ee7bb8">Ray</a>
 </li>
 <li>m_vLowerLeftCorner
 : <a class="el" href="class_camera.html#afbd53e1b7cd4f3551ce09a314d3d8ca3">Camera</a>
@@ -244,6 +243,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 </li>
 <li>m_vU
 : <a class="el" href="class_camera.html#ad998739f5956e9814f92d830208ac334">Camera</a>
+</li>
+<li>m_vUnitDirection
+: <a class="el" href="class_ray.html#aad1babd0686a74696dfe9eb716a7a4da">Ray</a>
 </li>
 <li>m_vV
 : <a class="el" href="class_camera.html#af5278af0e59ae108fed03ed4de202864">Camera</a>
@@ -312,7 +314,7 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="class_ray.html#a4d5c4b12e9375750324726bd184d4ba5">Ray</a>
 </li>
 <li>RayTracer()
-: <a class="el" href="class_ray_tracer.html#a7f59fcfc6b645680b6c5723df307e6e9">RayTracer</a>
+: <a class="el" href="class_ray_tracer.html#ad8afcdfc881d72e2199ef4b645a4ee97">RayTracer</a>
 </li>
 <li>Reflect()
 : <a class="el" href="class_material.html#a61e2546b09a6c761d137910e76c60f52">Material</a>
@@ -336,21 +338,11 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>SetCamera()
 : <a class="el" href="class_ray_tracer.html#af204216a38d9b97561fd473140314a3e">RayTracer</a>
 </li>
-<li>Sign
-: <a class="el" href="class_ray.html#aee938a14d2ad80bebbd1a488f1f75ccd">Ray</a>
-</li>
 <li>Sphere()
 : <a class="el" href="class_sphere.html#a6ce190a28872e2182a22c2161999e03c">Sphere</a>
 </li>
 <li>SquaredLength()
 : <a class="el" href="class_vector3_d.html#a6773ac987e2ab0be9ee7881c1a4470c8">Vector3D</a>
-</li>
-</ul>
-
-
-<h3><a id="index_u"></a>- u -</h3><ul>
-<li>UnitDirection
-: <a class="el" href="class_ray.html#aa08d311af8dfffc7d8e0fd63d6a2a97c">Ray</a>
 </li>
 </ul>
 

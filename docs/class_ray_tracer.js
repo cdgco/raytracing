@@ -6,7 +6,7 @@ var class_ray_tracer =
     [ "~RayTracer", "class_ray_tracer.html#ab5b30fead4f47d46be62bddb4a5283e6", null ],
     [ "AddItem", "class_ray_tracer.html#aa06183ba7829e1200a1bb56da8d90cf6", null ],
     [ "ClearItems", "class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362", null ],
-    [ "Color", "class_ray_tracer.html#a15dfcb32cbe42afbdfe1266046ae8e13", null ],
+    [ "Color", "class_ray_tracer.html#a3c3f043e7dd6e67ff234f7791282848a", null ],
     [ "Render", "class_ray_tracer.html#adee1b8956b5522d79fa34a3491af9bb7", null ],
     [ "SetCamera", "class_ray_tracer.html#af204216a38d9b97561fd473140314a3e", null ],
     [ "m_camera", "class_ray_tracer.html#aac767b22c0adf5fd85e03c3130d3fea4", null ],

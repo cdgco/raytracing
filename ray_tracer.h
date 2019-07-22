@@ -20,9 +20,7 @@
 #include "progressbar.hpp"
 #endif
 
-/**
-
-\mainpage C++ Ray Tracer
+/** \mainpage C++ Ray Tracer
 
 C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 
@@ -59,7 +57,7 @@ public:
 	virtual void AddItem(Object *object);
 	virtual void ClearItems();
 	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40);
-	virtual Vector3D Color(const Ray &r, vList &vector, int iDepth);
+	virtual Vector3D Color(const Ray &r, int iDepth);
 	virtual void Render(const std::string &strFileName);	
 	~RayTracer() { ClearItems(); };
 

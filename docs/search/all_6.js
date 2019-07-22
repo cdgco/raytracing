@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['invdir',['InvDir',['../class_ray.html#a4455bbbdae2faf7a05c9dbf1bebbf5e2',1,'Ray']]]
+  ['lambertian',['Lambertian',['../class_lambertian.html',1,'Lambertian'],['../class_lambertian.html#a18404393ce4347b7f32aeb82d115b9ba',1,'Lambertian::Lambertian()']]],
+  ['length',['Length',['../class_vector3_d.html#ab69b3409aca58559cf28207756cd5472',1,'Vector3D']]]
 ];
