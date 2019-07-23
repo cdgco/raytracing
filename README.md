@@ -11,13 +11,13 @@ To initialize a ray tracer, create a new instance: `RayTracer* tracer = new RayT
 
 †: Camera setting is optional
 
-Then, use the following format for each object in the render: `tracer->AddItem(&OBJECT)`.
+Then, set the camera parameters for the output image (only necessary if not initialized in first step): `tracer->SetCamera(...)`.
 
-Next, set the camera parameters for the output image (only necessary if not initialized in first step): `tracer->SetCamera(...)`.
+Next, use the following format for each object in the render: `tracer->AddItem(new OBJECT)`.
  
 Then, call the render function to output an image: `tracer->Render(FILENAME)`.
 
-Finally, destruct the instance: `delete tracer;`.
+Finally, destruct the instance: `delete tracer;` or `ray_tracer->ClearItems();`.
  
 Example:
 ```
@@ -25,12 +25,10 @@ Example:
 
 int main() {
 
-	RayTracer* tracer = new RayTracer({ 200, 100 }, 100);
-	
-	tracer->AddItem(&Sphere(Vector3D(0,0,0), 1, new Dielectric(1.3)));
+	RayTracer* tracer = new RayTracer({ 200, 100 });
 	tracer->SetCamera(Vector3D(10, 0, 0));
+	tracer->AddItem(&Sphere(Vector3D(0,0,0), 1, new Dielectric(1.3)));
 	tracer->Render("ImageName");
-
 	delete tracer;
 
 	return 0;
