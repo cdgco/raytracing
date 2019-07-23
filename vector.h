@@ -9,31 +9,31 @@
 #include <vector>
 
 #define drand48() ((double)rand()/RAND_MAX)
-/** 3 Paramater Vector3D object, operators and functions
-
-	object can be initialized with 0, 1, or 3 values.
+/*! 3 Paramater Vector3D object, operators and functions
+*
+*	object can be initialized with 0, 1, or 3 values.
 */
 class Vector3D {
 public:
-	/** Three value object for location or color
-
-		Example:
-
-			Vector3D zero;
+	/*! Three value object for location or color
+	*
+	*	Example:
+	*
+	*		Vector3D zero;
 	*/
 	Vector3D() {}
-	/** Three value object for location or color
-
-		Example:
-
-			Vector3D one(1) // Vector3D one(1, 1, 1);
+	/*! Three value object for location or color
+	*
+	*	Example:
+	*
+	*		Vector3D one(1) // Vector3D one(1, 1, 1);
 	*/
 	Vector3D(double e0) { m_dE[0] = e0; m_dE[1] = e0; m_dE[2] = e0; }
-	/** Three value object for location or color
-
-		Example:
-
-			Vector3D three(1, 2, 3);
+	/*! Three value object for location or color
+	*
+	*	Example:
+	*
+	*		Vector3D three(1, 2, 3);
 	*/
 	Vector3D(double e0, double e1, double e2) { m_dE[0] = e0; m_dE[1] = e1; m_dE[2] = e2; }
 	
@@ -59,7 +59,7 @@ public:
 	inline double SquaredLength() const { return m_dE[0] * m_dE[0] + m_dE[1] * m_dE[1] + m_dE[2] * m_dE[2]; } ///< Return squared length (double) of Vector3D
 	inline double Dot(const Vector3D &v2) { return m_dE[0] * v2.m_dE[0] + m_dE[1] * v2.m_dE[1] + m_dE[2] * v2.m_dE[2]; } ///< Return dot product (double) of two Vector3D
 
-	/** Return cross product (Vector3D) of two Vector3D */
+	/*! Return cross product (Vector3D) of two Vector3D */
 	inline Vector3D Cross(const Vector3D &v2) {
 		return Vector3D((m_dE[1] * v2.m_dE[2] - m_dE[2] * v2.m_dE[1]),
 			(-(m_dE[0] * v2.m_dE[2] - m_dE[2] * v2.m_dE[0])),

@@ -3,33 +3,33 @@
 
 #include "ray.h"
 
-/** Integer structure storing output image size in pixels
-	Example:
-		SDim dimensions = { width, height };
+/*! Integer structure storing output image size in pixels
+*	Example:
+*		SDim dimensions = { width, height };
 */
 struct SDim {
 	int m_iX; ///< Width in pixels
 	int m_iY; ///< Height in pixels
 };
 
-/** Perspective and ray generating functions. */
+/*! Perspective and ray generating functions. */
 class Camera {
 public:
 	Camera() {}
-	/** Sets perspective for output image.
-
-		Camera location, subject, viewport, field of view, focus and aperture can be adjusted.
-
-		Example:
-
-			Camera(dimensions, Vector3D(5,0,0));
-
-		Default values:
-
-		- lookAt: Vector3D(0);\n
-		- vertUp: Vector3D(0, 1, 0);\n
-		- aperture: (double) 0.1;\n
-		- Fov: (double) 40;\n\n
+	/*! Sets perspective for output image.
+	*
+	*	Camera location, subject, viewport, field of view, focus and aperture can be adjusted.
+	*
+	*	Example:
+	*
+	*		Camera(dimensions, Vector3D(5,0,0));
+	*
+	*	Default values:
+	*
+	*	- lookAt: Vector3D(0);\n
+	*	- vertUp: Vector3D(0, 1, 0);\n
+	*	- aperture: (double) 0.1;\n
+	*	- Fov: (double) 40;\n\n
 	*/
 	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), m_dAperture(aperture) {
 
@@ -43,11 +43,11 @@ public:
 		m_vHorizontal = 2 * dHalfWidth*dFocusDist*m_vU;
 		m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
 	}
-	/** For each pixel sample, create a ray using a given x and y value, mapped from the camera to the target.
-
-		Example:
-
-		    GetRay(x, y);
+	/*! For each pixel sample, create a ray using a given x and y value, mapped from the camera to the target.
+	*
+	*	Example:
+	*
+	*		GetRay(x, y);
 	*/
 	Ray GetRay(double s, double t) {
 		Vector3D vRD = (m_dAperture / 2) * RandomInUnitDisk();
@@ -55,11 +55,11 @@ public:
 		return Ray(m_vOrigin + vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - vOffset);
 	}
 
-	/** Returns a random vector with a dot product greater than 1.0. 
-
-		Example: 
-
-		    RandomInUnitDisk();
+	/*! Returns a random vector with a dot product greater than 1.0. 
+	*
+	*	Example: 
+	*
+	*		RandomInUnitDisk();
 	*/
 	Vector3D RandomInUnitDisk() {
 		Vector3D vP;

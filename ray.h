@@ -3,15 +3,15 @@
 
 #include "vector.h"
 
-/** Ray function. */
+/*! Ray function. */
 class Ray {
 public:
 	Ray() {}
-	/** Creates ray between two Vector3D locations.
-
-	Example:
-
-		Ray r(Vector3D(3), Vector3D(0));
+	/*! Creates ray between two Vector3D locations.
+	*
+	*	Example:
+	*
+	*		Ray r(Vector3D(3), Vector3D(0));
 	*/
 	Ray(const Vector3D &a, const Vector3D &b) { m_vA = a; m_vB = b; m_vInvDir = 1 / m_vB; m_iSign[0] = (m_vInvDir.x() < 0); m_iSign[1] = (m_vInvDir.y() < 0); m_iSign[2] = (m_vInvDir.z() < 0); m_vUnitDirection = UnitVector(m_vB); }
 

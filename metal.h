@@ -3,13 +3,13 @@
 
 #include "material.h"
 
-/** Metal reflective type Material. */
+/*! Metal reflective type Material. */
 class Metal : public Material {
 public:
 	/** Create Metal Material for Object with specified Vector3D color and fuzz value.
-
-	Example:
-			Lambertian(Vector3D(1, 0, 0), 0.9);
+	*
+	*	Example:
+	*		Lambertian(Vector3D(1, 0, 0), 0.9);
 	*/
 	Metal(const Vector3D &a, double f) : m_vAlbedo(a) {
 		if (f < 1) { m_dFuzz = f; } // Shift ray scatter by dFuzz amount to blur reflection.

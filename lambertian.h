@@ -3,13 +3,14 @@
 
 #include "material.h"
 
-/** Lambertian diffuse (matte) type Material. */
+/*! Lambertian diffuse (matte) type Material. */
 class Lambertian : public Material {
 public:
 	/** Create Lambertian Material for object with specified Vector3D color.
-
-	Example:
-			Lambertian(Vector3D(1, 0, 0));
+	*
+	*	Example:
+	*	
+	*		Lambertian(Vector3D(1, 0, 0));
 	*/
 	Lambertian(const Vector3D& a) : m_vAlbedo(a) {}
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const {

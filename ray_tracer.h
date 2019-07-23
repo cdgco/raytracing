@@ -20,37 +20,36 @@
 #include "progressbar.hpp"
 #endif
 
-/** \mainpage C++ Ray Tracer
-
-C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
-
-![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.jpg)
-
+/*! \mainpage C++ Ray Tracer
+*
+*	C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
+*
+*	![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.jpg)
 */
 
-/** Ray Tracing wrapper; intialization and calculation functions. */
+/*! Ray Tracing wrapper; intialization and calculation functions. */
 class RayTracer {
 public:
 
-	/** Initiate a ray tracer instance
-
-	Example:
-
-		RayTracer();
+	/*! Initiate a ray tracer instance
+	*
+	*	Example:
+	*
+	*		RayTracer();
 	*/
 	RayTracer();
-	/** Initiate a ray tracer instance
-
-	Example:
-
-		RayTracer(dimensions, 100);
+	/*! Initiate a ray tracer instance
+	*
+	*	Example:
+	*
+	*		RayTracer(dimensions, 100);
 	*/
 	RayTracer(const SDim &dims, const int iRaysPerPixel) : m_dims(dims), m_iRaysPerPixel(iRaysPerPixel) {}
-	/** Initiate a ray tracer instance
-
-	Example:
-
-		RayTracer(dimensions, 100, cam);
+	/*! Initiate a ray tracer instance
+	*
+	*	Example:
+	*
+	*		RayTracer(dimensions, 100, cam);
 	*/
 	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera &cam) : m_dims(dims), m_iRaysPerPixel(iRaysPerPixel), m_camera(cam) {}
 	
