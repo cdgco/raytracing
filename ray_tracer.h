@@ -60,9 +60,9 @@ public:
 	virtual void Render(const std::string &strFileName);	
 	~RayTracer() { ClearItems(); };
 
-	vList m_list; ///< Vector list of objects to be rendered
-	const SDim m_dims; ///< Struct containing the dimensions of the desired output image {x, y} (in pixels)
-	int m_iRaysPerPixel; ///< Number of anti-aliasing samples to take per pixel
-	Camera m_camera; ///< Camera object specifying the desired perspective of the output image
+	vList m_list; //!< Vector list of objects to be rendered
+	const SDim m_dims; //!< Struct containing the dimensions of the desired output image {x, y} (in pixels)
+	int m_iRaysPerPixel; //!< Number of anti-aliasing samples to take per pixel
+	Camera m_camera; //!< Camera object specifying the desired perspective of the output image
 };
 #endif // RAY_TRACER_H

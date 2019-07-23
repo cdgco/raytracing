@@ -8,8 +8,8 @@
 *		SDim dimensions = { width, height };
 */
 struct SDim {
-	int m_iX; ///< Width in pixels
-	int m_iY; ///< Height in pixels
+	int m_iX; //!< Width in pixels
+	int m_iY; //!< Height in pixels
 };
 
 /*! Perspective and ray generating functions. */
@@ -39,14 +39,14 @@ public:
 	virtual Ray GetRay(double s, double t);
 	virtual Vector3D RandomInUnitDisk();
 
-	Vector3D m_vU; ///< Vector3D distance from camera origin to target
-	Vector3D m_vV; ///< Vector3D distance adjusted for viewup
-	Vector3D m_vW; ///< Vector3D cross product of distance and viewUp
-	Vector3D m_vLowerLeftCorner; ///< Vector3D lower left corner of grid
-	Vector3D m_vHorizontal; ///< Vector3D width of grid
-	Vector3D m_vVertical; ///< Vector3D height of grid
-	Vector3D m_vOrigin; ///< Vector3D center of grid
-	double m_dAperture; ///< Aperture of camera lens
+	Vector3D m_vU; //!< Vector3D distance from camera origin to target
+	Vector3D m_vV; //!< Vector3D distance adjusted for viewup
+	Vector3D m_vW; //!< Vector3D cross product of distance and viewUp
+	Vector3D m_vLowerLeftCorner; //!< Vector3D lower left corner of grid
+	Vector3D m_vHorizontal; //!< Vector3D width of grid
+	Vector3D m_vVertical; //!< Vector3D height of grid
+	Vector3D m_vOrigin; //!< Vector3D center of grid
+	double m_dAperture; //!< Aperture of camera lens
 };
 
 #endif // CAMERA_H

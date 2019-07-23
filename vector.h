@@ -37,27 +37,27 @@ public:
 	*/
 	Vector3D(double e0, double e1, double e2) { m_dE[0] = e0; m_dE[1] = e1; m_dE[2] = e2; }
 	
-	inline double x() const { return m_dE[0]; } ///< Returns first (X) location parameter in Vector3D
-	inline double y() const { return m_dE[1]; } ///< Returns second (Y) location parameter in Vector3D
-	inline double z() const { return m_dE[2]; } ///< Returns third (Z) location parameter in Vector3D
-	inline double r() const { return m_dE[0]; } ///< Returns first (R) color parameter in Vector3D
-	inline double g() const { return m_dE[1]; } ///< Returns second (G) color parameter in Vector3D
-	inline double b() const { return m_dE[2]; } ///< Returns third (B) color parameter in Vector3D
+	inline double x() const { return m_dE[0]; } //!< Returns first (X) location parameter in Vector3D
+	inline double y() const { return m_dE[1]; } //!< Returns second (Y) location parameter in Vector3D
+	inline double z() const { return m_dE[2]; } //!< Returns third (Z) location parameter in Vector3D
+	inline double r() const { return m_dE[0]; } //!< Returns first (R) color parameter in Vector3D
+	inline double g() const { return m_dE[1]; } //!< Returns second (G) color parameter in Vector3D
+	inline double b() const { return m_dE[2]; } //!< Returns third (B) color parameter in Vector3D
 
-	inline const Vector3D &operator+() const { return *this; } ///< Add Vector3D Operator
-	inline Vector3D operator-() const { return Vector3D(-m_dE[0], -m_dE[1], -m_dE[2]); } ///< Subtract Vector3D Operator
-	inline double operator[](int i) const { return m_dE[i]; } ///< Constant Vector3D Array Operator
-	inline double &operator[](int i) { return m_dE[i]; } ///< Vector3D Array Operator
-	inline Vector3D &operator+=(const Vector3D &v2); ///< Add Assign Vector3D Operator
-	inline Vector3D &operator-=(const Vector3D &v2); ///< Subtract Assign Assign Operator
-	inline Vector3D &operator*=(const Vector3D &v2); ///< Multiply Assign Vector3D Operator
-	inline Vector3D &operator/=(const Vector3D &v2); ///< Divide Assign Vector3D Operator
-	inline Vector3D &operator*=(const double t); ///< Multiply Double Operator
-	inline Vector3D &operator/=(const double t); ///< Divide Double Operator
+	inline const Vector3D &operator+() const { return *this; } //!< Add Vector3D Operator
+	inline Vector3D operator-() const { return Vector3D(-m_dE[0], -m_dE[1], -m_dE[2]); } //!< Subtract Vector3D Operator
+	inline double operator[](int i) const { return m_dE[i]; } //!< Constant Vector3D Array Operator
+	inline double &operator[](int i) { return m_dE[i]; } //!< Vector3D Array Operator
+	inline Vector3D &operator+=(const Vector3D &v2); //!< Add Assign Vector3D Operator
+	inline Vector3D &operator-=(const Vector3D &v2); //!< Subtract Assign Assign Operator
+	inline Vector3D &operator*=(const Vector3D &v2); //!< Multiply Assign Vector3D Operator
+	inline Vector3D &operator/=(const Vector3D &v2); //!< Divide Assign Vector3D Operator
+	inline Vector3D &operator*=(const double t); //!< Multiply Double Operator
+	inline Vector3D &operator/=(const double t); //!< Divide Double Operator
 
-	inline double Length() const { return sqrt(m_dE[0] * m_dE[0] + m_dE[1] * m_dE[1] + m_dE[2] * m_dE[2]); } ///< Return length (double) of Vector3D 
-	inline double SquaredLength() const { return m_dE[0] * m_dE[0] + m_dE[1] * m_dE[1] + m_dE[2] * m_dE[2]; } ///< Return squared length (double) of Vector3D
-	inline double Dot(const Vector3D &v2) { return m_dE[0] * v2.m_dE[0] + m_dE[1] * v2.m_dE[1] + m_dE[2] * v2.m_dE[2]; } ///< Return dot product (double) of two Vector3D
+	inline double Length() const { return sqrt(m_dE[0] * m_dE[0] + m_dE[1] * m_dE[1] + m_dE[2] * m_dE[2]); } //!< Return length (double) of Vector3D 
+	inline double SquaredLength() const { return m_dE[0] * m_dE[0] + m_dE[1] * m_dE[1] + m_dE[2] * m_dE[2]; } //!< Return squared length (double) of Vector3D
+	inline double Dot(const Vector3D &v2) { return m_dE[0] * v2.m_dE[0] + m_dE[1] * v2.m_dE[1] + m_dE[2] * v2.m_dE[2]; } //!< Return dot product (double) of two Vector3D
 
 	/*! Return cross product (Vector3D) of two Vector3D */
 	inline Vector3D Cross(const Vector3D &v2) {
@@ -66,9 +66,9 @@ public:
 			(m_dE[0] * v2.m_dE[1] - m_dE[1] * v2.m_dE[0]));
 	}
 
-	inline void MakeUnitVector(); ///< Convert Vector3D into unit vector
+	inline void MakeUnitVector(); //!< Convert Vector3D into unit vector
 
-	double m_dE[3]; ///< Value array (double) for color or location parameters
+	double m_dE[3]; //!< Value array (double) for color or location parameters
 };
 
 inline std::istream &operator>>(std::istream &is, Vector3D &t) {

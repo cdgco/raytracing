@@ -12,10 +12,10 @@ class Material;
 *		HitRecord rec { dT, r.PointAtParameter(rec.dT), (rec.m_vP - m_vCenter) / dRadius, pmCurMat };
 */
 struct HitRecord {
-	double m_dT; ///< Position along ray where intersection takes place.
-	Vector3D m_vP; ///< Vector3D location of intersection.
-	Vector3D m_vNormal; ///< Vector3D normal to point of intersection.
-	Material *m_pmCurMat; ///< Pointer to Material that the specified pixel should render.
+	double m_dT; //!< Position along ray where intersection takes place.
+	Vector3D m_vP; //!< Vector3D location of intersection.
+	Vector3D m_vNormal; //!< Vector3D normal to point of intersection.
+	Material *m_pmCurMat; //!< Pointer to Material that the specified pixel should render.
 };
 
 /*! Renderable object which may be hit by rays */

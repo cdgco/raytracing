@@ -21,7 +21,7 @@ public:
 		attenuation = m_vAlbedo;
 		return (scattered.Direction().Dot(rec.m_vNormal) > 0);
 	}
-	Vector3D m_vAlbedo; ///< Vector3D attenuation of light absorbed or reflected from object.
-	double m_dFuzz; ///< 0.3 - 1.0 (double) value setting the randomness of reflections, thus blurring the metal surface.
+	Vector3D m_vAlbedo; //!< Vector3D attenuation of light absorbed or reflected from object.
+	double m_dFuzz; //!< 0.3 - 1.0 (double) value setting the randomness of reflections, thus blurring the metal surface.
 };
 #endif // METAL_H

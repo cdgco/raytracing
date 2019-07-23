@@ -19,6 +19,6 @@ public:
 		attenuation = m_vAlbedo;
 		return true;
 	}
-	Vector3D m_vAlbedo; ///< Vector3D attenuation of light absorbed or reflected from Object.
+	Vector3D m_vAlbedo; //!< Vector3D attenuation of light absorbed or reflected from Object.
 };
 #endif // LAMBERTIAN_H
