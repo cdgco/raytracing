@@ -109,9 +109,9 @@ void RayTracer::Render(const std::string &strFileName) {
 			#endif
 		}
 		dEndTime = omp_get_wtime(); // Stop tracking performance
-		dKilaPixels = (m_dims.m_iX * m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
+		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
 		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
-		printf("%d x %d\t%d\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
+		printf("%d x %d\t%I64u\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
 
 		ofImage.close(); // Close image file
 		#if PROGRESSBAR == 1
