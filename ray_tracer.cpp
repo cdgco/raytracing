@@ -1,5 +1,16 @@
 #include "ray_tracer.h"
 
+/*! Specify the desired perspective of the output image for the instance.
+*	Only necessary if camera object not passed through inline initialization.
+*
+*	Example:
+*
+*		ray_tracer->SetCamera(Vector3D(10, 0, 0));
+*
+*/
+void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
+	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
+}
 /*! Link renderable objects to ray tracer instance
 *
 *	Example:
@@ -22,18 +33,6 @@ void RayTracer::AddItem(Object* object) {
 void RayTracer::ClearItems() {
 	m_list.erase(m_list.begin(), m_list.end()); // Remove elements from vector and invalidate iterators
 }
-/*! Specify the desired perspective of the output image for the instance.
-*	Only necessary if camera object not passed through inline initialization.
-*
-*	Example:
-*
-*		ray_tracer->SetCamera(Vector3D(10, 0, 0));
-*
-*/
-void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
-	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
-}
-
 /*! Return Color Vector3D if ray intersects object.
 *
 *	Example:
