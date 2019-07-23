@@ -1,7 +1,7 @@
 var class_ray_tracer =
 [
     [ "RayTracer", "class_ray_tracer.html#a7f59fcfc6b645680b6c5723df307e6e9", null ],
-    [ "RayTracer", "class_ray_tracer.html#add3d7652cddd9b0b2bd49f6fa65da1b3", null ],
+    [ "RayTracer", "class_ray_tracer.html#a249d0cd596cc3c7fb4885d34389ffd95", null ],
     [ "RayTracer", "class_ray_tracer.html#ad8afcdfc881d72e2199ef4b645a4ee97", null ],
     [ "~RayTracer", "class_ray_tracer.html#ab5b30fead4f47d46be62bddb4a5283e6", null ],
     [ "AddItem", "class_ray_tracer.html#aa06183ba7829e1200a1bb56da8d90cf6", null ],
