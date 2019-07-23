@@ -100,9 +100,9 @@ $(document).ready(function(){initNavTree('class_camera.html','');});
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8e76a4daf385e7c7eebe1653a3f3ddc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#a8e76a4daf385e7c7eebe1653a3f3ddc7">Camera</a> (const <a class="el" href="struct_s_dim.html">SDim</a> &amp;dims, <a class="el" href="class_vector3_d.html">Vector3D</a> lookFrom, <a class="el" href="class_vector3_d.html">Vector3D</a> lookAt=<a class="el" href="class_vector3_d.html">Vector3D</a>(0), <a class="el" href="class_vector3_d.html">Vector3D</a> viewUp=<a class="el" href="class_vector3_d.html">Vector3D</a>(0, 1, 0), double aperture=0.1, double Fov=40)</td></tr>
 <tr class="separator:a8e76a4daf385e7c7eebe1653a3f3ddc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc79d24b2046136de5210185bb9e01aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_ray.html">Ray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#afc79d24b2046136de5210185bb9e01aa">GetRay</a> (double s, double t)</td></tr>
+<tr class="memitem:afc79d24b2046136de5210185bb9e01aa"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_ray.html">Ray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#afc79d24b2046136de5210185bb9e01aa">GetRay</a> (double s, double t)</td></tr>
 <tr class="separator:afc79d24b2046136de5210185bb9e01aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91415f33582b57c1c9bf43cf3219d4d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#a91415f33582b57c1c9bf43cf3219d4d9">RandomInUnitDisk</a> ()</td></tr>
+<tr class="memitem:a91415f33582b57c1c9bf43cf3219d4d9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#a91415f33582b57c1c9bf43cf3219d4d9">RandomInUnitDisk</a> ()</td></tr>
 <tr class="separator:a91415f33582b57c1c9bf43cf3219d4d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -203,19 +203,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <p>Sets perspective for output image.</p>
 <p><a class="el" href="class_camera.html">Camera</a> location, subject, viewport, field of view, focus and aperture can be adjusted.</p>
 <p>Example: </p><pre class="fragment">Camera(dimensions, Vector3D(5,0,0));
-</pre><p>Default values:</p>
-<ul>
-<li>lookAt: <a class="el" href="class_vector3_d.html">Vector3D(0)</a>;<br />
-</li>
-<li>vertUp: <a class="el" href="class_vector3_d.html">Vector3D(0, 1, 0)</a>;<br />
-</li>
-<li>aperture: (double) 0.1;<br />
-</li>
-<li>Fov: (double) 40;<br />
-<br />
-</li>
-</ul>
-
+</pre> 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -248,12 +236,13 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>For each pixel sample, create a ray using a given x and y value, mapped from the camera to the target.</p>
-<p>Example: </p><pre class="fragment">GetRay(x, y);
+<p>For each pixel sample, create a ray using a given x and y value, mapped from the camera to the target. </p><pre class="fragment">Example:
+
+    GetRay(x, y);
 </pre> 
 </div>
 </div>
@@ -275,7 +264,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -284,8 +273,9 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </pre> 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="camera_8h_source.html">camera.h</a></li>
+<li>camera.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

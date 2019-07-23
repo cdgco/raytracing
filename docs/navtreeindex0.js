@@ -23,7 +23,7 @@ var NAVTREEINDEX0 =
 "class_camera.html#afbd53e1b7cd4f3551ce09a314d3d8ca3":[1,0,1,6],
 "class_camera.html#afc79d24b2046136de5210185bb9e01aa":[1,0,1,2],
 "class_dielectric.html":[1,0,2],
-"class_dielectric.html#a35115b364fd9e660a799d5b4bfdb7587":[1,0,2,1],
+"class_dielectric.html#a04429b341f68dff811d8214cb1b24f53":[1,0,2,1],
 "class_dielectric.html#ac374becfc9c50157be7ab7c305a0d6ed":[1,0,2,0],
 "class_dielectric.html#ae16e57e88fe9c8f6e2364f424be1dadc":[1,0,2,2],
 "class_lambertian.html":[1,0,4],
