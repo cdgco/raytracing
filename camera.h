@@ -23,13 +23,6 @@ public:
 	*	Example:
 	*
 	*		Camera(dimensions, Vector3D(5,0,0));
-	*
-	*	Default values:
-	*
-	*	- lookAt: Vector3D(0);\n
-	*	- vertUp: Vector3D(0, 1, 0);\n
-	*	- aperture: (double) 0.1;\n
-	*	- Fov: (double) 40;\n\n
 	*/
 	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), m_dAperture(aperture) {
 
@@ -43,31 +36,8 @@ public:
 		m_vHorizontal = 2 * dHalfWidth*dFocusDist*m_vU;
 		m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
 	}
-	/*! For each pixel sample, create a ray using a given x and y value, mapped from the camera to the target.
-	*
-	*	Example:
-	*
-	*		GetRay(x, y);
-	*/
-	Ray GetRay(double s, double t) {
-		Vector3D vRD = (m_dAperture / 2) * RandomInUnitDisk();
-		Vector3D vOffset = m_vU * vRD.x() + m_vV * vRD.y();
-		return Ray(m_vOrigin + vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - vOffset);
-	}
-
-	/*! Returns a random vector with a dot product greater than 1.0. 
-	*
-	*	Example: 
-	*
-	*		RandomInUnitDisk();
-	*/
-	Vector3D RandomInUnitDisk() {
-		Vector3D vP;
-		do {
-			vP = 2.0*Vector3D(drand48(), drand48(), 0) - Vector3D(1, 1, 0);
-		} while (vP.Dot(vP) >= 1.0);
-		return vP;
-	}
+	virtual Ray GetRay(double s, double t);
+	virtual Vector3D RandomInUnitDisk();
 
 	Vector3D m_vU; ///< Vector3D distance from camera origin to target
 	Vector3D m_vV; ///< Vector3D distance adjusted for viewup

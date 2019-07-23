@@ -13,7 +13,14 @@ public:
 	*
 	*		Ray r(Vector3D(3), Vector3D(0));
 	*/
-	Ray(const Vector3D &a, const Vector3D &b) { m_vA = a; m_vB = b; m_vInvDir = 1 / m_vB; m_iSign[0] = (m_vInvDir.x() < 0); m_iSign[1] = (m_vInvDir.y() < 0); m_iSign[2] = (m_vInvDir.z() < 0); m_vUnitDirection = UnitVector(m_vB); }
+	Ray(const Vector3D &a, const Vector3D &b) { 
+		m_vA = a; m_vB = b; 
+		m_vInvDir = 1 / m_vB; 
+		m_iSign[0] = (m_vInvDir.x() < 0); 
+		m_iSign[1] = (m_vInvDir.y() < 0); 
+		m_iSign[2] = (m_vInvDir.z() < 0); 
+		m_vUnitDirection = UnitVector(m_vB); 
+	}
 
 	Vector3D Origin() const { return m_vA; } ///< Returns Vector3D starting location of Ray.
 	Vector3D Direction() const { return m_vB; } ///< Returns Vector3D ending location of Ray.
