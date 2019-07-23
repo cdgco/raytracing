@@ -15,7 +15,7 @@ Then, use the following format for each object in the render: `tracer->AddItem(&
 
 Next, set the camera parameters for the output image (only necessary if not initialized in first step): `tracer->SetCamera(...)`.
  
-Then, call the render functino to output an image: `tracer->Render(FILENAME)`.
+Then, call the render function to output an image: `tracer->Render(FILENAME)`.
 
 Finally, destruct the instance: `delete tracer;`.
  
