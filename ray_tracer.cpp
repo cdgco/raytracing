@@ -189,45 +189,72 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_int status = clGetPlatformIDs(1, &platform, NULL);
 	status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
 
-	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
+	typedef struct _cl_tag_Ray {
+		cl_double3 a;
+		cl_double3 b;
+	} sRay;
+
+	typedef struct _cl_tag_SDim {
+		int a;
+		int b;
+	} sSDim;
+
+	typedef struct _cl_tag_Camera {
+		cl_double3 lookFrom;
+		cl_double3 lookAt;
+		cl_double3 viewUp;
+		double aperture;
+		double Fov;
+	} sCamera;
+
+	sRay *hA = new sRay[NUM_ELEMENTS]; // Output Color
 	int *hB = new int[NUM_ELEMENTS]; // Dims X
 	int *hC = new int[NUM_ELEMENTS]; // Dims Y
-	int *hD = new int[NUM_ELEMENTS]; // Sample Size
-	Camera *hE = new Camera[NUM_ELEMENTS]; // Camera
+	double *hD = new double[NUM_ELEMENTS]; // Sample Size
+	sCamera *hE = new sCamera[NUM_ELEMENTS]; // Camera
 	double *hF = new double[NUM_ELEMENTS * 2]; // Random Numbers
 	
 	for (int i = 0; i < NUM_ELEMENTS; i++) {
-		hA[i] = { 0, 0, 0, 0 };
 		hB[i] = m_dims.m_iX;
 		hC[i] = m_dims.m_iY;
-		hD[i] = m_iRaysPerPixel;
-		hE[i] = m_camera;
+		hD[i] = (double)m_iRaysPerPixel;
+		hE[i].lookFrom.x = m_camera.m_vOrigin.x();
+		hE[i].lookFrom.y = m_camera.m_vOrigin.y();
+		hE[i].lookFrom.z = m_camera.m_vOrigin.z();
+		hE[i].lookAt.x = m_camera.m_vLookAt.x();
+		hE[i].lookAt.y = m_camera.m_vLookAt.y();
+		hE[i].lookAt.z = m_camera.m_vLookAt.z();
+		hE[i].viewUp.x = m_camera.m_vViewUp.x();
+		hE[i].viewUp.y = m_camera.m_vViewUp.y();
+		hE[i].viewUp.z = m_camera.m_vViewUp.z();
+		hE[i].aperture = m_camera.m_dAperture;
+		hE[i].Fov = m_camera.m_dFov;
 	}
 
 	for (int i = 0; i < NUM_ELEMENTS * 2; i++) {
 		hF[i] = drand48();
 	}
 	
-	size_t vectorSize = NUM_ELEMENTS * sizeof(cl_double4);
+	size_t raySize = NUM_ELEMENTS * sizeof(sRay);
 	size_t intSize = NUM_ELEMENTS * sizeof(int);
-	size_t cameraSize = NUM_ELEMENTS * sizeof(Camera);
+	size_t cameraSize = NUM_ELEMENTS * sizeof(sCamera);
 	size_t doubleSize = NUM_ELEMENTS * sizeof(double);
 
 	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
 
 	cl_command_queue cmdQueue = clCreateCommandQueue(context, device, 0, &status);
 
-	cl_mem dA = clCreateBuffer(context, CL_MEM_READ_WRITE, vectorSize, NULL, &status);
+	cl_mem dA = clCreateBuffer(context, CL_MEM_READ_WRITE, raySize, NULL, &status);
 	cl_mem dB = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
 	cl_mem dC = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
-	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
+	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
 	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_WRITE, cameraSize, NULL, &status);
 	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
 
-	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, vectorSize, hA, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, raySize, hA, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, intSize, hB, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, intSize, hC, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, intSize, hD, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, doubleSize, hD, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, cameraSize, hE, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, doubleSize, hF, 0, NULL, NULL);
 	Wait(cmdQueue);
@@ -273,6 +300,10 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 	Wait(cmdQueue);
 
+	status = clEnqueueNDRangeKernel(cmdQueue, kernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+	Wait(cmdQueue);
+
+	status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, raySize, hA, 0, NULL, NULL);
 
 	std::ofstream ofImage(strFileName + (std::string)".ppm"); // Open Image File
 	if (ofImage.is_open()) {
@@ -281,13 +312,15 @@ int RayTracer::clRender(const std::string &strFileName) {
 		for (int j = m_dims.m_iY - 1; j >= 0; j--) { // For each row of pixels (height)
 			for (int i = 0; i < m_dims.m_iX; i++) { // For each pixel in row (width)
 
-				status = clEnqueueNDRangeKernel(cmdQueue, kernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
-				Wait(cmdQueue);
+				Vector3D col(0, 0, 0); // Initialize pixel color
 
-				status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, vectorSize, hA, 0, NULL, NULL);
-
+				for (int s = 0; s < m_iRaysPerPixel; s++) { // For each anti-aliasing sample
+					col += Color(Ray(Vector3D(hA[s].a.x, hA[s].a.y, hA[s].a.z), Vector3D(hA[s].b.x, hA[s].b.y, hA[s].b.z)), 0); // Sum all anti-aliased rays
+				}
+				col /= double(m_iRaysPerPixel); // Get average color from all samples taken (anti-aliasing)
+				col = Vector3D(sqrt(col[0]), sqrt(col[1]), sqrt(col[2])); // Correct gamma of pixel
 				// Convert pixel color values to 8-bit color depth (0-255) and write to file
-				ofImage << int(255.99*hA[i].x) << " " << int(255.99*hA[i].y) << " " << int(255.99*hA[i].z) << "\n";
+				ofImage << int(255.99*col[0]) << " " << int(255.99*col[1]) << " " << int(255.99*col[2]) << "\n";
 			}
 			#if PROGRESSBAR == 1
 			++progressBar;
@@ -304,6 +337,23 @@ int RayTracer::clRender(const std::string &strFileName) {
 		progressBar.done();
 		#endif
 		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
+
+		clReleaseKernel(kernel);
+		clReleaseProgram(program);
+		clReleaseCommandQueue(cmdQueue);
+		clReleaseMemObject(dA);
+		clReleaseMemObject(dB);
+		clReleaseMemObject(dC);
+		clReleaseMemObject(dD);
+		clReleaseMemObject(dE);
+		clReleaseMemObject(dF);
+
+		delete[] hA;
+		delete[] hB;
+		delete[] hC;
+		delete[] hD;
+		delete[] hE;
+		delete[] hF;
 	}
 }
 /*! Return boolean value if box is hit by specified ray.

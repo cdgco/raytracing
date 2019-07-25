@@ -111,6 +111,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a23744cb6cbb33cb8a4c6c5c713e2496d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bd2091ead3712b2cc8ee27704d324f2"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a4bd2091ead3712b2cc8ee27704d324f2">Hit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
 <tr class="separator:a4bd2091ead3712b2cc8ee27704d324f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75d77419c2de72b4f2cc455f0efc035f"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a75d77419c2de72b4f2cc455f0efc035f">clHit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
+<tr class="separator:a75d77419c2de72b4f2cc455f0efc035f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15830e2d845b20b07ae799f4eda7b9ba"><td class="memItemLeft" align="right" valign="top"><a id="a15830e2d845b20b07ae799f4eda7b9ba"></a>
+virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>BoxNormal</b> (<a class="el" href="class_vector3_d.html">Vector3D</a> inter) const</td></tr>
+<tr class="separator:a15830e2d845b20b07ae799f4eda7b9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -122,6 +127,9 @@ Public Attributes</h2></td></tr>
 <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a> [2]</td></tr>
 <tr class="memdesc:a68f7a80fb0a734d66ed4fb6cdfa16a00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of <a class="el" href="class_vector3_d.html">Vector3D</a> bounds for box. <br /></td></tr>
 <tr class="separator:a68f7a80fb0a734d66ed4fb6cdfa16a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8be3c85fef9a912cfc238f44f1962d01"><td class="memItemLeft" align="right" valign="top"><a id="a8be3c85fef9a912cfc238f44f1962d01"></a>
+<a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_vCenter</b> = <a class="el" href="class_vector3_d.html">Vector3D</a>((<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].x() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].x()) / 2, (<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].y() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].y()) / 2, (<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].z() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].z()) / 2)</td></tr>
+<tr class="separator:a8be3c85fef9a912cfc238f44f1962d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_box.html">Box</a> creation and intersection functions </p>
@@ -171,6 +179,58 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a75d77419c2de72b4f2cc455f0efc035f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75d77419c2de72b4f2cc455f0efc035f">&#9670;&nbsp;</a></span>clHit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Box::clHit </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_ray.html">Ray</a> &amp;&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_hit_record.html">HitRecord</a> &amp;&#160;</td>
+          <td class="paramname"><em>rec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tMin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tMax</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return boolean value if box is hit by specified ray.</p>
+<p>Example: </p><pre class="fragment">Box::clHit(ray, hitrec, 0.001, DBL_MAX);
+</pre> 
+<p>Implements <a class="el" href="class_object.html">Object</a>.</p>
+
+</div>
+</div>
 <a id="a4bd2091ead3712b2cc8ee27704d324f2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4bd2091ead3712b2cc8ee27704d324f2">&#9670;&nbsp;</a></span>Hit()</h2>
 
@@ -226,6 +286,7 @@ Public Attributes</h2></td></tr>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="box_8h_source.html">box.h</a></li>
 <li>box.cpp</li>
+<li>ray_tracer.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

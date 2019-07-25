@@ -24,7 +24,7 @@ public:
 	*
 	*		Camera(dimensions, Vector3D(5,0,0));
 	*/
-	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), m_dAperture(aperture) {
+	Camera(const SDim &dims, Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40) : m_vOrigin(lookFrom), m_dAperture(aperture), m_vViewUp(viewUp), m_vLookAt(lookAt), m_dFov(Fov) {
 
 		double dHalfHeight = tan(Fov*M_PI / 360);
 		double dHalfWidth = (dims.m_iX / dims.m_iY) * dHalfHeight;
@@ -46,7 +46,10 @@ public:
 	Vector3D m_vHorizontal; //!< Vector3D width of grid
 	Vector3D m_vVertical; //!< Vector3D height of grid
 	Vector3D m_vOrigin; //!< Vector3D center of grid
+	Vector3D m_vLookAt; //!< Vector3D center of grid
+	Vector3D m_vViewUp; //!< Vector3D center of grid
 	double m_dAperture; //!< Aperture of camera lens
+	double m_dFov; //!< Aperture of camera lens
 };
 
 #endif // CAMERA_H
