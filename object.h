@@ -28,6 +28,7 @@ public:
 	*		Hit(ray, hitrec, 0.001, DBL_MAX);
 	*/
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const = 0;
+	virtual bool clHit(const Ray &r, HitRecord &rec, double tMin, double tMax) const = 0;
 };
 
 typedef std::vector<Object*> vList;

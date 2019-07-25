@@ -31,7 +31,11 @@ void RayTracer::AddItem(Object* object) {
 *
 */
 void RayTracer::ClearItems() {
-	m_list.erase(m_list.begin(), m_list.end()); // Remove elements from vector and invalidate iterators
+	vList::iterator it;
+	for (it = m_list.begin(); it != m_list.end(); ) {
+		delete * it;
+		it = m_list.erase(it);
+	}
 }
 /*! Return Color Vector3D if ray intersects object.
 *
@@ -40,6 +44,39 @@ void RayTracer::ClearItems() {
 *		Color(ray, vectorList, 0);
 */
 Vector3D RayTracer::Color(const Ray &r, int iDepth) {
+	HitRecord temp_rec, rec;
+	bool bHitAnything = false;
+	double dClosestSoFar = DBL_MAX;
+	for (size_t i = 0; i < m_list.size(); i++) {
+		if (m_list[i]->Hit(r, temp_rec, 0.001, dClosestSoFar)) {
+			bHitAnything = true;
+			dClosestSoFar = temp_rec.m_dT;
+			rec = temp_rec;
+		}
+	}
+	if (bHitAnything) {
+		Ray rScattered;
+		Vector3D vAttenuation;
+		if (iDepth < 50 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
+			return vAttenuation * Color(rScattered, iDepth + 1);
+		}
+		else {
+			return Vector3D(0);
+		}
+	}
+	else {
+		Vector3D vUnitDirection = UnitVector(r.Direction());
+		double dT = 0.5*(vUnitDirection.y() + 1.0);
+		return (1.0 - dT)*Vector3D(1.0) + dT * Vector3D(0.5, 0.7, 1.0);
+	}
+}
+/*! Return Color Vector3D if ray intersects object.
+*
+*	Example:
+*
+*		Color(ray, vectorList, 0);
+*/
+Vector3D RayTracer::clColor(const Ray &r, int iDepth) {
 	HitRecord temp_rec, rec;
 	bool bHitAnything = false;
 	double dClosestSoFar = DBL_MAX;
@@ -118,4 +155,220 @@ void RayTracer::Render(const std::string &strFileName) {
 		#endif
 		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 	}
+}
+/*! Calculations and image output function for ray tracer instance.
+*
+*	Example:
+*
+*		ray_tracer->Render("image");
+*/
+int RayTracer::clRender(const std::string &strFileName) {
+
+	#ifndef NUM_ELEMENTS
+	#define	NUM_ELEMENTS m_dims.m_iX * m_dims.m_iY * m_iRaysPerPixel
+	#endif
+
+	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
+
+	#if PROGRESSBAR == 1
+	ProgressBar progressBar(dims.iY, 70);
+	#endif
+
+	const char * CL_FILE_NAME = { "kernel.cl" };
+	void Wait(cl_command_queue);
+
+	FILE *fp;
+	errno_t err = fopen_s(&fp, CL_FILE_NAME, "rb");
+	if (err != 0) {
+		return 1;
+	}
+
+	cl_platform_id platform;
+	cl_device_id device;
+
+	cl_int status = clGetPlatformIDs(1, &platform, NULL);
+	status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
+
+	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
+	int *hB = new int[NUM_ELEMENTS]; // Dims X
+	int *hC = new int[NUM_ELEMENTS]; // Dims Y
+	int *hD = new int[NUM_ELEMENTS]; // Sample Size
+	Camera *hE = new Camera[NUM_ELEMENTS]; // Camera
+	double *hF = new double[NUM_ELEMENTS * 2]; // Random Numbers
+	
+	for (int i = 0; i < NUM_ELEMENTS; i++) {
+		hA[i] = { 0, 0, 0, 0 };
+		hB[i] = m_dims.m_iX;
+		hC[i] = m_dims.m_iY;
+		hD[i] = m_iRaysPerPixel;
+		hE[i] = m_camera;
+	}
+
+	for (int i = 0; i < NUM_ELEMENTS * 2; i++) {
+		hF[i] = drand48();
+	}
+	
+	size_t vectorSize = NUM_ELEMENTS * sizeof(cl_double4);
+	size_t intSize = NUM_ELEMENTS * sizeof(int);
+	size_t cameraSize = NUM_ELEMENTS * sizeof(Camera);
+	size_t doubleSize = NUM_ELEMENTS * sizeof(double);
+
+	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
+
+	cl_command_queue cmdQueue = clCreateCommandQueue(context, device, 0, &status);
+
+	cl_mem dA = clCreateBuffer(context, CL_MEM_READ_WRITE, vectorSize, NULL, &status);
+	cl_mem dB = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
+	cl_mem dC = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
+	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
+	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_WRITE, cameraSize, NULL, &status);
+	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
+
+	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, vectorSize, hA, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, intSize, hB, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, intSize, hC, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, intSize, hD, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, cameraSize, hE, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, doubleSize, hF, 0, NULL, NULL);
+	Wait(cmdQueue);
+
+	fseek(fp, 0, SEEK_END);
+	size_t fileSize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	char *clProgramText = new char[fileSize + 1];
+	size_t n = fread(clProgramText, 1, fileSize, fp);
+	clProgramText[fileSize] = '\0';
+	fclose(fp);
+	if (n != fileSize) {
+		fprintf(stderr, "Expected to read %d bytes read from '%s' -- actually read %d.\n", fileSize, CL_FILE_NAME, n);
+	}
+
+	char *strings[1];
+	strings[0] = clProgramText;
+	cl_program program = clCreateProgramWithSource(context, 1, (const char **)strings, NULL, &status);
+	delete[] clProgramText;
+
+	char *options = {};
+	status = clBuildProgram(program, 1, &device, options, NULL, NULL);
+	if (status != CL_SUCCESS) {
+		size_t size;
+		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, 0, NULL, &size);
+		cl_char *log = new cl_char[size];
+		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, size, log, NULL);
+		fprintf(stderr, "clBuildProgram failed:\n%s\n", log);
+		delete[] log;
+	}
+
+	cl_kernel kernel = clCreateKernel(program, "Render", &status);
+
+	status = clSetKernelArg(kernel, 0, sizeof(cl_mem), &dA);
+	status = clSetKernelArg(kernel, 1, sizeof(cl_mem), &dB);
+	status = clSetKernelArg(kernel, 2, sizeof(cl_mem), &dC);
+	status = clSetKernelArg(kernel, 3, sizeof(cl_mem), &dD);
+	status = clSetKernelArg(kernel, 4, sizeof(cl_mem), &dE);
+	status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &dF);
+
+	size_t globalWorkSize[3] = { size_t(NUM_ELEMENTS), 1, 1 };
+	size_t localWorkSize[3] = { size_t(m_iRaysPerPixel),   1, 1 };
+
+	Wait(cmdQueue);
+
+
+	std::ofstream ofImage(strFileName + (std::string)".ppm"); // Open Image File
+	if (ofImage.is_open()) {
+		ofImage << "P3\n" << m_dims.m_iX << " " << m_dims.m_iY << "\n255\n"; // PPM Header with dimensions and color index
+		dStartTime = omp_get_wtime(); // Start tracking performance
+		for (int j = m_dims.m_iY - 1; j >= 0; j--) { // For each row of pixels (height)
+			for (int i = 0; i < m_dims.m_iX; i++) { // For each pixel in row (width)
+
+				status = clEnqueueNDRangeKernel(cmdQueue, kernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+				Wait(cmdQueue);
+
+				status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, vectorSize, hA, 0, NULL, NULL);
+
+				// Convert pixel color values to 8-bit color depth (0-255) and write to file
+				ofImage << int(255.99*hA[i].x) << " " << int(255.99*hA[i].y) << " " << int(255.99*hA[i].z) << "\n";
+			}
+			#if PROGRESSBAR == 1
+			++progressBar;
+			progressBar.display();
+			#endif
+		}
+		dEndTime = omp_get_wtime(); // Stop tracking performance
+		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
+		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
+		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
+
+		ofImage.close(); // Close image file
+		#if PROGRESSBAR == 1
+		progressBar.done();
+		#endif
+		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
+	}
+}
+/*! Return boolean value if box is hit by specified ray.
+*
+*	Example:
+*
+*		Box::clHit(ray, hitrec, 0.001, DBL_MAX);
+*/
+bool Sphere::clHit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
+
+	Vector3D vOC = r.Origin() - m_vCenter;
+	double dA = r.Direction().Dot(r.Direction());
+	double dB = vOC.Dot(r.Direction());
+	double dC = vOC.Dot(vOC) - m_dRadius * m_dRadius;
+	double dDiscriminant = dB * dB - dA * dC;
+
+	if (dDiscriminant > 0) {
+		double dT = (-dB - sqrt(dDiscriminant)) / dA;
+		if (dT < tMax && dT > tMin) {
+			rec = { dT,  r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter) / m_dRadius, m_pmCurMat };
+			return true;
+		}
+		dT = (-dB + sqrt(dDiscriminant)) / dA;
+		if (dT < tMax && dT > tMin) {
+			rec = { dT,  r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter) / m_dRadius, m_pmCurMat };
+			return true;
+		}
+	}
+	return false;
+}
+
+/*! Return boolean value if box is hit by specified ray.
+*
+*	Example:
+*
+*		Box::clHit(ray, hitrec, 0.001, DBL_MAX);
+*/
+bool Box::clHit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
+	double tmin = (m_vBounds[r.m_iSign[0]].x() - r.Origin().x()) * r.m_vInvDir.x();
+	double tmax = (m_vBounds[1 - r.m_iSign[0]].x() - r.Origin().x()) * r.m_vInvDir.x();
+	double tymin = (m_vBounds[r.m_iSign[1]].y() - r.Origin().y()) * r.m_vInvDir.y();
+	double tymax = (m_vBounds[1 - r.m_iSign[1]].y() - r.Origin().y()) * r.m_vInvDir.y();
+	double tzmin = (m_vBounds[r.m_iSign[2]].z() - r.Origin().z()) * r.m_vInvDir.z();
+	double tzmax = (m_vBounds[1 - r.m_iSign[2]].z() - r.Origin().z()) * r.m_vInvDir.z();
+
+	if ((tmin > tymax) || (tymin > tmax)) return false;
+	if (tymin > tmin) tmin = tymin;
+	if (tymax < tmax) tmax = tymax;
+
+	if ((tmin > tzmax) || (tzmin > tmax)) return false;
+	if (tzmin > tmin) tmin = tzmin;
+	if (tzmax < tmax) tmax = tzmax;
+
+	double dT = tmin;
+	if (dT < 0) { dT = tmax; if (dT < 0) return false; }
+
+	//rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter), m_pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
+	rec = { dT, r.PointAtParameter(rec.m_dT), BoxNormal(r.PointAtParameter(rec.m_dT)), m_pmCurMat }; // Renders color if camera off axis and no objects behind, if on axis, renders black
+	return true;
+}
+
+void Wait(cl_command_queue queue) {
+	cl_event wait;
+	cl_int status;
+
+	status = clEnqueueMarker(queue, &wait);
+	status = clWaitForEvents(1, &wait);
 }
