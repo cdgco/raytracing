@@ -26,3 +26,21 @@ bool Sphere::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	}
 	return false;
 }
+int Sphere::clType() const {
+	return 0;
+}
+Vector3D Sphere::clCenter() const {
+	return m_vCenter;
+}
+double Sphere::clRadius() const {
+	return m_dRadius;
+}
+Vector3D Sphere::clBound1() const {
+	return Vector3D(0);
+}
+Vector3D Sphere::clBound2() const {
+	return Vector3D(0);
+}
+Material* Sphere::clMatPtr() const {
+	return m_pmCurMat;
+}

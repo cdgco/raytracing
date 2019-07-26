@@ -1,5 +1,5 @@
 #include "ray_tracer.h"
-
+#include <memory>
 /*! Specify the desired perspective of the output image for the instance.
 *	Only necessary if camera object not passed through inline initialization.
 *
@@ -113,7 +113,7 @@ Vector3D RayTracer::clColor(const Ray &r, int iDepth) {
 void RayTracer::Render(const std::string &strFileName) {
 
 	#if PROGRESSBAR == 1
-	ProgressBar progressBar(dims.iY, 70);
+	ProgressBar progressBar(m_dims.m_iY, 70);
 	#endif
 
 	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
@@ -171,7 +171,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
 
 	#if PROGRESSBAR == 1
-	ProgressBar progressBar(dims.iY, 70);
+	ProgressBar progressBar(m_dims.m_iY, 70);
 	#endif
 
 	const char * CL_FILE_NAME = { "kernel.cl" };
@@ -207,12 +207,23 @@ int RayTracer::clRender(const std::string &strFileName) {
 		double Fov;
 	} sCamera;
 
+	typedef struct _cl_tag_Object {
+		int type;
+		cl_double3 center;
+		double radius;
+		cl_double3 bound1;
+		cl_double3 bound2;
+		int *pmCurmat;
+	} sObject;
+
 	cl_double3 *hA = new cl_double3[NUM_ELEMENTS]; // Output Color
 	int *hB = new int[NUM_ELEMENTS]; // Dims X
 	int *hC = new int[NUM_ELEMENTS]; // Dims Y
 	double *hD = new double[NUM_ELEMENTS]; // Sample Size
 	sCamera *hE = new sCamera[NUM_ELEMENTS]; // Camera
 	double *hF = new double[NUM_ELEMENTS * 2]; // Random Numbers
+	sObject *hG = new sObject[NUM_ELEMENTS]; // Deconstructed Object List
+	int *hH = new int[NUM_ELEMENTS]; // Object List Size
 	
 	for (int i = 0; i < NUM_ELEMENTS; i++) {
 		hB[i] = m_dims.m_iX;
@@ -229,6 +240,22 @@ int RayTracer::clRender(const std::string &strFileName) {
 		hE[i].viewUp.z = m_camera.m_vViewUp.z();
 		hE[i].aperture = m_camera.m_dAperture;
 		hE[i].Fov = m_camera.m_dFov;
+		hH[i] = (int)m_list.size();
+	}
+
+	for (size_t i = 0; i < m_list.size(); i++) {
+		hG[i].type = m_list[i]->clType();
+		hG[i].center.x = m_list[i]->clCenter().x();
+		hG[i].center.y = m_list[i]->clCenter().y();
+		hG[i].center.z = m_list[i]->clCenter().z();
+		hG[i].radius = m_list[i]->clRadius();
+		hG[i].bound1.x = m_list[i]->clBound1().x();
+		hG[i].bound1.y = m_list[i]->clBound1().y();
+		hG[i].bound1.z = m_list[i]->clBound1().z();
+		hG[i].bound2.x = m_list[i]->clBound2().x();
+		hG[i].bound2.y = m_list[i]->clBound2().y();
+		hG[i].bound2.z = m_list[i]->clBound2().z();
+		hG[i].pmCurmat = reinterpret_cast<int *>(m_list[i]->clMatPtr());
 	}
 
 	for (int i = 0; i < NUM_ELEMENTS * 2; i++) {
@@ -239,6 +266,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	size_t intSize = NUM_ELEMENTS * sizeof(int);
 	size_t cameraSize = NUM_ELEMENTS * sizeof(sCamera);
 	size_t doubleSize = NUM_ELEMENTS * sizeof(double);
+	size_t objectSize = NUM_ELEMENTS * sizeof(sObject);
 
 	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
 
@@ -250,6 +278,8 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
 	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_ONLY, cameraSize, NULL, &status);
 	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
+	cl_mem dG = clCreateBuffer(context, CL_MEM_READ_ONLY, objectSize, NULL, &status);
+	cl_mem dH = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
 
 	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, raySize, hA, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, intSize, hB, 0, NULL, NULL);
@@ -257,6 +287,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, doubleSize, hD, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, cameraSize, hE, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, doubleSize, hF, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dG, CL_FALSE, 0, intSize, hG, 0, NULL, NULL);
 	Wait(cmdQueue);
 
 	fseek(fp, 0, SEEK_END);
@@ -294,6 +325,8 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 3, sizeof(cl_mem), &dD);
 	status = clSetKernelArg(kernel, 4, sizeof(cl_mem), &dE);
 	status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &dF);
+	status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &dG);
+	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
 
 	size_t globalWorkSize[3] = { size_t(NUM_ELEMENTS), 1, 1 };
 	size_t localWorkSize[3] = { size_t(1),   1, 1 };
@@ -340,6 +373,8 @@ int RayTracer::clRender(const std::string &strFileName) {
 		clReleaseMemObject(dD);
 		clReleaseMemObject(dE);
 		clReleaseMemObject(dF);
+		clReleaseMemObject(dG);
+		clReleaseMemObject(dH);
 
 		delete[] hA;
 		delete[] hB;
@@ -347,65 +382,9 @@ int RayTracer::clRender(const std::string &strFileName) {
 		delete[] hD;
 		delete[] hE;
 		delete[] hF;
+		delete[] hG;
+		delete[] hH;
 	}
-}
-/*! Return boolean value if box is hit by specified ray.
-*
-*	Example:
-*
-*		Box::clHit(ray, hitrec, 0.001, DBL_MAX);
-*/
-bool Sphere::clHit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
-
-	Vector3D vOC = r.Origin() - m_vCenter;
-	double dA = r.Direction().Dot(r.Direction());
-	double dB = vOC.Dot(r.Direction());
-	double dC = vOC.Dot(vOC) - m_dRadius * m_dRadius;
-	double dDiscriminant = dB * dB - dA * dC;
-
-	if (dDiscriminant > 0) {
-		double dT = (-dB - sqrt(dDiscriminant)) / dA;
-		if (dT < tMax && dT > tMin) {
-			rec = { dT,  r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter) / m_dRadius, m_pmCurMat };
-			return true;
-		}
-		dT = (-dB + sqrt(dDiscriminant)) / dA;
-		if (dT < tMax && dT > tMin) {
-			rec = { dT,  r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter) / m_dRadius, m_pmCurMat };
-			return true;
-		}
-	}
-	return false;
-}
-
-/*! Return boolean value if box is hit by specified ray.
-*
-*	Example:
-*
-*		Box::clHit(ray, hitrec, 0.001, DBL_MAX);
-*/
-bool Box::clHit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
-	double tmin = (m_vBounds[r.m_iSign[0]].x() - r.Origin().x()) * r.m_vInvDir.x();
-	double tmax = (m_vBounds[1 - r.m_iSign[0]].x() - r.Origin().x()) * r.m_vInvDir.x();
-	double tymin = (m_vBounds[r.m_iSign[1]].y() - r.Origin().y()) * r.m_vInvDir.y();
-	double tymax = (m_vBounds[1 - r.m_iSign[1]].y() - r.Origin().y()) * r.m_vInvDir.y();
-	double tzmin = (m_vBounds[r.m_iSign[2]].z() - r.Origin().z()) * r.m_vInvDir.z();
-	double tzmax = (m_vBounds[1 - r.m_iSign[2]].z() - r.Origin().z()) * r.m_vInvDir.z();
-
-	if ((tmin > tymax) || (tymin > tmax)) return false;
-	if (tymin > tmin) tmin = tymin;
-	if (tymax < tmax) tmax = tymax;
-
-	if ((tmin > tzmax) || (tzmin > tmax)) return false;
-	if (tzmin > tmin) tmin = tzmin;
-	if (tzmax < tmax) tmax = tzmax;
-
-	double dT = tmin;
-	if (dT < 0) { dT = tmax; if (dT < 0) return false; }
-
-	//rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter), m_pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
-	rec = { dT, r.PointAtParameter(rec.m_dT), BoxNormal(r.PointAtParameter(rec.m_dT)), m_pmCurMat }; // Renders color if camera off axis and no objects behind, if on axis, renders black
-	return true;
 }
 
 void Wait(cl_command_queue queue) {

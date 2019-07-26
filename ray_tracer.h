@@ -17,7 +17,7 @@
 #include "CL/cl.h"
 
 // Optional console progress bar to track render progress. Enable (1); Disable (2). Causes slight performance decrease; Disable for testing.
-#define PROGRESSBAR 0
+#define PROGRESSBAR 1
 
 #if PROGRESSBAR == 1
 #include "progressbar.hpp"

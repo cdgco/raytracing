@@ -25,9 +25,27 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	double dT = tmin;
 	if (dT < 0) { dT = tmax; if (dT < 0) return false; }
 
-	//rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter), m_pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
-	rec = { dT, r.PointAtParameter(rec.m_dT), BoxNormal(r.PointAtParameter(rec.m_dT)), m_pmCurMat }; // Renders color if camera off axis and no objects behind, if on axis, renders black
+	rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter), m_pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
+	//rec = { dT, r.PointAtParameter(rec.m_dT), BoxNormal(r.PointAtParameter(rec.m_dT)), m_pmCurMat }; // Renders color if camera off axis and no objects behind, if on axis, renders black
 	return true;
+}
+int Box::clType() const {
+	return 1;
+}
+Vector3D Box::clCenter() const {
+	return m_vCenter;
+}
+double Box::clRadius() const {
+	return 0;
+}
+Vector3D Box::clBound1() const {
+	return m_vBounds[0];
+}
+Vector3D Box::clBound2() const {
+	return m_vBounds[1];
+}
+Material* Box::clMatPtr() const {
+	return m_pmCurMat;
 }
 Vector3D Box::BoxNormal(Vector3D inter) const {
 	static const Vector3D normals[] = {
