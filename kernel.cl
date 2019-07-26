@@ -73,6 +73,7 @@ bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax)
 		return false;
 	}
 	else if (x.type == 1) {
+
 		double3 bounds[2];
 		bounds[0] = x.m_vBound1;
 		bounds[1] = x.m_vBound2;
