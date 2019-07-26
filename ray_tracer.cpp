@@ -165,7 +165,7 @@ void RayTracer::Render(const std::string &strFileName) {
 int RayTracer::clRender(const std::string &strFileName) {
 
 	#ifndef NUM_ELEMENTS
-	#define	NUM_ELEMENTS m_dims.m_iX * m_dims.m_iY * m_iRaysPerPixel
+	#define	NUM_ELEMENTS m_dims.m_iX * m_dims.m_iY
 	#endif
 
 	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
@@ -207,7 +207,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		double Fov;
 	} sCamera;
 
-	sRay *hA = new sRay[NUM_ELEMENTS]; // Output Color
+	cl_double3 *hA = new cl_double3[NUM_ELEMENTS]; // Output Color
 	int *hB = new int[NUM_ELEMENTS]; // Dims X
 	int *hC = new int[NUM_ELEMENTS]; // Dims Y
 	double *hD = new double[NUM_ELEMENTS]; // Sample Size
@@ -235,7 +235,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		hF[i] = drand48();
 	}
 	
-	size_t raySize = NUM_ELEMENTS * sizeof(sRay);
+	size_t raySize = NUM_ELEMENTS * sizeof(cl_double3);
 	size_t intSize = NUM_ELEMENTS * sizeof(int);
 	size_t cameraSize = NUM_ELEMENTS * sizeof(sCamera);
 	size_t doubleSize = NUM_ELEMENTS * sizeof(double);
@@ -244,11 +244,11 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 	cl_command_queue cmdQueue = clCreateCommandQueue(context, device, 0, &status);
 
-	cl_mem dA = clCreateBuffer(context, CL_MEM_READ_WRITE, raySize, NULL, &status);
+	cl_mem dA = clCreateBuffer(context, CL_MEM_WRITE_ONLY, raySize, NULL, &status);
 	cl_mem dB = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
 	cl_mem dC = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
 	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
-	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_WRITE, cameraSize, NULL, &status);
+	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_ONLY, cameraSize, NULL, &status);
 	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
 
 	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, raySize, hA, 0, NULL, NULL);
@@ -296,31 +296,24 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &dF);
 
 	size_t globalWorkSize[3] = { size_t(NUM_ELEMENTS), 1, 1 };
-	size_t localWorkSize[3] = { size_t(m_iRaysPerPixel),   1, 1 };
+	size_t localWorkSize[3] = { size_t(1),   1, 1 };
 
 	Wait(cmdQueue);
-
-	status = clEnqueueNDRangeKernel(cmdQueue, kernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
-	Wait(cmdQueue);
-
-	status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, raySize, hA, 0, NULL, NULL);
 
 	std::ofstream ofImage(strFileName + (std::string)".ppm"); // Open Image File
 	if (ofImage.is_open()) {
 		ofImage << "P3\n" << m_dims.m_iX << " " << m_dims.m_iY << "\n255\n"; // PPM Header with dimensions and color index
 		dStartTime = omp_get_wtime(); // Start tracking performance
+		status = clEnqueueNDRangeKernel(cmdQueue, kernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+		Wait(cmdQueue);
+
+		status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, raySize, hA, 0, NULL, NULL);
+		int pixelcount = 0;
 		for (int j = m_dims.m_iY - 1; j >= 0; j--) { // For each row of pixels (height)
 			for (int i = 0; i < m_dims.m_iX; i++) { // For each pixel in row (width)
 
-				Vector3D col(0, 0, 0); // Initialize pixel color
-
-				for (int s = 0; s < m_iRaysPerPixel; s++) { // For each anti-aliasing sample
-					col += Color(Ray(Vector3D(hA[s].a.x, hA[s].a.y, hA[s].a.z), Vector3D(hA[s].b.x, hA[s].b.y, hA[s].b.z)), 0); // Sum all anti-aliased rays
-				}
-				col /= double(m_iRaysPerPixel); // Get average color from all samples taken (anti-aliasing)
-				col = Vector3D(sqrt(col[0]), sqrt(col[1]), sqrt(col[2])); // Correct gamma of pixel
-				// Convert pixel color values to 8-bit color depth (0-255) and write to file
-				ofImage << int(255.99*col[0]) << " " << int(255.99*col[1]) << " " << int(255.99*col[2]) << "\n";
+				ofImage << int(255.99*hA[pixelcount].x) << " " << int(255.99*hA[pixelcount].y) << " " << int(255.99*hA[pixelcount].z) << "\n";
+				pixelcount++;
 			}
 			#if PROGRESSBAR == 1
 			++progressBar;
