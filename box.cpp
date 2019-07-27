@@ -63,3 +63,199 @@ Vector3D Box::BoxNormal(Vector3D inter) const {
 	}
 	return normals[coef] * sign * interRelative;
 }
+Vector3D Box::NormalCalc(const Vector3D vP) const {
+	// Intersects within front face
+	if (vP.x() > m_vCenter.x() && (vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x())) {
+		// Falls on top or bottom edge
+		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
+			// Falls on top edge
+			if (vP.y() > m_vCenter.y()) {
+				
+			}
+			// Falls on bottom edge
+			else if (vP.y() < m_vCenter.y()) {
+				
+			}
+		}
+		// Falls on left or right edge
+		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
+			// Falls on right edge
+			if (vP.z() < m_vCenter.x()) {
+				
+			}
+			// Falls on left edge
+			else if (vP.z() > m_vCenter.z()) {
+				
+			}
+		}
+		// Top left corner
+		else if (vP.z() == m_vBounds[1].z() && vP.y() == m_vBounds[1].y()) {
+			
+		}
+		// Bottom left corner
+		else if (vP.z() == m_vBounds[0].z() && vP.y() == m_vBounds[1].y()) {
+			
+		}
+		// Top right corner
+		else if (vP.z() == m_vBounds[1].z() && vP.y() == m_vBounds[0].y()) {
+			
+		}
+		// Bottom right corner
+		else if (vP.z() == m_vBounds[0].z() && vP.y() == m_vBounds[0].y()) {
+			
+		}
+		// Falls within center of face
+		else { return Vector3D(vP.x(), 0, 0); }
+	}
+	// Intersects within back face
+	else if (vP.x() < m_vCenter.x() && (vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x())) {
+		// Falls on top or bottom edge
+		if ((vP.y() == m_vBounds[0 ].y() || vP.y() == m_vBounds[1].y()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
+			// Falls on top edge
+			if (vP.y() > m_vCenter.y()) {
+				
+			}
+			// Falls on bottom edge
+			else if (vP.y() < m_vCenter.y()) {
+				
+			}
+		}
+		// Falls on left or right edge
+		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
+			// Falls on right edge
+			if (vP.z() < m_vCenter.z()) {
+				
+			}
+			// Falls on left edge
+			else if (vP.z() > m_vCenter.z()) {
+				
+			}
+		}
+		// Top left corner
+		else if (vP.x() == m_vBounds[1].x() && vP.y() == m_vBounds[1].y()) {
+			
+		}
+		// Bottom left corner
+		else if (vP.x() == m_vBounds[0].x() && vP.y() == m_vBounds[1].y()) {
+			
+		}
+		// Top right corner
+		else if (vP.x() == m_vBounds[1].x() && vP.y() == m_vBounds[0].y()) {
+			
+		}
+		// Bottom right corner
+		else if (vP.x() == m_vBounds[0].x() && vP.y() == m_vBounds[0].y()) {
+			
+		}
+		// Falls within center of face
+		else { return Vector3D(vP.x(), 0, 0); }
+	}
+	// Intersects within left face
+	else if (vP.z() > m_vCenter.z() && (vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z())) {
+		// Falls on top or bottom edge
+		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
+			// Falls on top edge
+			if (vP.y() > m_vCenter.y()) {
+				
+			}
+			// Falls on bottom edge
+			else if (vP.y() < m_vCenter.y()) {
+				
+			}
+		}
+		// Falls on left or right edge
+		else if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
+			// Falls on right edge
+			if (vP.x() > m_vCenter.x()) {
+				
+			}
+			// Falls on left edge
+			else if (vP.x() < m_vCenter.x()) {
+				
+			}
+		}
+		// Falls within center of face
+		else { return Vector3D(0, 0, vP.z()); }
+	}
+	// Intersects within right face
+	else if (vP.z() < m_vCenter.z() && (vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z())) {
+	// Falls on top or bottom edge
+		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
+			// Falls on top edge
+			if (vP.y() > m_vCenter.y()) {
+				
+			}
+			// Falls on bottom edge
+			else if (vP.y() < m_vCenter.y()) {
+				
+			}
+		}
+		// Falls on left or right edge
+		else if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
+			// Falls on right edge
+			if (vP.x() < m_vCenter.x()) {
+				
+			}
+			// Falls on left edge
+			else if (vP.x() > m_vCenter.x()) {
+				
+			}
+		}
+		// Falls within center of face
+		else { return Vector3D(0, 0, vP.z()); }
+	}
+	// Intersects within top face
+	else if (vP.y() > m_vCenter.y() && (vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y())) {
+	// Falls on top or bottom edge
+		if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
+			// Falls on top edge
+			if (vP.x() < m_vCenter.x()) {
+				
+			}
+			// Falls on bottom edge
+			else if (vP.x() > m_vCenter.x()) {
+				
+			}
+		}
+		// Falls on left or right edge
+		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
+			// Falls on right edge
+			if (vP.z() < m_vCenter.z()) {
+				
+			}
+			// Falls on left edge
+			else if (vP.z() > m_vCenter.z()) {
+				
+			}
+		}
+		// Falls within center of face
+		else { return Vector3D(0, vP.y(), 0); }
+	}
+	// Intersects within bottom face
+	else if (vP.y() < m_vCenter.y() && (vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y())) {
+	// Falls on top or bottom edge
+		if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
+			// Falls on top edge
+			if (vP.x() > m_vCenter.x()) {
+				
+			}
+			// Falls on bottom edge
+			else if (vP.x() < m_vCenter.x()) {
+				
+			}
+		}
+		// Falls on left or right edge
+		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
+			// Falls on right edge
+			if (vP.z() < m_vCenter.z()) {
+
+			}
+			// Falls on left edge
+			else if (vP.z() > m_vCenter.z()) {
+
+		}
+		// Falls within center of face
+		else { return Vector3D(0, vP.y(), 0); }
+	}
+
+}
