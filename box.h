@@ -21,7 +21,6 @@ public:
 	virtual Vector3D clBound1() const;
 	virtual Vector3D clBound2() const;
 	virtual Material* clMatPtr() const;
-	virtual Vector3D BoxNormal(Vector3D inter) const;
 	virtual Vector3D NormalCalc(const Vector3D inter) const;
 	Material *m_pmCurMat; //!< Pointer to Material that the box should render.
 	Vector3D m_vBounds[2]; //!< Array of Vector3D bounds for box

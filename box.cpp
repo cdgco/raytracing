@@ -25,8 +25,7 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	double dT = tmin;
 	if (dT < 0) { dT = tmax; if (dT < 0) return false; }
 
-	rec = { dT, r.PointAtParameter(dT), (r.PointAtParameter(dT) - m_vCenter), m_pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
-	//rec = { dT, r.PointAtParameter(rec.m_dT), BoxNormal(r.PointAtParameter(rec.m_dT)), m_pmCurMat }; // Renders color if camera off axis and no objects behind, if on axis, renders black
+	rec = { dT, r.PointAtParameter(dT), NormalCalc(r.PointAtParameter(rec.m_dT)), m_pmCurMat };
 	return true;
 }
 int Box::clType() const {
@@ -47,22 +46,6 @@ Vector3D Box::clBound2() const {
 Material* Box::clMatPtr() const {
 	return m_pmCurMat;
 }
-Vector3D Box::BoxNormal(Vector3D inter) const {
-	static const Vector3D normals[] = {
-		Vector3D(1,0,0),
-		Vector3D(0,1,0),
-		Vector3D(0,0,1)
-	};
-	const Vector3D interRelative = inter - m_vCenter;
-	const double xyCoef = interRelative.y() / interRelative.x();
-	const double zyCoef = interRelative.y() / interRelative.z();
-	int sign = 1;
-	const int coef = ((xyCoef <= 1 && xyCoef >= -1) ? 1 : ((zyCoef < 1 && zyCoef > -1) ? 2 : 0));
-	if (interRelative.x() < 0 || interRelative.y() < 0 || interRelative.z() < 0) {
-		sign = -1;
-	}
-	return normals[coef] * sign * interRelative;
-}
 Vector3D Box::NormalCalc(const Vector3D vP) const {
 	// Intersects within front face
 	if (vP.x() > m_vCenter.x() && (vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x())) {
@@ -70,85 +53,85 @@ Vector3D Box::NormalCalc(const Vector3D vP) const {
 		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
 			// Falls on top edge
 			if (vP.y() > m_vCenter.y()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 			// Falls on bottom edge
 			else if (vP.y() < m_vCenter.y()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 		}
 		// Falls on left or right edge
 		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
 			// Falls on right edge
 			if (vP.z() < m_vCenter.x()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 			// Falls on left edge
 			else if (vP.z() > m_vCenter.z()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 		}
 		// Top left corner
 		else if (vP.z() == m_vBounds[1].z() && vP.y() == m_vBounds[1].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Bottom left corner
 		else if (vP.z() == m_vBounds[0].z() && vP.y() == m_vBounds[1].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Top right corner
 		else if (vP.z() == m_vBounds[1].z() && vP.y() == m_vBounds[0].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Bottom right corner
 		else if (vP.z() == m_vBounds[0].z() && vP.y() == m_vBounds[0].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Falls within center of face
-		else { return Vector3D(vP.x(), 0, 0); }
+		else { return Vector3D(1, 0, 0) * vP; }
 	}
 	// Intersects within back face
 	else if (vP.x() < m_vCenter.x() && (vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x())) {
 		// Falls on top or bottom edge
-		if ((vP.y() == m_vBounds[0 ].y() || vP.y() == m_vBounds[1].y()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
+		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
 			// Falls on top edge
 			if (vP.y() > m_vCenter.y()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 			// Falls on bottom edge
 			else if (vP.y() < m_vCenter.y()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 		}
 		// Falls on left or right edge
 		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
 			// Falls on right edge
 			if (vP.z() < m_vCenter.z()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 			// Falls on left edge
 			else if (vP.z() > m_vCenter.z()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 		}
 		// Top left corner
 		else if (vP.x() == m_vBounds[1].x() && vP.y() == m_vBounds[1].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Bottom left corner
 		else if (vP.x() == m_vBounds[0].x() && vP.y() == m_vBounds[1].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Top right corner
 		else if (vP.x() == m_vBounds[1].x() && vP.y() == m_vBounds[0].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Bottom right corner
 		else if (vP.x() == m_vBounds[0].x() && vP.y() == m_vBounds[0].y()) {
-			
+			return Vector3D(1, 1, 1) * vP;
 		}
 		// Falls within center of face
-		else { return Vector3D(vP.x(), 0, 0); }
+		else { return Vector3D(-1, 0, 0) * vP; }
 	}
 	// Intersects within left face
 	else if (vP.z() > m_vCenter.z() && (vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z())) {
@@ -156,106 +139,110 @@ Vector3D Box::NormalCalc(const Vector3D vP) const {
 		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
 			// Falls on top edge
 			if (vP.y() > m_vCenter.y()) {
-				
+				return Vector3D(0, 1, 1) * vP;
 			}
 			// Falls on bottom edge
 			else if (vP.y() < m_vCenter.y()) {
-				
+				return Vector3D(0, 1, 1) * vP;
 			}
 		}
 		// Falls on left or right edge
 		else if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
 			// Falls on right edge
 			if (vP.x() > m_vCenter.x()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 			// Falls on left edge
 			else if (vP.x() < m_vCenter.x()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 		}
 		// Falls within center of face
-		else { return Vector3D(0, 0, vP.z()); }
+		else { return Vector3D(0, 0, 1) * vP; }
 	}
 	// Intersects within right face
 	else if (vP.z() < m_vCenter.z() && (vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z())) {
-	// Falls on top or bottom edge
+		// Falls on top or bottom edge
 		if ((vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
 			// Falls on top edge
 			if (vP.y() > m_vCenter.y()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 			// Falls on bottom edge
 			else if (vP.y() < m_vCenter.y()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 		}
 		// Falls on left or right edge
 		else if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.y() != m_vBounds[0].y() && vP.y() != m_vBounds[1].y())) {
 			// Falls on right edge
 			if (vP.x() < m_vCenter.x()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 			// Falls on left edge
 			else if (vP.x() > m_vCenter.x()) {
-				
+				return Vector3D(1, 0, 1) * vP;
 			}
 		}
 		// Falls within center of face
-		else { return Vector3D(0, 0, vP.z()); }
+		else { return Vector3D(0, 0, -1) * vP; }
 	}
 	// Intersects within top face
 	else if (vP.y() > m_vCenter.y() && (vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y())) {
-	// Falls on top or bottom edge
+		// Falls on top or bottom edge
 		if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
 			// Falls on top edge
 			if (vP.x() < m_vCenter.x()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 			// Falls on bottom edge
 			else if (vP.x() > m_vCenter.x()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 		}
 		// Falls on left or right edge
 		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
 			// Falls on right edge
 			if (vP.z() < m_vCenter.z()) {
-				
+				return Vector3D(0, 1, 1) * vP;
 			}
 			// Falls on left edge
 			else if (vP.z() > m_vCenter.z()) {
-				
+				return Vector3D(0, 1, 1) * vP;
 			}
 		}
 		// Falls within center of face
-		else { return Vector3D(0, vP.y(), 0); }
+		else { return Vector3D(0, 1, 0) * vP; }
 	}
 	// Intersects within bottom face
 	else if (vP.y() < m_vCenter.y() && (vP.y() == m_vBounds[0].y() || vP.y() == m_vBounds[1].y())) {
-	// Falls on top or bottom edge
+		// Falls on top or bottom edge
 		if ((vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x()) && (vP.z() != m_vBounds[0].z() && vP.z() != m_vBounds[1].z())) {
 			// Falls on top edge
 			if (vP.x() > m_vCenter.x()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 			// Falls on bottom edge
 			else if (vP.x() < m_vCenter.x()) {
-				
+				return Vector3D(1, 1, 0) * vP;
 			}
 		}
 		// Falls on left or right edge
 		else if ((vP.z() == m_vBounds[0].z() || vP.z() == m_vBounds[1].z()) && (vP.x() != m_vBounds[0].x() && vP.x() != m_vBounds[1].x())) {
 			// Falls on right edge
 			if (vP.z() < m_vCenter.z()) {
-
+				return Vector3D(1, 0, 1) * vP;
 			}
 			// Falls on left edge
 			else if (vP.z() > m_vCenter.z()) {
-
+				return Vector3D(1, 0, 1) * vP;
+			}
+			// Falls within center of face
+			else { return Vector3D(0, -1, 0) * vP; }
 		}
-		// Falls within center of face
-		else { return Vector3D(0, vP.y(), 0); }
-	}
 
+	}
+	else {
+		// Ray outside of bounds
+	}
 }

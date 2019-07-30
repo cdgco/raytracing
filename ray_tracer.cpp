@@ -9,6 +9,7 @@
 *
 */
 void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
+	if (lookFrom.y() == 0) { lookFrom.m_dE[1] = 0.00000001; }
 	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
 }
 /*! Link renderable objects to ray tracer instance
@@ -145,14 +146,14 @@ void RayTracer::Render(const std::string &strFileName) {
 			#endif
 		}
 		dEndTime = omp_get_wtime(); // Stop tracking performance
-		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
-		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
-		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
 
 		ofImage.close(); // Close image file
 		#if PROGRESSBAR == 1
 		progressBar.done();
 		#endif
+		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
+		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
+		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
 		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 	}
 }
@@ -169,10 +170,6 @@ int RayTracer::clRender(const std::string &strFileName) {
 	#endif
 
 	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
-
-	#if PROGRESSBAR == 1
-	ProgressBar progressBar(m_dims.m_iY, 70);
-	#endif
 
 	const char * CL_FILE_NAME = { "kernel.cl" };
 	void Wait(cl_command_queue);
@@ -216,7 +213,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		int *pmCurmat;
 	} sObject;
 
-	cl_double3 *hA = new cl_double3[NUM_ELEMENTS]; // Output Color
+	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
 	int *hB = new int[NUM_ELEMENTS]; // Dims X
 	int *hC = new int[NUM_ELEMENTS]; // Dims Y
 	double *hD = new double[NUM_ELEMENTS]; // Sample Size
@@ -262,7 +259,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		hF[i] = drand48();
 	}
 	
-	size_t raySize = NUM_ELEMENTS * sizeof(cl_double3);
+	size_t raySize = NUM_ELEMENTS * sizeof(cl_double4);
 	size_t intSize = NUM_ELEMENTS * sizeof(int);
 	size_t cameraSize = NUM_ELEMENTS * sizeof(sCamera);
 	size_t doubleSize = NUM_ELEMENTS * sizeof(double);
@@ -328,8 +325,8 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &dG);
 	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
 
-	size_t globalWorkSize[3] = { size_t(NUM_ELEMENTS), 1, 1 };
-	size_t localWorkSize[3] = { size_t(1),   1, 1 };
+	size_t globalWorkSize[1] = { size_t(NUM_ELEMENTS) };
+	size_t localWorkSize[1] = { size_t(m_iRaysPerPixel) };
 
 	Wait(cmdQueue);
 
@@ -341,27 +338,19 @@ int RayTracer::clRender(const std::string &strFileName) {
 		Wait(cmdQueue);
 
 		status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, raySize, hA, 0, NULL, NULL);
-		int pixelcount = 0;
-		for (int j = m_dims.m_iY - 1; j >= 0; j--) { // For each row of pixels (height)
-			for (int i = 0; i < m_dims.m_iX; i++) { // For each pixel in row (width)
 
-				ofImage << int(255.99*hA[pixelcount].x) << " " << int(255.99*hA[pixelcount].y) << " " << int(255.99*hA[pixelcount].z) << "\n";
-				pixelcount++;
-			}
-			#if PROGRESSBAR == 1
-			++progressBar;
-			progressBar.display();
-			#endif
+		for (int i = 0; i < NUM_ELEMENTS; i++) {
+			ofImage << int(255.99*hA[i].x) << " " << int(255.99*hA[i].y) << " " << int(255.99*hA[i].z) << "\n";
+			printf("Pixel: %d\t Vector3D(%lf, %lf, %lf)\tRGB(%d, %d, %d)\n", int(hA[i].w), hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
 		}
+		
 		dEndTime = omp_get_wtime(); // Stop tracking performance
-		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
-		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
-		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
 
 		ofImage.close(); // Close image file
-		#if PROGRESSBAR == 1
-		progressBar.done();
-		#endif
+
+		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
+		printf("\nDimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
+		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
 		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 
 		clReleaseKernel(kernel);
