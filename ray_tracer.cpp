@@ -326,7 +326,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
 
 	size_t globalWorkSize[1] = { size_t(NUM_ELEMENTS) };
-	size_t localWorkSize[1] = { size_t(m_iRaysPerPixel) };
+	size_t localWorkSize[1] = { size_t(1) };
 
 	Wait(cmdQueue);
 
@@ -339,21 +339,24 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 		status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, raySize, hA, 0, NULL, NULL);
 
-		for (int i = 0; i < NUM_ELEMENTS; i++) {
-			ofImage << int(255.99*hA[i].x) << " " << int(255.99*hA[i].y) << " " << int(255.99*hA[i].z) << "\n";
-			if (i < 51) {
-				printf("Pixel: %d\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", int(hA[i].w) + 1, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-			}
+		// PRINTS IMAGE VERTICALLY MIRRORED
+		for (int i = NUM_ELEMENTS - 1; i >= 0; i--) {
+
+			double ix = 1 + (i / m_dims.m_iX);
+			int curY = floor(ix);
+			int curX = m_dims.m_iX - (i - ((curY - 1) * m_dims.m_iX)) - 1;
+
+			int curInt = ((curY - 1) * m_dims.m_iX) + curX;
+			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
+
 		}
-		
+
 		dEndTime = omp_get_wtime(); // Stop tracking performance
 
 		ofImage.close(); // Close image file
 
-		for (int i = 0; i < 51; i++) {
-			if (i < 51) {
-				printf("Pixel: %d\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", int(hA[i].w) + 1, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-			}
+		for (int i = 0; i < 50; i++) {
+			printf("Pixel: %d\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", int(hA[i].w) + 1, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
 		}
 
 		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
