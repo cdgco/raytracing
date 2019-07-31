@@ -341,12 +341,20 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 		for (int i = 0; i < NUM_ELEMENTS; i++) {
 			ofImage << int(255.99*hA[i].x) << " " << int(255.99*hA[i].y) << " " << int(255.99*hA[i].z) << "\n";
-			printf("Pixel: %d\t Vector3D(%lf, %lf, %lf)\tRGB(%d, %d, %d)\n", int(hA[i].w), hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
+			if (i < 51) {
+				printf("Pixel: %d\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", int(hA[i].w) + 1, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
+			}
 		}
 		
 		dEndTime = omp_get_wtime(); // Stop tracking performance
 
 		ofImage.close(); // Close image file
+
+		for (int i = 0; i < 51; i++) {
+			if (i < 51) {
+				printf("Pixel: %d\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", int(hA[i].w) + 1, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
+			}
+		}
 
 		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
 		printf("\nDimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
