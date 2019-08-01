@@ -58,6 +58,13 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 			rec = temp_rec;
 		}
 	}
+
+	if (bHitAnything) {
+		//double3 target = (double3)((double3)rec.m_vP + (double3)rec.m_vNormal + (double3)random);
+		//return 0.5*(double3)(Color((Ray) {rec.m_vP, target - rec.m_vP}, x, ObjLen, random));
+		return 0.5*Vector3D(rec.m_vNormal.x() + 1, rec.m_vNormal.y() + 1, rec.m_vNormal.z() + 1);
+	}
+	/*
 	if (bHitAnything) {
 		Ray rScattered;
 		Vector3D vAttenuation;
@@ -67,7 +74,7 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 		else {
 			return Vector3D(0);
 		}
-	}
+	}*/
 	else {
 		Vector3D vUnitDirection = UnitVector(r.Direction());
 		double dT = 0.5*(vUnitDirection.y() + 1.0);

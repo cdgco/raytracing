@@ -4,7 +4,6 @@
 #include "ray.h"
 
 class Material;
-class clMaterial;
 
 /*! Structure to store values when ray hits object.
 *

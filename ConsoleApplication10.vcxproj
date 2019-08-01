@@ -194,7 +194,6 @@
     </ClCompile>
     <ClCompile Include="ray_tracer.cpp" />
     <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="testing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="kernel.cl" />
