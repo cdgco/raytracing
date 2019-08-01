@@ -15,7 +15,7 @@ public:
 	*/
 	Box(Vector3D bound1, Vector3D bound2, Material *pm) : m_pmCurMat(pm) { m_vBounds[0] = bound1; m_vBounds[1] = bound2; };
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
-	virtual int clType() const;
+	virtual double clType() const;
 	virtual Vector3D clCenter() const;
 	virtual double clRadius() const;
 	virtual Vector3D clBound1() const;

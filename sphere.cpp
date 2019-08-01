@@ -26,8 +26,8 @@ bool Sphere::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	}
 	return false;
 }
-int Sphere::clType() const {
-	return 0;
+double Sphere::clType() const {
+	return 0.0;
 }
 Vector3D Sphere::clCenter() const {
 	return m_vCenter;

@@ -18,13 +18,13 @@ typedef struct tag_HitRecord {
 	double3 m_vNormal;
 	int *m_pmCurMat;
 } HitRecord;
-typedef struct tag_Object {
-	int type;
+typedef struct _cl_tag_Object {
 	double3 m_vCenter;
-	double m_dRadius;
 	double3 m_vBound1;
 	double3 m_vBound2;
-	int *m_pmCurMat;
+	double m_dRadius;
+	double m_pmcurmat;
+	bool m_type;
 } Object;
 
 // Define math functions
@@ -36,8 +36,8 @@ double3 PointAtParameter(Ray r, double t) {
 }
 double3 InvDir(const Ray r) {
 	return 1 / r.b;
-}
-double3 NormalCalc(const double3 vP, const Object ob) {
+} 
+/* double3 NormalCalc(const double3 vP, const Object ob) {
 	double3 m_vBounds[2];
 	m_vBounds[0] = ob.m_vBound1;
 	m_vBounds[1] = ob.m_vBound2;
@@ -244,6 +244,7 @@ double3 NormalCalc(const double3 vP, const Object ob) {
 }
 
 // Define external functions
+
 bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax) {
 	if (x.type == 0) {
 
@@ -259,7 +260,7 @@ bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax)
 				rec.m_dT = dT;
 				rec.m_vP = PointAtParameter(r, dT);
 				rec.m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
-				rec.m_pmCurMat = x.m_pmCurMat;
+				//rec.m_pmCurMat = x.m_pmCurMat;
 				return true;
 			}
 			dT = (-dB + sqrt(dDiscriminant)) / dA;
@@ -267,7 +268,7 @@ bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax)
 				rec.m_dT = dT;
 				rec.m_vP = PointAtParameter(r, dT);
 				rec.m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
-				rec.m_pmCurMat = x.m_pmCurMat;
+				//rec.m_pmCurMat = x.m_pmCurMat;
 				return true;
 			}
 		}
@@ -305,41 +306,85 @@ bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax)
 		rec.m_dT = dT;
 		rec.m_vP = PointAtParameter(r, dT);
 		rec.m_vNormal = NormalCalc(PointAtParameter(r, dT), x);
-		rec.m_pmCurMat = x.m_pmCurMat;
+		//rec.m_pmCurMat = x.m_pmCurMat;
 		return true;
 	}
 }
-double hit_sphere(const double3 center, double radius, const Ray r) {
-	double3 vOC = r.a - center;
+*/
+bool hit_sphere(const Object x, const Ray r, double tMin, double tMax, HitRecord *rec) {
+	double3 vOC = r.a - x.m_vCenter;
 	double dA = dot(r.b, r.b);
-	double dB = 2.0 * dot(vOC, r.b);
-	double dC = dot(vOC, vOC) - (radius * radius);
-	double dDiscriminant = (dB * dB) - (4 * dA * dC);
-	if (dDiscriminant < 0) {
-		return -1.0;
+	double dB = dot(vOC, r.b);
+	double dC = dot(vOC, vOC) - (x.m_dRadius * x.m_dRadius);
+	double dDiscriminant = (dB * dB) - (dA * dC);
+
+	if (dDiscriminant > 0) {
+		double dT = (-dB - sqrt(dDiscriminant)) / dA;
+		if (dT < tMax && dT > tMin) {
+			rec->m_dT = dT;
+			rec->m_vP = PointAtParameter(r, dT);
+			rec->m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
+			return true;
+		}
+		dT = (-dB + sqrt(dDiscriminant)) / dA;
+		if (dT < tMax && dT > tMin) {
+			rec->m_dT = dT;
+			rec->m_vP = PointAtParameter(r, dT);
+			rec->m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
+			return true;
+		}
+	}
+	return false;
+}
+
+double3 Color(const Ray r, Object *x, int ObjLen) {
+	HitRecord temp_rec, rec;
+	bool hitAnything = false;
+	double closestSoFar = DBL_MAX;
+	for (int i = 0; i < ObjLen; i++) {
+		if (hit_sphere(x[i], r, 0.0, closestSoFar, &temp_rec)) {
+			hitAnything = true;
+			closestSoFar = temp_rec.m_dT;
+			rec = temp_rec;
+		}
+	}
+	if (hitAnything) {
+		return 0.5*(double3)(rec.m_vNormal.x + 1, rec.m_vNormal.y + 1, rec.m_vNormal.z + 1);
 	}
 	else {
-		return (-dB - sqrt(dDiscriminant)) / (2.0*dA);
+		double3 unitDirection = UnitVector(r.b);
+		double t1 = 0.5*(unitDirection.y + 1.0);
+		return (1.0 - t1) + (t1 * (double3)(0.5, 0.7, 1.0));
 	}
-}
-double3 Color(const Ray r) {
-	double t = hit_sphere((double3)(0, 0, -1), 0.5, r);
-	if (t > 0.0) {
-		double3 N = UnitVector(PointAtParameter(r, t) - (double3)(0, 0, -1));
-		return  0.5*(N + 1.0);
-	}
-	double3 unitDirection = UnitVector(r.b);
-	double t1 = 0.5*(unitDirection.y + 1.0);
-	return (1.0 - t1) + (t1 * (double3)(0.5, 0.7, 1.0));
 }
 
-kernel void Render(global double4 *dA, global int *dB, global int *dC, global double *dD, global const Camera *dE, global const double *dF, global Object *dG, global const int *dH) {
+Ray getRay(double u, double v, double dimsX, double dimsY, double3 vP, Camera *cam) {
+	double dHalfHeight = tan(cam->Fov*3.14159265359 / 360);
+	double dHalfWidth = (dimsX / dimsY) * dHalfHeight;
+	double dFocusDist = length((cam->lookFrom - cam->lookAt));
+	double3 m_vW = UnitVector(cam->lookFrom - cam->lookAt);
+	double3 m_viewUp = cam->viewUp;
+	double3 m_vU = UnitVector(cross(m_viewUp, m_vW));
+	double3 m_vV = cross(m_vW, m_vU);
+	double3 m_vLowerLeftCorner = cam->lookFrom - dHalfWidth * dFocusDist * m_vU - dHalfHeight * dFocusDist * m_vV - dFocusDist * m_vW;
+	double3 m_vHorizontal = 2 * dHalfWidth*dFocusDist*m_vU;
+	double3 m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
+	double3 vRD = (cam->aperture / 2) * vP;
+	double3 vOffset = m_vU * vRD.x + m_vV * vRD.y;
+	double3 vOrigin = cam->lookFrom;
+
+	return (Ray){ vOrigin, ((double3)(-2.0,-1.0,-1.0) + (u * (double3)(4.0,0.0,0.0)) + (v * (double3)(0.0,2.0,0.0))) };
+
+}
+kernel void Render(global double4 *dA, global int *dB, global int *dC, global double *dD, global const Camera *dE, global const double *dF, global const Object *dG, global const int *dH) {
 
 	int gid = get_global_id(0); // Current ray in image
+	int lid = get_local_id(0); // Current Ray in pixel
 	int raysPerPixel = get_local_size(0); // Number of rays in pixel
-	int curPixRay = get_local_id(0); // Current Ray in pixel
-	int dimsX = dB[gid]; // Current X Pixel
-	int dimsY = dC[gid]; // Current Y Pixel
+	
+	int dimsX = dB[0]; // Current X Pixel
+	int dimsY = dC[0]; // Current Y Pixel
+	int ObjLen = dH[0]; // # objects in list
 	
 	double3 vP;
 	while ((vP.x * vP.x) + (vP.y * vP.y) + (vP.z * vP.z) >= 1.0) {
@@ -348,34 +393,24 @@ kernel void Render(global double4 *dA, global int *dB, global int *dC, global do
 		vP.z = 0;
 	}
 	
-	double dHalfHeight = tan(dE[gid].Fov*3.14159265359 / 360);
-	double dHalfWidth = (dimsX / dimsY) * dHalfHeight;
-	double dFocusDist = length((dE[gid].lookFrom - dE[gid].lookAt));
-	double3 m_vW = UnitVector(dE[gid].lookFrom - dE[gid].lookAt);
-	double3 m_viewUp = dE[gid].viewUp;
-	double3 m_vU = UnitVector(cross(m_viewUp, m_vW));
-	double3 m_vV = cross(m_vW, m_vU);
-	double3 m_vLowerLeftCorner = dE[gid].lookFrom - dHalfWidth * dFocusDist * m_vU - dHalfHeight * dFocusDist * m_vV - dFocusDist * m_vW;
-	double3 m_vHorizontal = 2 * dHalfWidth*dFocusDist*m_vU;
-	double3 m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
-	double3 vRD = (dE[gid].aperture / 2) * vP;
-	double3 vOffset = m_vU * vRD.x + m_vV * vRD.y;
-	double3 vOrigin = dE[gid].lookFrom;
-	
-	HitRecord temp_rec, rec;
-	bool bHitAnything = false;
-	double dClosestSoFar = DBL_MAX;
-	
 	double ix = 1 + (gid / dimsX);
 	int j = floor(ix); // Current x
 	int i = gid - ((j - 1) * dimsX); // Current Y
-	
-	double u = (double)i / (double)dimsX;
-	double v = (double)j / (double)dimsY;
 
-	Ray r = { (double3)(0), ((double3)(-2.0,-1.0,-1.0) + (u * (double3)(4.0,0.0,0.0)) + (v * (double3)(0.0,2.0,0.0))) };
-	
-	double3 col = Color(r);
+	// Object list initialized from kernel struct, max objects in image
+	Object world[1024];
+	for (int i = 0; i < dH[0]; i++) {
+		world[i] = dG[i];
+	}
+
+	double3 col = (double3)(0);
+	for (int s = 0; s < raysPerPixel; s++) {
+		double u = (double)(i + dF[lid + s]) / (double)dimsX;
+		double v = (double)(j + dF[lid + (s*2)]) / (double)dimsY;
+		Ray r = getRay(u, v, dimsX, dimsY, vP, &dE);
+		col += Color(r, &world, dH[0]);
+	}
+	col /= (double)(100);
 
 	dA[gid] = (double4)(col.x, col.y, col.z, gid);
 	

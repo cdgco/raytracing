@@ -190,80 +190,80 @@ int RayTracer::clRender(const std::string &strFileName) {
 		cl_double3 a;
 		cl_double3 b;
 	} sRay;
-
 	typedef struct _cl_tag_SDim {
-		int a;
-		int b;
+		cl_int a;
+		cl_int b;
 	} sSDim;
-
 	typedef struct _cl_tag_Camera {
 		cl_double3 lookFrom;
 		cl_double3 lookAt;
 		cl_double3 viewUp;
-		double aperture;
-		double Fov;
+		cl_double aperture;
+		cl_double Fov;
 	} sCamera;
-
 	typedef struct _cl_tag_Object {
-		int type;
-		cl_double3 center;
-		double radius;
-		cl_double3 bound1;
-		cl_double3 bound2;
-		int *pmCurmat;
+		cl_double3 m_vCenter;
+		cl_double3 m_vBound1;
+		cl_double3 m_vBound2;
+		cl_double m_dRadius;
+		cl_int type;
+		int m_pmCurMat;
 	} sObject;
+	typedef struct _cl_tag_xObject {
+
+		cl_double3 m_vCenter;
+		cl_double3 m_vBound1;
+		cl_double3 m_vBound2;
+		cl_double m_dRadius;
+		cl_double *m_pmcurmat;
+		cl_bool m_type;
+	} xObject;
 
 	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
-	int *hB = new int[NUM_ELEMENTS]; // Dims X
-	int *hC = new int[NUM_ELEMENTS]; // Dims Y
-	double *hD = new double[NUM_ELEMENTS]; // Sample Size
+	cl_int *hB = new int[1]; // Dims X
+	cl_int *hC = new int[1]; // Dims Y
+	cl_double *hD = new double[1]; // Sample Size
 	sCamera *hE = new sCamera[NUM_ELEMENTS]; // Camera
-	double *hF = new double[NUM_ELEMENTS * 2]; // Random Numbers
-	sObject *hG = new sObject[NUM_ELEMENTS]; // Deconstructed Object List
-	int *hH = new int[NUM_ELEMENTS]; // Object List Size
+	cl_double *hF = new double[m_iRaysPerPixel * 4]; // Random Numbers
+	xObject *hG = new xObject[NUM_ELEMENTS]; // Deconstructed Object List
+	cl_int *hH = new int[1]; // Object List Size
+	cl_double3 *hI = new cl_double3[NUM_ELEMENTS]; // Object List Size
 	
-	for (int i = 0; i < NUM_ELEMENTS; i++) {
-		hB[i] = m_dims.m_iX;
-		hC[i] = m_dims.m_iY;
-		hD[i] = (double)m_iRaysPerPixel;
-		hE[i].lookFrom.x = m_camera.m_vOrigin.x();
-		hE[i].lookFrom.y = m_camera.m_vOrigin.y();
-		hE[i].lookFrom.z = m_camera.m_vOrigin.z();
-		hE[i].lookAt.x = m_camera.m_vLookAt.x();
-		hE[i].lookAt.y = m_camera.m_vLookAt.y();
-		hE[i].lookAt.z = m_camera.m_vLookAt.z();
-		hE[i].viewUp.x = m_camera.m_vViewUp.x();
-		hE[i].viewUp.y = m_camera.m_vViewUp.y();
-		hE[i].viewUp.z = m_camera.m_vViewUp.z();
-		hE[i].aperture = m_camera.m_dAperture;
-		hE[i].Fov = m_camera.m_dFov;
-		hH[i] = (int)m_list.size();
+	hB[0] = m_dims.m_iX;
+	hC[0] = m_dims.m_iY;
+	hD[0] = (double)m_iRaysPerPixel;
+	hE[0].lookFrom = { m_camera.m_vOrigin.x(),  m_camera.m_vOrigin.y(),  m_camera.m_vOrigin.z() };
+	hE[0].lookAt = { m_camera.m_vLookAt.x(),  m_camera.m_vLookAt.y(),  m_camera.m_vLookAt.z() };
+	hE[0].viewUp = { m_camera.m_vViewUp.x(),  m_camera.m_vViewUp.y(),  m_camera.m_vViewUp.z() };
+	hE[0].aperture = m_camera.m_dAperture;
+	hE[0].Fov = m_camera.m_dFov;
+	hH[0] = m_list.size();
+
+	for (int i = 0; i < int(m_list.size()); i++) {
+		hG[i].m_vCenter = { m_list[i]->clCenter().x() , m_list[i]->clCenter().y() , m_list[i]->clCenter().z() };
+		hG[i].m_vBound1 = { m_list[i]->clBound1().x() , m_list[i]->clBound1().y() , m_list[i]->clBound1().z() };
+		hG[i].m_vBound2 = { m_list[i]->clBound2().x() , m_list[i]->clBound2().y() , m_list[i]->clBound2().z() };
+		hG[i].m_dRadius = double(m_list[i]->clRadius());
+		if (m_list[i]->clType() == 1.0) {
+			hG[i].m_type = true;
+		}
+		else {
+			hG[i].m_type = false;
+		}
+		hG[i].m_pmcurmat = reinterpret_cast<cl_double *>(m_list[i]->clMatPtr());
 	}
 
-	for (size_t i = 0; i < m_list.size(); i++) {
-		hG[i].type = m_list[i]->clType();
-		hG[i].center.x = m_list[i]->clCenter().x();
-		hG[i].center.y = m_list[i]->clCenter().y();
-		hG[i].center.z = m_list[i]->clCenter().z();
-		hG[i].radius = m_list[i]->clRadius();
-		hG[i].bound1.x = m_list[i]->clBound1().x();
-		hG[i].bound1.y = m_list[i]->clBound1().y();
-		hG[i].bound1.z = m_list[i]->clBound1().z();
-		hG[i].bound2.x = m_list[i]->clBound2().x();
-		hG[i].bound2.y = m_list[i]->clBound2().y();
-		hG[i].bound2.z = m_list[i]->clBound2().z();
-		hG[i].pmCurmat = reinterpret_cast<int *>(m_list[i]->clMatPtr());
-	}
-
-	for (int i = 0; i < NUM_ELEMENTS * 2; i++) {
+	for (int i = 0; i < m_iRaysPerPixel * 4; i++) {
 		hF[i] = drand48();
 	}
 	
 	size_t raySize = NUM_ELEMENTS * sizeof(cl_double4);
+	size_t d3Size = NUM_ELEMENTS * sizeof(cl_double3);
 	size_t intSize = NUM_ELEMENTS * sizeof(int);
 	size_t cameraSize = NUM_ELEMENTS * sizeof(sCamera);
 	size_t doubleSize = NUM_ELEMENTS * sizeof(double);
-	size_t objectSize = NUM_ELEMENTS * sizeof(sObject);
+	size_t randomSize = m_iRaysPerPixel * 4 * sizeof(double);
+	size_t xobjectSize = NUM_ELEMENTS * sizeof(xObject);
 
 	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
 
@@ -275,16 +275,20 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
 	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_ONLY, cameraSize, NULL, &status);
 	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, doubleSize, NULL, &status);
-	cl_mem dG = clCreateBuffer(context, CL_MEM_READ_ONLY, objectSize, NULL, &status);
+	cl_mem dG = clCreateBuffer(context, CL_MEM_READ_WRITE, xobjectSize, NULL, &status);
 	cl_mem dH = clCreateBuffer(context, CL_MEM_READ_ONLY, intSize, NULL, &status);
+	cl_mem dI = clCreateBuffer(context, CL_MEM_READ_ONLY, d3Size, NULL, &status);
+	
 
 	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, raySize, hA, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, intSize, hB, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, intSize, hC, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, doubleSize, hD, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, cameraSize, hE, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, doubleSize, hF, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dG, CL_FALSE, 0, intSize, hG, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, randomSize, hF, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dG, CL_FALSE, 0, xobjectSize, hG, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dH, CL_FALSE, 0, intSize, hH, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dI, CL_FALSE, 0, d3Size, hI, 0, NULL, NULL);
 	Wait(cmdQueue);
 
 	fseek(fp, 0, SEEK_END);
@@ -324,9 +328,11 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &dF);
 	status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &dG);
 	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
+	status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &dI);
+	
 
 	size_t globalWorkSize[1] = { size_t(NUM_ELEMENTS) };
-	size_t localWorkSize[1] = { size_t(1) };
+	size_t localWorkSize[1] = { size_t(m_iRaysPerPixel) };
 
 	Wait(cmdQueue);
 
@@ -375,6 +381,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		clReleaseMemObject(dF);
 		clReleaseMemObject(dG);
 		clReleaseMemObject(dH);
+		clReleaseMemObject(dI);
 
 		delete[] hA;
 		delete[] hB;
@@ -384,6 +391,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		delete[] hF;
 		delete[] hG;
 		delete[] hH;
+		delete[] hI;
 	}
 }
 

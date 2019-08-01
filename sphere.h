@@ -15,7 +15,7 @@ public:
 	*/
 	Sphere(Vector3D cen, double r, Material *pm) : m_vCenter(cen), m_dRadius(r), m_pmCurMat(pm) {};
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
-	virtual int clType() const;
+	virtual double clType() const;
 	virtual Vector3D clCenter() const;
 	virtual double clRadius() const;
 	virtual Vector3D clBound1() const;

@@ -28,8 +28,8 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	rec = { dT, r.PointAtParameter(dT), NormalCalc(r.PointAtParameter(rec.m_dT)), m_pmCurMat };
 	return true;
 }
-int Box::clType() const {
-	return 1;
+double Box::clType() const {
+	return 1.0;
 }
 Vector3D Box::clCenter() const {
 	return m_vCenter;
