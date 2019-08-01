@@ -4,6 +4,7 @@
 #include "ray.h"
 
 class Material;
+class clMaterial;
 
 /*! Structure to store values when ray hits object.
 *
@@ -28,12 +29,15 @@ public:
 	*		Hit(ray, hitrec, 0.001, DBL_MAX);
 	*/
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const = 0;
-	virtual double clType() const = 0;
+	virtual int clType() const = 0;
 	virtual Vector3D clCenter() const = 0;
 	virtual double clRadius() const = 0;
 	virtual Vector3D clBound1() const = 0;
 	virtual Vector3D clBound2() const = 0;
-	virtual Material* clMatPtr() const = 0;
+	virtual int clMType() const = 0;
+	virtual Vector3D clColor() const = 0;
+	virtual double clFuzz() const = 0;
+	virtual double clRefIdx() const = 0;
 };
 
 typedef std::vector<Object*> vList;

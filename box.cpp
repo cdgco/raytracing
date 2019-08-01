@@ -28,24 +28,6 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	rec = { dT, r.PointAtParameter(dT), NormalCalc(r.PointAtParameter(rec.m_dT)), m_pmCurMat };
 	return true;
 }
-double Box::clType() const {
-	return 1.0;
-}
-Vector3D Box::clCenter() const {
-	return m_vCenter;
-}
-double Box::clRadius() const {
-	return 0;
-}
-Vector3D Box::clBound1() const {
-	return m_vBounds[0];
-}
-Vector3D Box::clBound2() const {
-	return m_vBounds[1];
-}
-Material* Box::clMatPtr() const {
-	return m_pmCurMat;
-}
 Vector3D Box::NormalCalc(const Vector3D vP) const {
 	// Intersects within front face
 	if (vP.x() > m_vCenter.x() && (vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x())) {

@@ -13,6 +13,7 @@
 #include "box.h"
 #include "omp.h" // OpenMP used for performance tracking only
 
+#define CL_TARGET_OPENCL_VERSION 220
 #pragma warning(disable : 4996)
 #include "CL/cl.h"
 
@@ -59,7 +60,6 @@ public:
 	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = 0.1, double Fov = 40);
 	virtual void AddItem(Object *object);
 	virtual Vector3D Color(const Ray &r, int iDepth);
-	virtual Vector3D clColor(const Ray &r, int iDepth);
 	virtual void Render(const std::string &strFileName);
 	virtual int clRender(const std::string &strFileName);
 	virtual void ClearItems();

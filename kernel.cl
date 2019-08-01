@@ -1,29 +1,34 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
 // Define C++ Classes as OpenCL structs
-typedef struct tag_Ray {
+typedef struct _cl_tag_Ray {
 	double3 a;
 	double3 b;
 } Ray;
-typedef struct tag_Camera {
+typedef struct _cl_tag_Camera {
 	double3 lookFrom;
 	double3 lookAt;
 	double3 viewUp;
 	double aperture;
 	double Fov;
 } Camera;
-typedef struct tag_HitRecord {
+typedef struct _cl_tag_HitRecord {
 	double m_dT;
 	double3 m_vP;
 	double3 m_vNormal;
 	int *m_pmCurMat;
 } HitRecord;
+typedef struct _cl_tag_sMaterial {
+	double3 m_vColor;
+	double m_dFuzz;
+	double m_dRefIdx;
+	int m_MType;
+} sMaterial;
 typedef struct _cl_tag_Object {
 	double3 m_vCenter;
 	double3 m_vBound1;
 	double3 m_vBound2;
 	double m_dRadius;
-	double m_pmcurmat;
 	bool m_type;
 } Object;
 
@@ -37,7 +42,7 @@ double3 PointAtParameter(Ray r, double t) {
 double3 InvDir(const Ray r) {
 	return 1 / r.b;
 } 
-/* double3 NormalCalc(const double3 vP, const Object ob) {
+double3 NormalCalc(const double3 vP, const Object ob) {
 	double3 m_vBounds[2];
 	m_vBounds[0] = ob.m_vBound1;
 	m_vBounds[1] = ob.m_vBound2;
@@ -242,40 +247,60 @@ double3 InvDir(const Ray r) {
 		// Ray outside of bounds
 	}
 }
+double drand48(ulong randoms, double gid) {
+	ulong seed = randoms + gid;
+	seed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
+	uint uimax = ~0;
+	ulong result = (seed >> 16);
+	return (double)result;
+}
 
 // Define external functions
+bool Material(const int type) {
+	// Lambertian
+	if (type == 0) {
 
-bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax) {
-	if (x.type == 0) {
+	}
+	// Metal
+	else if (type == 1) {
 
-		double3 vOC = r.a - x.m_vCenter;
-		double dA = dot(r.a, r.a);
-		double dB = dot(vOC, r.a);
-		double dC = dot(vOC, vOC) - x.m_dRadius * x.m_dRadius;
-		double dDiscriminant = dB * dB - dA * dC;
+	}
+	// Dialectric
+	else if (type == 2) {
+
+	}
+}
+bool hit(const Object x, const Ray r, double tMin, double tMax, HitRecord *rec) {
+	if (!x.m_type) {
+
+	double3 vOC = r.a - x.m_vCenter;
+		double dA = dot(r.b, r.b);
+		double dB = dot(vOC, r.b);
+		double dC = dot(vOC, vOC) - (x.m_dRadius * x.m_dRadius);
+		double dDiscriminant = (dB * dB) - (dA * dC);
 
 		if (dDiscriminant > 0) {
 			double dT = (-dB - sqrt(dDiscriminant)) / dA;
 			if (dT < tMax && dT > tMin) {
-				rec.m_dT = dT;
-				rec.m_vP = PointAtParameter(r, dT);
-				rec.m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
-				//rec.m_pmCurMat = x.m_pmCurMat;
+				rec->m_dT = dT;
+				rec->m_vP = PointAtParameter(r, dT);
+				rec->m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
+				//rec->m_pmCurMat = x.m_pmCurMat;
 				return true;
 			}
 			dT = (-dB + sqrt(dDiscriminant)) / dA;
 			if (dT < tMax && dT > tMin) {
-				rec.m_dT = dT;
-				rec.m_vP = PointAtParameter(r, dT);
-				rec.m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
-				//rec.m_pmCurMat = x.m_pmCurMat;
+				rec->m_dT = dT;
+				rec->m_vP = PointAtParameter(r, dT);
+				rec->m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
+				//rec->m_pmCurMat = x.m_pmCurMat;
 				return true;
 			}
 		}
 		return false;
 	}
-	else if (x.type == 1) {
-
+	else if (x.m_type) {
+			/*
 		double3 bounds[2];
 		bounds[0] = x.m_vBound1;
 		bounds[1] = x.m_vBound2;
@@ -303,52 +328,32 @@ bool clHit(const Object x, const Ray r, HitRecord rec, double tMin, double tMax)
 		double dT = tmin;
 		if (dT < 0) { dT = tmax; if (dT < 0) return false; }
 
-		rec.m_dT = dT;
-		rec.m_vP = PointAtParameter(r, dT);
-		rec.m_vNormal = NormalCalc(PointAtParameter(r, dT), x);
-		//rec.m_pmCurMat = x.m_pmCurMat;
+		rec->m_dT = dT;
+		rec->m_vP = PointAtParameter(r, dT);
+		rec->m_vNormal = NormalCalc(PointAtParameter(r, dT), x);
+		//rec->m_pmCurMat = x.m_pmCurMat;
 		return true;
+		*/
 	}
 }
-*/
-bool hit_sphere(const Object x, const Ray r, double tMin, double tMax, HitRecord *rec) {
-	double3 vOC = r.a - x.m_vCenter;
-	double dA = dot(r.b, r.b);
-	double dB = dot(vOC, r.b);
-	double dC = dot(vOC, vOC) - (x.m_dRadius * x.m_dRadius);
-	double dDiscriminant = (dB * dB) - (dA * dC);
-
-	if (dDiscriminant > 0) {
-		double dT = (-dB - sqrt(dDiscriminant)) / dA;
-		if (dT < tMax && dT > tMin) {
-			rec->m_dT = dT;
-			rec->m_vP = PointAtParameter(r, dT);
-			rec->m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
-			return true;
-		}
-		dT = (-dB + sqrt(dDiscriminant)) / dA;
-		if (dT < tMax && dT > tMin) {
-			rec->m_dT = dT;
-			rec->m_vP = PointAtParameter(r, dT);
-			rec->m_vNormal = (PointAtParameter(r, dT) - x.m_vCenter) / x.m_dRadius;
-			return true;
-		}
-	}
-	return false;
-}
-
-double3 Color(const Ray r, Object *x, int ObjLen) {
-	HitRecord temp_rec, rec;
+bool worldHit(const Object *x, int ObjLen, const Ray r, HitRecord *rec) {
+	HitRecord temp_rec;
 	bool hitAnything = false;
 	double closestSoFar = DBL_MAX;
 	for (int i = 0; i < ObjLen; i++) {
-		if (hit_sphere(x[i], r, 0.0, closestSoFar, &temp_rec)) {
+		if (hit(x[i], r, 0.001, closestSoFar, &temp_rec)) {
 			hitAnything = true;
 			closestSoFar = temp_rec.m_dT;
-			rec = temp_rec;
+			*rec = temp_rec;
 		}
 	}
-	if (hitAnything) {
+	return hitAnything;
+}
+double3 Color(const Ray r, Object *x, const int ObjLen, const double3 random, sMaterial *mats) {
+	HitRecord rec;
+	if (worldHit(x, ObjLen, r, &rec)) {
+		//double3 target = (double3)((double3)rec.m_vP + (double3)rec.m_vNormal + (double3)random);
+		//return 0.5*(double3)(Color((Ray) {rec.m_vP, target - rec.m_vP}, x, ObjLen, random));
 		return 0.5*(double3)(rec.m_vNormal.x + 1, rec.m_vNormal.y + 1, rec.m_vNormal.z + 1);
 	}
 	else {
@@ -357,7 +362,6 @@ double3 Color(const Ray r, Object *x, int ObjLen) {
 		return (1.0 - t1) + (t1 * (double3)(0.5, 0.7, 1.0));
 	}
 }
-
 Ray getRay(double u, double v, double dimsX, double dimsY, double3 vP, Camera *cam) {
 	double dHalfHeight = tan(cam->Fov*3.14159265359 / 360);
 	double dHalfWidth = (dimsX / dimsY) * dHalfHeight;
@@ -376,42 +380,41 @@ Ray getRay(double u, double v, double dimsX, double dimsY, double3 vP, Camera *c
 	return (Ray){ vOrigin, ((double3)(-2.0,-1.0,-1.0) + (u * (double3)(4.0,0.0,0.0)) + (v * (double3)(0.0,2.0,0.0))) };
 
 }
-kernel void Render(global double4 *dA, global int *dB, global int *dC, global double *dD, global const Camera *dE, global const double *dF, global const Object *dG, global const int *dH) {
+
+kernel void Render(global double4 *pixel, global int2 *dims, global const Camera *cam, global const double *drand, global const Object *list, global const int *listLen, global const double3 *randomVector, global const sMaterial *materials) {
 
 	int gid = get_global_id(0); // Current ray in image
 	int lid = get_local_id(0); // Current Ray in pixel
 	int raysPerPixel = get_local_size(0); // Number of rays in pixel
-	
-	int dimsX = dB[0]; // Current X Pixel
-	int dimsY = dC[0]; // Current Y Pixel
-	int ObjLen = dH[0]; // # objects in list
+	int2 dim = dims[0]; // Image Dimensions
+	int ObjLen = listLen[0]; // # objects in list
 	
 	double3 vP;
 	while ((vP.x * vP.x) + (vP.y * vP.y) + (vP.z * vP.z) >= 1.0) {
-		vP.x = 2.0*dF[gid] - 1;
-		vP.x = 2.0*dF[gid * 2] - 1;
+		vP.x = 2.0*drand[gid] - 1;
+		vP.x = 2.0*drand[gid * 2] - 1;
 		vP.z = 0;
 	}
 	
-	double ix = 1 + (gid / dimsX);
-	int j = floor(ix); // Current x
-	int i = gid - ((j - 1) * dimsX); // Current Y
+	int j = floor((double)(1 + (gid / dim.x))); // Current Y
+	int i = gid - ((j - 1) * dim.x); // Current X
 
-	// Object list initialized from kernel struct, max objects in image
+	// Object list initialized from kernel struct, max objects in image defined by array size
 	Object world[1024];
-	for (int i = 0; i < dH[0]; i++) {
-		world[i] = dG[i];
+	sMaterial mats[1024];
+	for (int i = 0; i < ObjLen; i++) {
+		world[i] = list[i];
+		mats[i] = materials[i];
 	}
 
 	double3 col = (double3)(0);
 	for (int s = 0; s < raysPerPixel; s++) {
-		double u = (double)(i + dF[lid + s]) / (double)dimsX;
-		double v = (double)(j + dF[lid + (s*2)]) / (double)dimsY;
-		Ray r = getRay(u, v, dimsX, dimsY, vP, &dE);
-		col += Color(r, &world, dH[0]);
+		double u = (double)(i + drand[lid + s]) / (double)dim.x;
+		double v = (double)(j + drand[lid + (s*2)]) / (double)dim.y;
+		Ray r = getRay(u, v, dim.x, dim.y, vP, &cam);
+		col += Color(r, &world, ObjLen, randomVector[lid], &mats);
 	}
-	col /= (double)(100);
+	col = sqrt(col / raysPerPixel);
 
-	dA[gid] = (double4)(col.x, col.y, col.z, gid);
-	
+	pixel[gid] = (double4)(col, gid);
 }

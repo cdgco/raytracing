@@ -9,6 +9,7 @@
 #include <vector>
 
 #define drand48() ((double)rand()/RAND_MAX)
+
 /*! 3 Paramater Vector3D object, operators and functions
 *
 *	object can be initialized with 0, 1, or 3 values.
@@ -191,5 +192,4 @@ inline Vector3D StdCross(const Vector3D &v1, const Vector3D &v2) {
 		(-(v1.m_dE[0] * v2.m_dE[2] - v1.m_dE[2] * v2.m_dE[0])),
 		(v1.m_dE[0] * v2.m_dE[1] - v1.m_dE[1] * v2.m_dE[0]));
 }
-
 #endif // VECTOR_H
