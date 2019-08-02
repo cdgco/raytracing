@@ -262,8 +262,14 @@ bool Refract(const double3 v, const double3 n, double NiOverNt, double3 refracte
 	}
 	else return false;
 }
+double schlick(double cosine, double ref_idx) {
+	double d0 = (1 - ref_idx) / (1 + ref_idx);
+	d0 = d0 * d0;
+	return d0 + (1 - d0)*pow((1 - cosine), 5);
+}
 bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *attenuation, Ray *scattered, const double3 *rus, const double *random) {
 	int lid = get_local_id(0);
+	int gid = get_global_id(0);
 	// Lambertian
 	if (mat->m_MType == 0) {
 		double3 vTarget = rec->m_vP + rec->m_vNormal + rus[lid];
@@ -301,13 +307,17 @@ bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *atten
 			dCosine = -(dot(r_in.b, rec->m_vNormal)) / length(r_in.b);
 		}
 		if (Refract(r_in.b, vOutwardNormal, dNiOverNt, m_refracted)) {
-			double d0 = (1 - mat->m_dRefIdx) / (1 + mat->m_dRefIdx);
-			d0 = d0 * d0;
-			dReflectProb = d0 + (1 - d0)*pow((1 - dCosine), 5);
+			dReflectProb = schlick(dCosine, mat->m_dRefIdx);
 		}
-		else dReflectProb = 1.0;
-		if (random[lid] < dReflectProb) *scattered = (Ray){ rec->m_vP, vReflected };
-		else *scattered = (Ray) { rec->m_vP, m_refracted };
+		else {
+			dReflectProb = 1.0;
+		}
+		if (random[(int)(floor((double)(gid / lid)))] < dReflectProb) {
+			*scattered = (Ray) { rec->m_vP, vReflected };
+		}
+		else {
+			*scattered = (Ray) { rec->m_vP, m_refracted };
+		}
 		return true;
 	}
 }
@@ -390,54 +400,61 @@ bool worldHit(const Object *x, const Material *m, int ObjLen, const Ray r, HitRe
 	}
 	return hitAnything;
 }
-double3 Color(const Ray r, Object *x, Material *m, const int ObjLen, int depth, const double3 *rus, const double *random) {
+double3 Color(const Ray *r, Object *x, Material *m, const int ObjLen, int depth, const double3 *rus, const double *random) {
 	HitRecord rec;
-	if (worldHit(x, m, ObjLen, r, &rec)) {
+	if (worldHit(x, m, ObjLen, *r, &rec)) {
 		Ray scattered;
 		double3 attenuation;
-		if (depth < 50 && scatter(&rec.m_curmat, r, &rec, &attenuation, &scattered, rus, random)) {
-			return (double3)attenuation;
-			//return 0.5*(double3)(rec.m_vNormal.x + 1, rec.m_vNormal.y + 1, rec.m_vNormal.z + 1);
+		// OpenCL does not support recursive functions, so the ray tracer is limited to 1 ray and 1 shadow ray :(
+		if (depth < 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, random)) {
+			return (double3)attenuation*Color(&scattered, x, m, ObjLen, depth+1, rus, random);
 		}
 		else {
 			return (double3)(0);
 		}
 	}
 	else {
-		double3 unitDirection = UnitVector(r.b);
+		double3 unitDirection = UnitVector(r->b);
 		double t1 = 0.5*(unitDirection.y + 1.0);
 		return (1.0 - t1) + (t1 * (double3)(0.5, 0.7, 1.0));
 	}
 }
-Ray getRay(double u, double v, int2 dims, Camera *cam, double3 *rus) {
-	/*
-	double3 vP;
-	while ((vP.x * vP.x) + (vP.y * vP.y) + (vP.z * vP.z) >= 1.0) {
-		vP.x = 2.0*drand[gid] - 1;
-		vP.x = 2.0*drand[gid * 2] - 1;
-		vP.z = 0;
+Ray getRay(double s, double t, int2 dims, Camera cam, double3 rud) {
+	
+	bool v = 0;
+
+	double aspect = dims.x / dims.y;
+	double theta = cam.Fov*M_PI / 180;
+	double half_height = tan(theta / 2);
+	double half_width = aspect * half_height;
+	
+	if (!v) {
+		double3 lower_left_corner = (double3)(-half_width, -half_height, -1.0);
+		double3 horizontal = (double3)(2 * half_width, 0.0, 0.0);
+		double3 vertical = (double3)(0.0, 2 * half_height, 0.0);
+		double3 vOrigin = (double3)(0);
+
+		return (Ray) { (double3)vOrigin, (double3)((double3)lower_left_corner + (double3)(s * horizontal) + (double3)(t * vertical) - (double3)vOrigin) };
 	}
+	if (v) {
+		double lens_radius = cam.aperture / 2;
+		double3 vOrigin = cam.lookFrom;
+		double dFocusDist = length(cam.lookFrom - cam.lookAt);
+		double3 m_vW = UnitVector(cam.lookFrom - cam.lookAt);
+		double3 m_vU = UnitVector(cross(cam.viewUp, m_vW));
+		double3 m_vV = cross(m_vW, m_vU);
+		double3 m_vLowerLeftCorner = vOrigin - (half_width * dFocusDist * m_vU) - (half_height * dFocusDist * m_vV) - (dFocusDist * m_vW);
+		double3 m_vHorizontal = 2 * half_width*dFocusDist*m_vU;
+		double3 m_vVertical = 2 * half_height*dFocusDist*m_vV;
+		double3 rd = lens_radius * rud;
+		double3 offset = ((m_vU + rd.x) + (m_vV + rd.y));
 
-	double dHalfHeight = tan(cam->Fov*M_PI / 360);
-	double dHalfWidth = (dims.x / dims.y) * dHalfHeight;
-	double dFocusDist = length((cam->lookFrom - cam->lookAt));
-	double3 m_vW = UnitVector(cam->lookFrom - cam->lookAt);
-	double3 m_viewUp = cam->viewUp;
-	double3 m_vU = UnitVector(cross(m_viewUp, m_vW));
-	double3 m_vV = cross(m_vW, m_vU);
-	double3 m_vLowerLeftCorner = cam->lookFrom - dHalfWidth * dFocusDist * m_vU - dHalfHeight * dFocusDist * m_vV - dFocusDist * m_vW;
-	double3 m_vHorizontal = 2 * dHalfWidth*dFocusDist*m_vU;
-	double3 m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
-	double3 vRD = (cam->aperture / 2) * vP;
-	double3 vOffset = m_vU * vRD.x + m_vV * vRD.y;
-	*/
-	double3 vOrigin = cam->lookFrom;
+		return (Ray) { (double3)(vOrigin - offset), (double3)(m_vLowerLeftCorner + (s * m_vHorizontal) + (t * m_vVertical) - vOrigin - offset) };
 
-	return (Ray){ vOrigin, ((double3)(-2.0,-1.0,-1.0) + (u * (double3)(4.0,0.0,0.0)) + (v * (double3)(0.0,2.0,0.0))) };
-
+	}
 }
 
-kernel void Render(global double4 *pixel, global int2 *dims, global const Camera *cam, global const double *drand48, global const Object *list, global const int *listLen, global const double3 *randomInUnitSphere, global const Material *materials) {
+kernel void Render(global double4 *pixel, global int2 *dims, global const Camera *cam, global const double *drand48, global const Object *list, global const int *listLen, global const double3 *randomInUnitSphere, global const Material *materials, global const double3 *randomInUnitDisk) {
 
 	int gid = get_global_id(0); // Current ray in image
 	int lid = get_local_id(0); // Current Ray in pixel
@@ -460,8 +477,8 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const Camera
 	for (int s = 0; s < raysPerPixel; s++) {
 		double u = (double)(i + drand48[lid + s]) / (double)dim.x;
 		double v = (double)(j + drand48[lid + (s*2)]) / (double)dim.y;
-		Ray r = getRay(u, v, dim, &cam, &randomInUnitSphere);
-		col += Color(r, &world, &mats, ObjLen, 0, &randomInUnitSphere, &drand48);
+		Ray r = getRay(u, v, dim, cam[0], randomInUnitDisk[(int)(floor((double)(gid / lid)))]);
+		col += Color(&r, &world, &mats, ObjLen, 0, &randomInUnitSphere, &drand48);
 	}
 	col = sqrt(col / raysPerPixel);
 

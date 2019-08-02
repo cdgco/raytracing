@@ -1,5 +1,6 @@
 #include "ray_tracer.h"
 #include <memory>
+#include <random>
 /*! Specify the desired perspective of the output image for the instance.
 *	Only necessary if camera object not passed through inline initialization.
 *
@@ -12,7 +13,7 @@ cl_double3 double3(const Vector3D &v2) {
 	return { v2.m_dE[0], v2.m_dE[1], v2.m_dE[2] };
 }
 void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
-	if (lookFrom.y() == 0) { lookFrom.m_dE[1] = 0.00000001; }
+	//if (lookFrom.y() == 0) { lookFrom.m_dE[1] = 0.00000001; }
 	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
 }
 /*! Link renderable objects to ray tracer instance
@@ -190,11 +191,12 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
 	cl_int2 *hB = new cl_int2[1]; // Dimensions
 	sCamera *hC = new sCamera[NUM_ELEMENTS]; // Camera
-	cl_double *hD = new cl_double[m_iRaysPerPixel * 4]; // Random Numbers
+	cl_double *hD = new cl_double[NUM_ELEMENTS]; // Random Numbers
 	sObject *hE = new sObject[NUM_ELEMENTS]; // Deconstructed Object List
 	cl_int *hF = new cl_int[1]; // Object List Size
 	cl_double3 *hG = new cl_double3[NUM_ELEMENTS]; // Object List Size
 	sMaterial *hH = new sMaterial[NUM_ELEMENTS]; // Object List Size
+	cl_double3 *hI = new cl_double3[NUM_ELEMENTS]; // Object List Size
 	
 	hB[0] = { m_dims.m_iX, m_dims.m_iY };
 	hC[0].lookFrom = double3(m_camera.m_vOrigin);
@@ -202,6 +204,16 @@ int RayTracer::clRender(const std::string &strFileName) {
 	hC[0].viewUp = double3(m_camera.m_vViewUp);
 	hC[0].aperture = m_camera.m_dAperture;
 	hC[0].Fov = m_camera.m_dFov;
+
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+	for (int i = 0; i < NUM_ELEMENTS; i++) {
+		hD[i] = dist(mt);
+		Vector3D tempRand = Camera::RandomInUnitDisk();
+		hI[i] = double3(tempRand);
+	}
 	hF[0] = m_list.size();
 	for (int i = 0; i < int(m_list.size()); i++) {
 		hE[i].m_vCenter = double3(m_list[i]->clCenter());
@@ -222,9 +234,8 @@ int RayTracer::clRender(const std::string &strFileName) {
 		hH[i].m_MType = m_list[i]->clMType();
 	}
 	for (int i = 0; i < m_iRaysPerPixel * 4; i++) {
-		hD[i] = drand48();
 		Vector3D tempRand = Material::RandomInUnitSphere();
-		hG[i] = { tempRand.x(), tempRand.y(), tempRand.z() };
+		hG[i] = double3(tempRand);
 	}
 
 	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
@@ -238,15 +249,18 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(sizeof(cl_int)), NULL, &status);
 	cl_mem dG = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double3)), NULL, &status);
 	cl_mem dH = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sMaterial)), NULL, &status);
+	cl_mem dI = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double3)), NULL, &status);
 
 	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double4)), hA, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, size_t(sizeof(cl_int2)), hB, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sCamera)), hC, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, size_t(m_iRaysPerPixel * 4 * sizeof(cl_double)), hD, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double)), hD, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sObject)), hE, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, size_t(sizeof(cl_int)), hF, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dG, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double3)), hG, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dH, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sMaterial)), hH, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dI, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double3)), hI, 0, NULL, NULL);
+
 	Wait(cmdQueue);
 
 	fseek(fp, 0, SEEK_END);
@@ -291,6 +305,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &dF);
 	status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &dG);
 	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
+	status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &dI);
 	
 	size_t globalWorkSize[1] = { size_t(NUM_ELEMENTS) };
 	size_t localWorkSize[1] = { size_t(m_iRaysPerPixel) };
@@ -317,7 +332,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
 
 			if (i > 10200 && i < 10300) {
-				printf("Pixel: %.2lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
+				printf("Pixel: %lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
 			}
 
 		}
@@ -346,8 +361,9 @@ int RayTracer::clRender(const std::string &strFileName) {
 		clReleaseMemObject(dF);
 		clReleaseMemObject(dG);
 		clReleaseMemObject(dH);
+		clReleaseMemObject(dI);
 
-		delete[] hA, hB, hC, hD, hE, hF, hG, hH;
+		delete[] hA, hB, hC, hD, hE, hF, hG, hH, hI;
 	}
 	return 0;
 }
