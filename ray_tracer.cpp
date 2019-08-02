@@ -159,6 +159,13 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_int status = clGetPlatformIDs(1, &platform, NULL);
 	status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
 
+	typedef struct _cl_tag_sObject {
+		cl_double3 m_vCenter;
+		cl_double m_dRadius;
+		cl_bool m_type;
+		cl_double3 m_vBounds1;
+		cl_double3 m_vBounds2;
+	} sObject;
 	typedef struct _cl_tag_Ray {
 		cl_double3 a;
 		cl_double3 b;
@@ -180,20 +187,13 @@ int RayTracer::clRender(const std::string &strFileName) {
 		cl_double m_dRefIdx;
 		cl_int m_MType;
 	} sMaterial;
-	typedef struct _cl_tag_sObject {
-		cl_double3 m_vCenter;
-		cl_double3 m_vBound1;
-		cl_double3 m_vBound2;
-		cl_double m_dRadius;
-		cl_bool m_iType;
-	} sObject;
 
 	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
-	cl_int2 *hB = new cl_int2[1]; // Dimensions
+	cl_int2 *hB = new cl_int2[NUM_ELEMENTS]; // Dimensions
 	sCamera *hC = new sCamera[NUM_ELEMENTS]; // Camera
 	cl_double *hD = new cl_double[NUM_ELEMENTS]; // Random Numbers
 	sObject *hE = new sObject[NUM_ELEMENTS]; // Deconstructed Object List
-	cl_int *hF = new cl_int[1]; // Object List Size
+	cl_int *hF = new cl_int[NUM_ELEMENTS]; // Object List Size
 	cl_double3 *hG = new cl_double3[NUM_ELEMENTS]; // Object List Size
 	sMaterial *hH = new sMaterial[NUM_ELEMENTS]; // Object List Size
 	cl_double3 *hI = new cl_double3[NUM_ELEMENTS]; // Object List Size
@@ -213,50 +213,61 @@ int RayTracer::clRender(const std::string &strFileName) {
 		hD[i] = dist(mt);
 		Vector3D tempRand = Camera::RandomInUnitDisk();
 		hI[i] = double3(tempRand);
-	}
-	hF[0] = m_list.size();
-	for (int i = 0; i < int(m_list.size()); i++) {
-		hE[i].m_vCenter = double3(m_list[i]->clCenter());
-		hE[i].m_vBound1 = double3(m_list[i]->clBound1());
-		hE[i].m_vBound2 = double3(m_list[i]->clBound2());
-		hE[i].m_dRadius = double(m_list[i]->clRadius());
-		// If Box
-		if (m_list[i]->clType() == 1) {
-			hE[i].m_iType = true;
-		}
-		// If Sphere
-		else {
-			hE[i].m_iType = false;
-		}
-		hH[i].m_vColor = double3(m_list[i]->clColor());
-		hH[i].m_dFuzz = m_list[i]->clFuzz();
-		hH[i].m_dRefIdx = m_list[i]->clRefIdx();
-		hH[i].m_MType = m_list[i]->clMType();
-	}
-	for (int i = 0; i < m_iRaysPerPixel * 4; i++) {
-		Vector3D tempRand = Material::RandomInUnitSphere();
+		hF[i] = m_list.size();
+		tempRand = Material::RandomInUnitSphere();
 		hG[i] = double3(tempRand);
+		hE[i].m_vCenter = { 0,0,0 };
+		hE[i].m_dRadius = 0;
+		hE[i].m_type = 0;
+		hE[i].m_vBounds1 = { 0,0,0 };
+		hE[i].m_vBounds2 = { 0,0,0 };
+		hH[i].m_vColor = { 0,0,0 };
+		hH[i].m_dFuzz = 0;
+		hH[i].m_dRefIdx = 0;
+		hH[i].m_MType = 0;
+
+	}
+	for (int i = 0; i < int(m_list.size()); i++) {
+		if (m_list[i]->clType() == 1) {
+			hE[i].m_vCenter = cl_double3(double3(m_list[i]->clCenter()));
+			hE[i].m_type = true;
+			hE[i].m_vBounds1 = cl_double3(double3(m_list[i]->clBound1()));
+			hE[i].m_vBounds2 = cl_double3(double3(m_list[i]->clBound2()));
+			hH[i].m_vColor = double3(m_list[i]->clColor());
+			hH[i].m_dFuzz = m_list[i]->clFuzz();
+			hH[i].m_dRefIdx = m_list[i]->clRefIdx();
+			hH[i].m_MType = m_list[i]->clMType();
+		}
+		else {
+			hE[i].m_vCenter = cl_double3(double3(m_list[i]->clCenter()));
+			hE[i].m_dRadius = cl_double(m_list[i]->clRadius());
+			hE[i].m_type = false;
+			hH[i].m_vColor = double3(m_list[i]->clColor());
+			hH[i].m_dFuzz = m_list[i]->clFuzz();
+			hH[i].m_dRefIdx = m_list[i]->clRefIdx();
+			hH[i].m_MType = m_list[i]->clMType();
+		}
 	}
 
 	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
 	cl_command_queue cmdQueue = clCreateCommandQueue(context, device, 0, &status);
 
 	cl_mem dA = clCreateBuffer(context, CL_MEM_WRITE_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double4)), NULL, &status);
-	cl_mem dB = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(sizeof(cl_int2)), NULL, &status);
+	cl_mem dB = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_int2)), NULL, &status);
 	cl_mem dC = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sCamera)), NULL, &status);
-	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(m_iRaysPerPixel * 4 * sizeof(cl_double)), NULL, &status);
+	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double)), NULL, &status);
 	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sObject)), NULL, &status);
-	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(sizeof(cl_int)), NULL, &status);
+	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_int)), NULL, &status);
 	cl_mem dG = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double3)), NULL, &status);
 	cl_mem dH = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sMaterial)), NULL, &status);
 	cl_mem dI = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double3)), NULL, &status);
 
 	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double4)), hA, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, size_t(sizeof(cl_int2)), hB, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_int2)), hB, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sCamera)), hC, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double)), hD, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sObject)), hE, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, size_t(sizeof(cl_int)), hF, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_int)), hF, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dG, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double3)), hG, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dH, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sMaterial)), hH, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dI, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double3)), hI, 0, NULL, NULL);

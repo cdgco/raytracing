@@ -1,6 +1,13 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
 // Define C++ Classes as OpenCL structs
+typedef struct _cl_tag_sObject {
+	double3 m_vCenter;
+	double m_dRadius;
+	bool m_type;
+	double3 m_vBounds1;
+	double3 m_vBounds2;
+} sObject;
 typedef struct _cl_tag_Ray {
 	double3 a;
 	double3 b;
@@ -24,13 +31,6 @@ typedef struct _cl_tag_HitRecord {
 	double3 m_vNormal;
 	Material m_curmat;
 } HitRecord;
-typedef struct _cl_tag_Object {
-	double3 m_vCenter;
-	double3 m_vBound1;
-	double3 m_vBound2;
-	double m_dRadius;
-	bool m_type;
-} Object;
 
 // Define math functions
 double3 UnitVector(double3 v) {
@@ -42,10 +42,9 @@ double3 PointAtParameter(Ray r, double t) {
 double3 InvDir(const Ray r) {
 	return 1 / r.b;
 }
-double3 NormalCalc(const double3 vP, const Object ob) {
-	double3 m_vBounds[2];
-	m_vBounds[0] = ob.m_vBound1;
-	m_vBounds[1] = ob.m_vBound2;
+double3 NormalCalc(const double3 vP, const sObject ob) {
+
+	double3 m_vBounds[2] = { ob.m_vBounds1, ob.m_vBounds2 };
 	double3 m_vCenter = ob.m_vCenter;
 	double3 result;
 	// Intersects within front face
@@ -321,10 +320,10 @@ bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *atten
 		return true;
 	}
 }
-bool hit(const Object x, const Material m, const Ray r, double tMin, double tMax, HitRecord *rec) {
+bool hit(const sObject x, const Material m, const Ray r, double tMin, double tMax, HitRecord *rec) {
 	if (!x.m_type) {
 
-	double3 vOC = r.a - x.m_vCenter;
+		double3 vOC = r.a - x.m_vCenter;
 		double dA = dot(r.b, r.b);
 		double dB = dot(vOC, r.b);
 		double dC = dot(vOC, vOC) - (x.m_dRadius * x.m_dRadius);
@@ -352,21 +351,19 @@ bool hit(const Object x, const Material m, const Ray r, double tMin, double tMax
 	}
 	else if (x.m_type) {
 
-		double3 bounds[2];
-		bounds[0] = x.m_vBound1;
-		bounds[1] = x.m_vBound2;
+		double3 bounds[2] = { x.m_vBounds1, x.m_vBounds2 };
 
 		int m_iSign[3];
 		m_iSign[0] = (InvDir(r).x < 0);
 		m_iSign[1] = (InvDir(r).y < 0);
 		m_iSign[2] = (InvDir(r).z < 0);
 
-		double tmin = (bounds[m_iSign[0]].x - r.a.x) * InvDir(r).x;
-		double tmax = (bounds[1 - m_iSign[0]].x - r.a.x) * InvDir(r).x;
-		double tymin = (bounds[m_iSign[1]].y - r.a.y) * InvDir(r).y;
-		double tymax = (bounds[1 - m_iSign[1]].y - r.a.y) * InvDir(r).y;
-		double tzmin = (bounds[m_iSign[2]].z - r.a.z) * InvDir(r).z;
-		double tzmax = (bounds[1 - m_iSign[2]].z - r.a.z) * InvDir(r).z;
+		double tmin = ((bounds[m_iSign[0]].x - r.a.x) * InvDir(r).x);
+		double tmax = ((bounds[1 - m_iSign[0]].x - r.a.x) * InvDir(r).x);
+		double tymin = ((bounds[m_iSign[1]].y - r.a.y) * InvDir(r).y);
+		double tymax = ((bounds[1 - m_iSign[1]].y - r.a.y) * InvDir(r).y);
+		double tzmin = ((bounds[m_iSign[2]].z - r.a.z) * InvDir(r).z);
+		double tzmax = ((bounds[1 - m_iSign[2]].z - r.a.z) * InvDir(r).z);
 
 		if ((tmin > tymax) || (tymin > tmax)) return false;
 		if (tymin > tmin) tmin = tymin;
@@ -387,7 +384,7 @@ bool hit(const Object x, const Material m, const Ray r, double tMin, double tMax
 
 	}
 }
-bool worldHit(const Object *x, const Material *m, int ObjLen, const Ray r, HitRecord *rec) {
+bool worldHit(const sObject *x, const Material *m, int ObjLen, const Ray r, HitRecord *rec) {
 	HitRecord temp_rec;
 	bool hitAnything = false;
 	double closestSoFar = DBL_MAX;
@@ -400,7 +397,7 @@ bool worldHit(const Object *x, const Material *m, int ObjLen, const Ray r, HitRe
 	}
 	return hitAnything;
 }
-double3 Color(const Ray *r, Object *x, Material *m, const int ObjLen, int depth, const double3 *rus, const double *random) {
+double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, int depth, const double3 *rus, const double *random) {
 	HitRecord rec;
 	if (worldHit(x, m, ObjLen, *r, &rec)) {
 		Ray scattered;
@@ -412,6 +409,7 @@ double3 Color(const Ray *r, Object *x, Material *m, const int ObjLen, int depth,
 		else {
 			return (double3)(0);
 		}
+		
 	}
 	else {
 		double3 unitDirection = UnitVector(r->b);
@@ -454,7 +452,7 @@ Ray getRay(double s, double t, int2 dims, Camera cam, double3 rud) {
 	}
 }
 
-kernel void Render(global double4 *pixel, global int2 *dims, global const Camera *cam, global const double *drand48, global const Object *list, global const int *listLen, global const double3 *randomInUnitSphere, global const Material *materials, global const double3 *randomInUnitDisk) {
+kernel void Render(global double4 *pixel, global int2 *dims, global const Camera *cam, global const double *drand48, global const sObject *list, global const int *listLen, global const double3 *randomInUnitSphere, global const Material *materials, global const double3 *randomInUnitDisk) {
 
 	int gid = get_global_id(0); // Current ray in image
 	int lid = get_local_id(0); // Current Ray in pixel
@@ -466,7 +464,7 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const Camera
 	int i = gid - ((j - 1) * dim.x); // Current X
 
 	// Object list initialized from kernel struct, max objects in image defined by array size
-	Object world[1024];
+	sObject world[1024];
 	Material mats[1024];
 	for (int i = 0; i < ObjLen; i++) {
 		world[i] = list[i];
@@ -481,6 +479,6 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const Camera
 		col += Color(&r, &world, &mats, ObjLen, 0, &randomInUnitSphere, &drand48);
 	}
 	col = sqrt(col / raysPerPixel);
-
+	
 	pixel[gid] = (double4)(col, gid);
 }
