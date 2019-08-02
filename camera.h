@@ -37,7 +37,20 @@ public:
 		m_vVertical = 2 * dHalfHeight*dFocusDist*m_vV;
 	}
 	virtual Ray GetRay(double s, double t);
-	virtual Vector3D RandomInUnitDisk();
+
+	/*! Returns a random vector with a dot product greater than 1.0.
+	*
+	*	Example:
+	*
+	*		RandomInUnitDisk();
+	*/
+	static Vector3D RandomInUnitDisk() {
+		Vector3D vP;
+		do {
+			vP = 2.0*Vector3D(drand48(), drand48(), 0) - Vector3D(1, 1, 0);
+		} while (vP.Dot(vP) >= 1.0);
+		return vP;
+	}
 
 	Vector3D m_vU; //!< Vector3D distance from camera origin to target
 	Vector3D m_vV; //!< Vector3D distance adjusted for viewup
