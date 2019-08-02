@@ -265,6 +265,22 @@ int RayTracer::clRender(const std::string &strFileName) {
 	char *options = {};
 	status = clBuildProgram(program, 1, &device, options, NULL, NULL);
 
+
+	char *str;
+
+	size_t sstr;
+
+	status = clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, NULL, NULL, &sstr);
+
+	str = (char*)malloc(sstr);
+
+	status |= clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sstr, str, NULL);
+
+	printf("\nBuild Log:\t %s \n", str);
+
+	free(str);
+
+
 	cl_kernel kernel = clCreateKernel(program, "Render", &status);
 
 	status = clSetKernelArg(kernel, 0, sizeof(cl_mem), &dA);
@@ -300,16 +316,20 @@ int RayTracer::clRender(const std::string &strFileName) {
 			int curInt = ((curY - 1) * m_dims.m_iX) + curX;
 			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
 
+			if (i > 10200 && i < 10300) {
+				printf("Pixel: %.2lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
+			}
+
 		}
 
 		dEndTime = omp_get_wtime(); // Stop tracking performance
 
 		ofImage.close(); // Close image file
-
+		/*
 		for (int i = 0; i < 50; i++) {
 			printf("Pixel: %.2lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
 		}
-
+		*/
 		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
 		printf("\nDimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
 		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
