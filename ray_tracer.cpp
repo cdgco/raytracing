@@ -13,7 +13,7 @@ cl_double3 double3(const Vector3D &v2) {
 	return { v2.m_dE[0], v2.m_dE[1], v2.m_dE[2] };
 }
 void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
-	//if (lookFrom.y() == 0) { lookFrom.m_dE[1] = 0.00000001; }
+	if (lookFrom.y() == 0) { lookFrom.m_dE[1] = 0.00000001; }
 	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
 }
 /*! Link renderable objects to ray tracer instance
@@ -61,21 +61,15 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 	}
 
 	if (bHitAnything) {
-		//double3 target = (double3)((double3)rec.m_vP + (double3)rec.m_vNormal + (double3)random);
-		//return 0.5*(double3)(Color((Ray) {rec.m_vP, target - rec.m_vP}, x, ObjLen, random));
-		return 0.5*Vector3D(rec.m_vNormal.x() + 1, rec.m_vNormal.y() + 1, rec.m_vNormal.z() + 1);
-	}
-	/*
-	if (bHitAnything) {
 		Ray rScattered;
 		Vector3D vAttenuation;
-		if (iDepth < 50 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
+		if (iDepth < 1 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
 			return vAttenuation * Color(rScattered, iDepth + 1);
 		}
 		else {
 			return Vector3D(0);
 		}
-	}*/
+	}
 	else {
 		Vector3D vUnitDirection = UnitVector(r.Direction());
 		double dT = 0.5*(vUnitDirection.y() + 1.0);
@@ -161,10 +155,10 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 	typedef struct _cl_tag_sObject {
 		cl_double3 m_vCenter;
-		cl_double m_dRadius;
-		cl_bool m_type;
 		cl_double3 m_vBounds1;
 		cl_double3 m_vBounds2;
+		cl_double m_dRadius;
+		cl_bool m_type;
 	} sObject;
 	typedef struct _cl_tag_Ray {
 		cl_double3 a;
@@ -187,7 +181,6 @@ int RayTracer::clRender(const std::string &strFileName) {
 		cl_double m_dRefIdx;
 		cl_int m_MType;
 	} sMaterial;
-
 	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
 	cl_int2 *hB = new cl_int2[NUM_ELEMENTS]; // Dimensions
 	sCamera *hC = new sCamera[NUM_ELEMENTS]; // Camera
@@ -290,21 +283,13 @@ int RayTracer::clRender(const std::string &strFileName) {
 	char *options = {};
 	status = clBuildProgram(program, 1, &device, options, NULL, NULL);
 
-
 	char *str;
-
 	size_t sstr;
-
 	status = clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, NULL, NULL, &sstr);
-
 	str = (char*)malloc(sstr);
-
 	status |= clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sstr, str, NULL);
-
 	printf("\nBuild Log:\t %s \n", str);
-
 	free(str);
-
 
 	cl_kernel kernel = clCreateKernel(program, "Render", &status);
 
@@ -317,6 +302,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &dG);
 	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
 	status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &dI);
+	status = clSetKernelArg(kernel, 9, m_iRaysPerPixel * sizeof(cl_double3), NULL);
 	
 	size_t globalWorkSize[1] = { size_t(NUM_ELEMENTS) };
 	size_t localWorkSize[1] = { size_t(m_iRaysPerPixel) };

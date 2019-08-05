@@ -16,9 +16,10 @@
 #define CL_TARGET_OPENCL_VERSION 220
 #pragma warning(disable : 4996)
 #include "CL/cl.h"
+#include "CL/cl_platform.h"
 
 // Optional console progress bar to track render progress. Enable (1); Disable (2). Causes slight performance decrease; Disable for testing.
-#define PROGRESSBAR 0
+#define PROGRESSBAR 1
 
 #if PROGRESSBAR == 1
 #include "progressbar.hpp"
