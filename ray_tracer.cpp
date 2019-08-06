@@ -153,21 +153,6 @@ int RayTracer::clRender(const std::string &strFileName) {
 	cl_int status = clGetPlatformIDs(1, &platform, NULL);
 	status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
 
-	typedef struct _cl_tag_sObject {
-		cl_double3 m_vCenter;
-		cl_double3 m_vBounds1;
-		cl_double3 m_vBounds2;
-		cl_double m_dRadius;
-		cl_bool m_type;
-	} sObject;
-	typedef struct _cl_tag_Ray {
-		cl_double3 a;
-		cl_double3 b;
-	} sRay;
-	typedef struct _cl_tag_SDim {
-		cl_int a;
-		cl_int b;
-	} sSDim;
 	typedef struct _cl_tag_Camera {
 		cl_double3 lookFrom;
 		cl_double3 lookAt;
@@ -175,28 +160,22 @@ int RayTracer::clRender(const std::string &strFileName) {
 		cl_double aperture;
 		cl_double Fov;
 	} sCamera;
-	typedef struct _cl_tag_sMaterial {
-		cl_double3 m_vColor;
-		cl_double m_dFuzz;
-		cl_double m_dRefIdx;
-		cl_int m_MType;
-	} sMaterial;
 	cl_double4 *hA = new cl_double4[NUM_ELEMENTS]; // Output Color
 	cl_int2 *hB = new cl_int2[NUM_ELEMENTS]; // Dimensions
-	sCamera *hC = new sCamera[NUM_ELEMENTS]; // Camera
-	cl_double *hD = new cl_double[NUM_ELEMENTS]; // Random Numbers
-	sObject *hE = new sObject[NUM_ELEMENTS]; // Deconstructed Object List
+	cl_double16 *hC = new cl_double16[NUM_ELEMENTS]; // Camera
+	cl_double *hD = new cl_double[NUM_ELEMENTS]; // drand48()
+	cl_double16 *hE = new cl_double16[NUM_ELEMENTS]; //  Object List
 	cl_int *hF = new cl_int[NUM_ELEMENTS]; // Object List Size
-	cl_double3 *hG = new cl_double3[NUM_ELEMENTS]; // Object List Size
-	sMaterial *hH = new sMaterial[NUM_ELEMENTS]; // Object List Size
-	cl_double3 *hI = new cl_double3[NUM_ELEMENTS]; // Object List Size
-	
+	cl_double3 *hG = new cl_double3[NUM_ELEMENTS]; // RandomInUnitSphere()
+	cl_double8 *hH = new cl_double8[NUM_ELEMENTS]; // Materials List
+	cl_double3 *hI = new cl_double3[NUM_ELEMENTS]; // RandomInUnitDisk()
+	cl_uint2 *hJ = new cl_uint2[NUM_ELEMENTS]; // RandomInUnitDisk()
+
 	hB[0] = { m_dims.m_iX, m_dims.m_iY };
-	hC[0].lookFrom = double3(m_camera.m_vOrigin);
-	hC[0].lookAt = double3(m_camera.m_vLookAt);
-	hC[0].viewUp = double3(m_camera.m_vViewUp);
-	hC[0].aperture = m_camera.m_dAperture;
-	hC[0].Fov = m_camera.m_dFov;
+	hC[0] = { double3(m_camera.m_vOrigin).x, double3(m_camera.m_vOrigin).y, double3(m_camera.m_vOrigin).z,
+			  double3(m_camera.m_vLookAt).x, double3(m_camera.m_vLookAt).y, double3(m_camera.m_vLookAt).z,
+			  double3(m_camera.m_vViewUp).x, double3(m_camera.m_vViewUp).y, double3(m_camera.m_vViewUp).z,
+			  m_camera.m_dAperture, m_camera.m_dFov, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -204,41 +183,28 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 	for (int i = 0; i < NUM_ELEMENTS; i++) {
 		hD[i] = dist(mt);
-		Vector3D tempRand = Camera::RandomInUnitDisk();
-		hI[i] = double3(tempRand);
+		hJ[0].x = dist(mt);
+		hJ[0].y = dist(mt);
 		hF[i] = m_list.size();
-		tempRand = Material::RandomInUnitSphere();
-		hG[i] = double3(tempRand);
-		hE[i].m_vCenter = { 0,0,0 };
-		hE[i].m_dRadius = 0;
-		hE[i].m_type = 0;
-		hE[i].m_vBounds1 = { 0,0,0 };
-		hE[i].m_vBounds2 = { 0,0,0 };
-		hH[i].m_vColor = { 0,0,0 };
-		hH[i].m_dFuzz = 0;
-		hH[i].m_dRefIdx = 0;
-		hH[i].m_MType = 0;
-
+		hG[i] = double3(Material::RandomInUnitSphere());
+		hI[i] = double3(Camera::RandomInUnitDisk());
 	}
 	for (int i = 0; i < int(m_list.size()); i++) {
 		if (m_list[i]->clType() == 1) {
-			hE[i].m_vCenter = cl_double3(double3(m_list[i]->clCenter()));
-			hE[i].m_type = true;
-			hE[i].m_vBounds1 = cl_double3(double3(m_list[i]->clBound1()));
-			hE[i].m_vBounds2 = cl_double3(double3(m_list[i]->clBound2()));
-			hH[i].m_vColor = double3(m_list[i]->clColor());
-			hH[i].m_dFuzz = m_list[i]->clFuzz();
-			hH[i].m_dRefIdx = m_list[i]->clRefIdx();
-			hH[i].m_MType = m_list[i]->clMType();
+			hE[i] = { double3(m_list[i]->clCenter()).x, double3(m_list[i]->clCenter()).y, double3(m_list[i]->clCenter()).z, 
+					  double3(m_list[i]->clBound1()).x, double3(m_list[i]->clBound1()).y, double3(m_list[i]->clBound1()).z, 
+					  double3(m_list[i]->clBound2()).x, double3(m_list[i]->clBound2()).y, double3(m_list[i]->clBound2()).z, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+
+			hH[i] = { double3(m_list[i]->clColor()).x, double3(m_list[i]->clColor()).y, double3(m_list[i]->clColor()).z, m_list[i]->clFuzz(), m_list[i]->clRefIdx(), double(m_list[i]->clMType()), 0.0, 0.0 };
 		}
 		else {
-			hE[i].m_vCenter = cl_double3(double3(m_list[i]->clCenter()));
-			hE[i].m_dRadius = cl_double(m_list[i]->clRadius());
-			hE[i].m_type = false;
-			hH[i].m_vColor = double3(m_list[i]->clColor());
-			hH[i].m_dFuzz = m_list[i]->clFuzz();
-			hH[i].m_dRefIdx = m_list[i]->clRefIdx();
-			hH[i].m_MType = m_list[i]->clMType();
+			hE[i] = { double3(m_list[i]->clCenter()).x, double3(m_list[i]->clCenter()).y, double3(m_list[i]->clCenter()).z,
+					  double3(m_list[i]->clBound1()).x, double3(m_list[i]->clBound1()).y, double3(m_list[i]->clBound1()).z,
+					  double3(m_list[i]->clBound2()).x, double3(m_list[i]->clBound2()).y, double3(m_list[i]->clBound2()).z,
+					  m_list[i]->clRadius(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+
+			hH[i] = { double3(m_list[i]->clColor()).x, double3(m_list[i]->clColor()).y, double3(m_list[i]->clColor()).z,
+					  m_list[i]->clFuzz(), m_list[i]->clRefIdx(), double(m_list[i]->clMType()), 0.0, 0.0 };
 		}
 	}
 
@@ -247,23 +213,25 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 	cl_mem dA = clCreateBuffer(context, CL_MEM_WRITE_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double4)), NULL, &status);
 	cl_mem dB = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_int2)), NULL, &status);
-	cl_mem dC = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sCamera)), NULL, &status);
+	cl_mem dC = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double16)), NULL, &status);
 	cl_mem dD = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double)), NULL, &status);
-	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sObject)), NULL, &status);
+	cl_mem dE = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double16)), NULL, &status);
 	cl_mem dF = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_int)), NULL, &status);
 	cl_mem dG = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double3)), NULL, &status);
-	cl_mem dH = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(sMaterial)), NULL, &status);
+	cl_mem dH = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double8)), NULL, &status);
 	cl_mem dI = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_double3)), NULL, &status);
+	cl_mem dJ = clCreateBuffer(context, CL_MEM_READ_ONLY, size_t(NUM_ELEMENTS * sizeof(cl_uint2)), NULL, &status);
 
 	status = clEnqueueWriteBuffer(cmdQueue, dA, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double4)), hA, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dB, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_int2)), hB, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sCamera)), hC, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dC, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double16)), hC, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dD, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double)), hD, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sObject)), hE, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dE, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double16)), hE, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dF, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_int)), hF, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dG, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double3)), hG, 0, NULL, NULL);
-	status = clEnqueueWriteBuffer(cmdQueue, dH, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(sMaterial)), hH, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dH, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double8)), hH, 0, NULL, NULL);
 	status = clEnqueueWriteBuffer(cmdQueue, dI, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double3)), hI, 0, NULL, NULL);
+	status = clEnqueueWriteBuffer(cmdQueue, dJ, CL_FALSE, 0, size_t(NUM_ELEMENTS * sizeof(cl_uint2)), hJ, 0, NULL, NULL);
 
 	Wait(cmdQueue);
 
@@ -302,7 +270,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &dG);
 	status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &dH);
 	status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &dI);
-	status = clSetKernelArg(kernel, 9, m_iRaysPerPixel * sizeof(cl_double3), NULL);
+	status = clSetKernelArg(kernel, 9, sizeof(cl_mem), &dJ);
 	
 	size_t globalWorkSize[1] = { size_t(NUM_ELEMENTS) };
 	size_t localWorkSize[1] = { size_t(m_iRaysPerPixel) };
@@ -328,9 +296,9 @@ int RayTracer::clRender(const std::string &strFileName) {
 			int curInt = ((curY - 1) * m_dims.m_iX) + curX;
 			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
 
-			if (i > 10200 && i < 10300) {
+			//if (i > 10200 && i < 10300) {
 				printf("Pixel: %lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-			}
+			//}
 
 		}
 
@@ -359,8 +327,9 @@ int RayTracer::clRender(const std::string &strFileName) {
 		clReleaseMemObject(dG);
 		clReleaseMemObject(dH);
 		clReleaseMemObject(dI);
+		clReleaseMemObject(dJ);
 
-		delete[] hA, hB, hC, hD, hE, hF, hG, hH, hI;
+		delete[] hA, hB, hC, hD, hE, hF, hG, hH, hI, hJ;
 	}
 	return 0;
 }

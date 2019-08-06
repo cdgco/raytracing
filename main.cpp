@@ -4,7 +4,7 @@ int main() {
 
 	RayTracer *ray_tracer = new RayTracer({ 1000, 500 }, 100);
 	
-	ray_tracer->SetCamera(Vector3D(1, 0, 0));
+	ray_tracer->SetCamera(Vector3D(0, 0, 0));
 
 	//ray_tracer->AddItem(new Sphere(Vector3D(0, -1000, 0), 1000, new Lambertian(Vector3D(0.5, 0.5, 0.5))));;
 	/*
@@ -35,12 +35,12 @@ int main() {
 		ray_tracer->AddItem(new Sphere(Vector3D(-4, 1, 0), 1.0, new Dielectric(1.5)));
 		ray_tracer->AddItem(new Sphere(Vector3D(4, 1, 0), 1.0, new Metal(Vector3D(0.7, 0.6, 0.5), 0.0)));
 */
-	ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, 0, Vector3D(.2588,.5294,.9608), 1.0, 1.4));
-	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, new Lambertian(Vector3D(.2588,.5294,.9608))));
+	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, 0, Vector3D(.2588,.5294,.9608), 1.0, 1.4));
+	ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, new Lambertian(Vector3D(.2588,.5294,.9608))));
 	//ray_tracer->AddItem(new Box(Vector3D(-1), Vector3D(1), 0, Vector3D(0,1,0), 0.0, 1.4));
 	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, new Lambertian(Vector3D(0, 0.8, 1))));
-	ray_tracer->AddItem(new Sphere(Vector3D(0, -100.5, 0), 100, 0, Vector3D(0.8, 0.8, 0)));
-	//ray_tracer->AddItem(new Sphere(Vector3D(0, -100.5, 0), 100, new Lambertian(Vector3D(0.8, 0.8, 0))));
+	//ray_tracer->AddItem(new Sphere(Vector3D(0, -100.5, 0), 100, 0, Vector3D(0, 0.8, 0)));
+	ray_tracer->AddItem(new Sphere(Vector3D(0, -100.5, 0), 100, new Lambertian(Vector3D(0, 0.8, 0))));
 	//ray_tracer->AddItem(new Box(Vector3D(-2), Vector3D(2), new Lambertian(Vector3D(0,0,1))));
 	
 	ray_tracer->clRender("ray_tracer");
