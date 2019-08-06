@@ -66,6 +66,9 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 		if (iDepth < 1 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
 			return vAttenuation * Color(rScattered, iDepth + 1);
 		}
+		else if (iDepth == 1 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
+			return vAttenuation;
+		}
 		else {
 			return Vector3D(0);
 		}
@@ -186,9 +189,12 @@ int RayTracer::clRender(const std::string &strFileName) {
 		hJ[0].x = dist(mt);
 		hJ[0].y = dist(mt);
 		hF[i] = m_list.size();
-		hG[i] = double3(Material::RandomInUnitSphere());
-		hI[i] = double3(Camera::RandomInUnitDisk());
+		Vector3D temprand = Material::RandomInUnitSphere();
+		hG[i] = double3(temprand);
+		temprand = Camera::RandomInUnitDisk();
+		hI[i] = double3(temprand);
 	}
+	printf("Rand: %.2lf, %.2lf, %.2lf\n", hG[9]);
 	for (int i = 0; i < int(m_list.size()); i++) {
 		if (m_list[i]->clType() == 1) {
 			hE[i] = { double3(m_list[i]->clCenter()).x, double3(m_list[i]->clCenter()).y, double3(m_list[i]->clCenter()).z, 
@@ -296,9 +302,9 @@ int RayTracer::clRender(const std::string &strFileName) {
 			int curInt = ((curY - 1) * m_dims.m_iX) + curX;
 			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
 
-			//if (i > 10200 && i < 10300) {
+			if (i > 10200 && i < 10300) {
 				printf("Pixel: %lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-			//}
+			}
 
 		}
 

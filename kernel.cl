@@ -32,7 +32,6 @@ typedef struct _cl_tag_HitRecord {
 	Material m_curmat;
 } HitRecord;
 
-
 // Define math functions
 double3 UnitVector(double3 v) {
 	return v / length(v);
@@ -250,7 +249,6 @@ double3 NormalCalc(const double3 vP, const sObject ob) {
 double SquaredLength(double3 m_dE) {
 	return m_dE.x * m_dE.x + m_dE.y * m_dE.y + m_dE.z * m_dE.z;
 }
-// Define external functions
 double drand(uint2 random) {
 	int gid = get_global_id(0);
 	uint seed = random.x + gid;
@@ -262,20 +260,29 @@ double drand(uint2 random) {
 	} while (result > 1.0);
 	return result;
 }
-double3 RandomInUnitSphere(uint2 random) {
-	double3 m_vP;
-	do {
-		m_vP = (double3)(2.0*(double3)(drand(random), drand(random), drand(random)) - (double3)(1));
-	} while (SquaredLength(m_vP) >= 1.0);
-	return m_vP;
+int tenrand(uint2 random) {
+	int lid = get_local_id(0);
+	int gid = get_global_id(0);
+	uint seed = random.x + gid;
+	uint t = seed ^ (seed << 11);
+	uint uimax = UINT_MAX;
+	double result = (double)(random.y ^ (random.y >> 19) ^ (t ^ (t >> 8))) * (lid + 2);
+	if (lid % 2 == 0) {
+		do {
+			result = result / 1.12345;
+		} while (result > 1024);
+		result = (int)(floor((double)(result)));
+	}
+	if (lid % 2 != 0) {
+		do {
+			result = result / 1.13464;
+		} while (result > 1024);
+		result = (int)(ceil((double)(result)));
+	}
+	return result;
 }
-double3 RandomInUnitDisk(uint2 random) {
-	double3 vP;
-	do {
-		vP = (double3)(2.0*(double3)(drand(random), drand(random), 0) - (double3)(1, 1, 0));
-	} while (dot(vP, vP) >= 1.0);
-	return vP;
-}
+
+// Define external functions
 double3 Reflect(const double3 v, const double3 n) {
 	return (double3)(v - 2 * dot(v, n)*n);
 }
@@ -294,24 +301,29 @@ double schlick(double cosine, double ref_idx) {
 	d0 = d0 * d0;
 	return d0 + (1 - d0)*pow((1 - cosine), 5);
 }
-bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *attenuation, Ray *scattered, const double3 rus) {
-	int lid = get_local_id(0);
+bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *attenuation, Ray *scattered, double3 *rus, uint2 randomid) {
 	int gid = get_global_id(0);
 	// Lambertian
 	if (mat->m_MType == 0) {
-		double3 vTarget = rec->m_vP + rec->m_vNormal + rus;
+		double3 rand = rus[tenrand(randomid)];
+		rand.x = rand.x / 5.234;
+		rand.y = rand.y / 5.234;
+		rand.z = rand.z / 5.234;
+		double3 vTarget = (rec->m_vP + rec->m_vNormal) + (double3)rand;
 		*scattered = (Ray) { rec->m_vP, vTarget - rec->m_vP };
 		*attenuation = (double3)mat->m_vColor;
 		return true;
 	}
 	// Metal
 	else if (mat->m_MType == 1) {
+		double3 rand = rus[tenrand(randomid)];
+		rand /= 5.234;
 		Ray scattered1;
 		double fuzz;
 		if (mat->m_dFuzz < 1) { fuzz = mat->m_dFuzz; }
 		else { fuzz = 1; }
 		double3 vReflected = Reflect(UnitVector(r_in.b), rec->m_vNormal);
-		scattered1 = (Ray){ rec->m_vP, vReflected + fuzz * rus};
+		scattered1 = (Ray){ rec->m_vP, vReflected + fuzz * rand};
 		*scattered = scattered1;
 		*attenuation = mat->m_vColor;
 		bool bScatter = (dot(scattered1.b, rec->m_vNormal) > 0);
@@ -424,7 +436,7 @@ bool worldHit(const sObject *x, const Material *m, int ObjLen, const Ray r, HitR
 	}
 	return hitAnything;
 }
-double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, int depth, const double3 rus) {
+double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, int depth, const double3 *rus, uint2 randomid) {
 	int lid = get_local_id(0);
 	int gid = get_global_id(0);
 	HitRecord rec;
@@ -432,13 +444,16 @@ double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, int depth
 		Ray scattered;
 		double3 attenuation;
 		// OpenCL does not support recursive functions, so the ray tracer is limited to 1 ray and 1 shadow ray :(
-		if (depth < 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus)) {
-			return (double3)attenuation*Color(&scattered, x, m, ObjLen, depth + 2, rus);
+		if (depth < 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
+			return (double3)attenuation*Color(&scattered, x, m, ObjLen, depth + 1, rus, randomid);
+		}
+		else if (depth == 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
+			return (double3)attenuation;
 		}
 		else {
 			return (double3)(0);
 		}
-		
+	
 	}
 	else {
 		double3 unitDirection = UnitVector(r->b);
@@ -446,7 +461,8 @@ double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, int depth
 		return (1.0 - t1) + (t1 * (double3)(0.5, 0.7, 1.0));
 	}
 }
-Ray getRay(double s, double t, int2 dims, Camera cam, double3 rud) {
+
+Ray getRay(double s, double t, int2 dims, Camera cam, const double3 *rud, uint2 randomid) {
 	
 	bool v = 0;
 
@@ -473,7 +489,11 @@ Ray getRay(double s, double t, int2 dims, Camera cam, double3 rud) {
 		double3 m_vLowerLeftCorner = vOrigin - (half_width * dFocusDist * m_vU) - (half_height * dFocusDist * m_vV) - (dFocusDist * m_vW);
 		double3 m_vHorizontal = 2 * half_width*dFocusDist*m_vU;
 		double3 m_vVertical = 2 * half_height*dFocusDist*m_vV;
-		double3 rd = lens_radius * rud;
+		double3 rand = rud[tenrand(randomid)];
+		rand.x = rand.x / 5.234;
+		rand.y = rand.y / 5.234;
+		rand.z = rand.z / 5.234;
+		double3 rd = lens_radius * rand;
 		double3 offset = ((m_vU + rd.x) + (m_vV + rd.y));
 
 		return (Ray) { (double3)(vOrigin - offset), (double3)(m_vLowerLeftCorner + (s * m_vHorizontal) + (t * m_vVertical) - vOrigin - offset) };
@@ -486,6 +506,7 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const double
 	int gid = get_global_id(0); // Current ray in image
 	int lid = get_local_id(0); // Current Ray in pixel
 	int raysPerPixel = get_local_size(0); // Number of rays in pixel
+	int gsize = get_global_size(0); // Number of rays in pixel
 	int2 dim = dims[0]; // Image Dimensions
 	int ObjLen = listLen[0]; // # objects in list
 	int wgNum = get_group_id(0);
@@ -496,7 +517,17 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const double
 	// Object list initialized from kernel struct, max objects in image defined by array size
 	sObject world[1024];
 	Material mats[1024];
-	Camera camx[0];
+	Camera camx[1];
+	double3 rus[1024];
+	double3 rud[1024];
+	double drand4[1024];
+
+	for (int i = 0; i < 1024; i++) {
+		rus[i] = (double3)randomInUnitSphere[i];
+		rud[i] = (double3)randomInUnitDisk[i];
+		drand4[i] = drand48[i];
+	}
+
 	for (int i = 0; i < ObjLen; i++) {
 		world[i].m_vCenter = (double3){ list[i].s0, list[i].s1, list[i].s2 };
 		world[i].m_vBounds1 = (double3){ list[i].s3, list[i].s4, list[i].s5 };
@@ -518,14 +549,15 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const double
 	double3 col = (double3)(0);
 
 	int randomid = (int)(floor((double)(gid / lid)));
-
+	double u, v;
 	for (int s = 0; s < raysPerPixel; s++) {
-		double u = (double)(i + (drand(randomseed[0] + s) * drand48[lid + s])) / (double)dim.x;
-		double v = (double)(j + (drand(randomseed[0] + (s * 2)) * drand48[lid + (s *2)])) / (double)dim.y;
-		Ray r = getRay(u, v, dim, camx[0], randomInUnitDisk[(int)(floor((double)(gid / lid)))]);
-		col += Color(&r, &world, &mats, ObjLen, 0, randomInUnitSphere[(int)(floor((double)(gid / lid)))]);
+		int randidx = tenrand(randomseed[lid]);
+		u = (double)(i + drand4[randidx + s - raysPerPixel]) / (double)dim.x;
+		v = (double)(j + drand4[randidx - 1 + s - raysPerPixel]) / (double)dim.y;
+		Ray r = getRay(u, v, dim, camx[0], &rud, randomseed[lid]);
+		col += Color(&r, &world, &mats, ObjLen, 0, &rus, randomseed[lid]);
 	}
 	col = sqrt(col / raysPerPixel);
 
-	pixel[gid] = (double4)(randomInUnitSphere[gid], gid);
+	pixel[gid] = (double4)(col, gid);
 }
