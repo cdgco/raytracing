@@ -13,7 +13,6 @@ cl_double3 double3(const Vector3D &v2) {
 	return { v2.m_dE[0], v2.m_dE[1], v2.m_dE[2] };
 }
 void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
-	if (lookFrom.y() == 0) { lookFrom.m_dE[1] = 0.00000001; }
 	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
 }
 /*! Link renderable objects to ray tracer instance
@@ -24,6 +23,41 @@ void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, d
 */
 void RayTracer::AddItem(Object* object) {
 	m_list.push_back(object);
+}
+void RayTracer::RandomScene() {
+	m_list.push_back(new Sphere(Vector3D(0, -1000, 0), 1000, new Lambertian(Vector3D(0.5, 0.5, 0.5))));;
+
+	int i = 1;
+	for (int a = -11; a < 11; a++) {
+		for (int b = -11; b < 11; b++) {
+			double choose_mat = drand48();
+			Vector3D center(a + 0.9*drand48(), 0.2, b + 0.9*drand48());
+			if ((center - Vector3D(4, 0.2, 0)).Length() > 0.9) {
+				if (choose_mat < 0.4) {  // diffuse box
+					m_list.push_back(new Box(center - .3, center + .3, new Lambertian(Vector3D(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
+				}
+				else if (choose_mat < 0.8) {  // diffuse sphere
+					m_list.push_back(new Sphere(center, 0.2, new Lambertian(Vector3D(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
+				}
+				else if (choose_mat < 0.87) { // metal box
+					m_list.push_back(new Box(center - .3, center + .3, new Metal(Vector3D(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())), 0.5*drand48())));
+				}
+				else if (choose_mat < 0.95) { // metal sphere
+					m_list.push_back(new Sphere(center, 0.2, new Metal(Vector3D(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())), 0.5*drand48())));
+				}
+				else if (choose_mat < 0.97) { // glass box
+					m_list.push_back(new Box(center - .3, center + .3, new Dielectric(1.5)));
+				}
+				else {  // glass sphere
+					m_list.push_back(new Sphere(center, 0.2, new Dielectric(1.5)));
+				}
+			}
+		}
+	}
+
+	m_list.push_back(new Box(Vector3D(-2, 0, -1), Vector3D(0, 2, 1), new Lambertian(Vector3D(0.4, 0.2, 0.1))));
+	m_list.push_back(new Sphere(Vector3D(-5, 1, 1), 1.0, new Dielectric(1.5)));
+	m_list.push_back(new Sphere(Vector3D(4, 1, -1), 1.0, new Metal(Vector3D(0.7, 0.6, 0.5), 0.0)));
 }
 /*! Remove all objects from ray tracer instance vector list
 *
@@ -63,9 +97,9 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 	if (bHitAnything) {
 		Ray rScattered;
 		Vector3D vAttenuation;
-		if (iDepth < 1 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
-			//return vAttenuation * Color(rScattered, iDepth + 1);
-			return 0.5*Vector3D(rec.m_vNormal.x() + 1, rec.m_vNormal.y() + 1, rec.m_vNormal.z() + 1);
+		if (iDepth < 50 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
+			return vAttenuation * Color(rScattered, iDepth + 1);
+			//return 0.5*Vector3D(rec.m_vNormal.x() + 1, rec.m_vNormal.y() + 1, rec.m_vNormal.z() + 1);
 		}
 		else {
 			return Vector3D(0);
@@ -126,7 +160,7 @@ void RayTracer::Render(const std::string &strFileName) {
 		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
 		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
 		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
-		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
+		//system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 	}
 }
 /*! Calculations and image output function for ray tracer instance.
@@ -184,32 +218,27 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 	for (int i = 0; i < NUM_ELEMENTS; i++) {
 		hD[i] = dist(mt);
-		hJ[0].x = dist(mt);
-		hJ[0].y = dist(mt);
+		hJ[0].x = cl_uint(dist(mt));
+		hJ[0].y = cl_uint(dist(mt));
 		hF[i] = m_list.size();
 		Vector3D temprand = Material::RandomInUnitSphere();
 		hG[i] = double3(temprand);
 		temprand = Camera::RandomInUnitDisk();
 		hI[i] = double3(temprand);
 	}
-	printf("Rand: %.2lf, %.2lf, %.2lf\n", hG[9]);
 	for (int i = 0; i < int(m_list.size()); i++) {
 		if (m_list[i]->clType() == 1) {
 			hE[i] = { double3(m_list[i]->clCenter()).x, double3(m_list[i]->clCenter()).y, double3(m_list[i]->clCenter()).z, 
 					  double3(m_list[i]->clBound1()).x, double3(m_list[i]->clBound1()).y, double3(m_list[i]->clBound1()).z, 
 					  double3(m_list[i]->clBound2()).x, double3(m_list[i]->clBound2()).y, double3(m_list[i]->clBound2()).z, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-
-			hH[i] = { double3(m_list[i]->clColor()).x, double3(m_list[i]->clColor()).y, double3(m_list[i]->clColor()).z, m_list[i]->clFuzz(), m_list[i]->clRefIdx(), double(m_list[i]->clMType()), 0.0, 0.0 };
 		}
 		else {
 			hE[i] = { double3(m_list[i]->clCenter()).x, double3(m_list[i]->clCenter()).y, double3(m_list[i]->clCenter()).z,
 					  double3(m_list[i]->clBound1()).x, double3(m_list[i]->clBound1()).y, double3(m_list[i]->clBound1()).z,
 					  double3(m_list[i]->clBound2()).x, double3(m_list[i]->clBound2()).y, double3(m_list[i]->clBound2()).z,
 					  m_list[i]->clRadius(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-
-			hH[i] = { double3(m_list[i]->clColor()).x, double3(m_list[i]->clColor()).y, double3(m_list[i]->clColor()).z,
-					  m_list[i]->clFuzz(), m_list[i]->clRefIdx(), double(m_list[i]->clMType()), 0.0, 0.0 };
 		}
+		hH[i] = m_list[i]->CurMat();
 	}
 
 	cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
@@ -260,7 +289,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 	status = clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, NULL, NULL, &sstr);
 	str = (char*)malloc(sstr);
 	status |= clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sstr, str, NULL);
-	printf("\nBuild Log:\t %s \n", str);
+	printf("\n%s \n", str);
 	free(str);
 
 	cl_kernel kernel = clCreateKernel(program, "Render", &status);
@@ -300,9 +329,9 @@ int RayTracer::clRender(const std::string &strFileName) {
 			int curInt = ((curY - 1) * m_dims.m_iX) + curX;
 			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
 
-			if (i > 10200 && i < 10300) {
-				printf("Pixel: %lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-			}
+			//if (i > 10200 && i < 10300) {
+			//	printf("Pixel: %lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
+			//}
 
 		}
 
@@ -317,7 +346,7 @@ int RayTracer::clRender(const std::string &strFileName) {
 		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
 		printf("\nDimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
 		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
-		system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
+		//system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 
 		clReleaseKernel(kernel);
 		clReleaseProgram(program);

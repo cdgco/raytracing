@@ -385,7 +385,6 @@ bool hit(const sObject x, const Material m, const Ray r, double tMin, double tMa
 		return false;
 	}
 	else if (x.m_type) {
-
 		double3 bounds[2] = { x.m_vBounds1, x.m_vBounds2 };
 
 		int m_iSign[3];
@@ -393,23 +392,30 @@ bool hit(const sObject x, const Material m, const Ray r, double tMin, double tMa
 		m_iSign[1] = (InvDir(r).y < 0);
 		m_iSign[2] = (InvDir(r).z < 0);
 
-		double tmin = ((bounds[m_iSign[0]].x - r.a.x) * InvDir(r).x);
-		double tmax = ((bounds[1 - m_iSign[0]].x - r.a.x) * InvDir(r).x);
-		double tymin = ((bounds[m_iSign[1]].y - r.a.y) * InvDir(r).y);
-		double tymax = ((bounds[1 - m_iSign[1]].y - r.a.y) * InvDir(r).y);
-		double tzmin = ((bounds[m_iSign[2]].z - r.a.z) * InvDir(r).z);
-		double tzmax = ((bounds[1 - m_iSign[2]].z - r.a.z) * InvDir(r).z);
+		double tmin = (bounds[m_iSign[0]].x - r.a.x) * InvDir(r).x;
+		double tmax = (bounds[1 - m_iSign[0]].x - r.a.x) * InvDir(r).x;
+		double tymin = (bounds[m_iSign[1]].y - r.a.y) * InvDir(r).y;
+		double tymax = (bounds[1 - m_iSign[1]].y - r.a.y) * InvDir(r).y;
 
-		if ((tmin > tymax) || (tymin > tmax)) return false;
-		if (tymin > tmin) tmin = tymin;
-		if (tymax < tmax) tmax = tymax;
+		if ((tmin > tymax) || (tymin > tmax)) { return false; }
+		if (tymin > tmin) { tmin = tymin; }
+		if (tymax < tmax) { tmax = tymax; }
 
-		if ((tmin > tzmax) || (tzmin > tmax)) return false;
-		if (tzmin > tmin) tmin = tzmin;
-		if (tzmax < tmax) tmax = tzmax;
+		double tzmin = (bounds[m_iSign[2]].z - r.a.z) * InvDir(r).z;
+		double tzmax = (bounds[1 - m_iSign[2]].z - r.a.z) * InvDir(r).z;
+
+		if ((tmin > tzmax) || (tzmin > tmax)) { return false; }
+		if (tzmin > tmin) { tmin = tzmin; }
+		if (tzmax < tmax) { tmax = tzmax; }
 
 		double dT = tmin;
-		if (dT < 0) { dT = tmax; if (dT < 0) return false; }
+
+		if (dT < 0) {
+			dT = tmax;
+			if (dT < 0) return false;
+		}
+		if (m.m_MType == 0 || m.m_MType == 2) { dT *= 1.000001; }
+		else { dT *= 1.76000001; }
 
 		rec->m_dT = dT;
 		rec->m_vP = PointAtParameter(r, dT);
@@ -432,21 +438,18 @@ bool worldHit(const sObject *x, const Material *m, int ObjLen, const Ray r, HitR
 	}
 	return hitAnything;
 }
-double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, const double3 *rus, uint2 randomid) {
+double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, const double3 *rus, uint2 randomid, int depth) {
 	HitRecord rec;
 	if (worldHit(x, m, ObjLen, *r, &rec)) {
-		/*Ray scattered;
+		Ray scattered;
 		double3 attenuation;
 		// OpenCL does not support recursive functions, so the ray tracer is limited to primary rays only
-		if (scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
-			return (double3)attenuation;
+		if (depth < 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
+			return (double3)attenuation; //*Color(&scattered, x, m, ObjLen, rus, randomid, depth + 1);
 		}
 		else {
 			return (double3)(0);
 		}
-		*/
-		return 0.5*(double3)(rec.m_vNormal.x + 1, rec.m_vNormal.y + 1, rec.m_vNormal.z + 1);
-		//return (double3)(0);
 	}
 	else {
 		double t1 = 0.5*(UnitVector(r->b).y + 1.0);
@@ -454,36 +457,20 @@ double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, const dou
 	}
 }
 Ray getRay(double s, double t, int2 dims, Camera cam, const double3 *rud, uint2 randomid) {
-	
-	bool v = 0;
 
-	double aspect = dims.x / dims.y;
-	double theta = cam.Fov*M_PI / 180;
-	double half_height = tan(theta / 2);
-	double half_width = aspect * half_height;
+	double dHalfHeight = tan(cam.Fov*M_PI / 360);
+	double dHalfWidth = (dims.x / dims.y) * dHalfHeight;
+	double dFocusDist = length(cam.lookFrom - cam.lookAt);
+	double3 vW = UnitVector(cam.lookFrom - cam.lookAt);
+	double3 vU = UnitVector(cross(cam.viewUp, vW));
+	double3 vV = cross(vW, vU);
 	double3 vOrigin = cam.lookFrom;
-	
-	if (!v) {
-		double3 lower_left_corner = { -half_width, -half_height, -1 };
-		double3 horizontal = { 2 * half_width, 0, 0 };
-		double3 vertical = { 0, 2 * half_height, 0 };
-
-		return (Ray) { vOrigin, (double3)(lower_left_corner + (s * horizontal) + (t * vertical) - vOrigin) };
-	}
-	if (v) {
-		double lens_radius = cam.aperture / 2;
-		double dFocusDist = length(cam.lookFrom - cam.lookAt);
-		double3 m_vW = UnitVector(cam.lookFrom - cam.lookAt);
-		double3 m_vU = UnitVector(cross(cam.viewUp, m_vW));
-		double3 m_vV = cross(m_vW, m_vU);
-		double3 lower_left_corner = vOrigin - (half_width * dFocusDist * m_vU) - (half_height * dFocusDist * m_vV) - (dFocusDist * m_vW);
-		double3 horizontal = 2 * half_width*dFocusDist*m_vU;
-		double3 vertical = 2 * half_height*dFocusDist*m_vV;
-		double3 rd = lens_radius * (rud[tenrand(randomid)] / 5.234);
-		double3 offset = ((m_vU + rd.x) + (m_vV + rd.y));
-
-		return (Ray) { (double3)(vOrigin - offset), (double3)(lower_left_corner + (s * horizontal) + (t * vertical) - vOrigin - offset) };
-	}
+	double3 vLowerLeftCorner = vOrigin - (dHalfWidth * dFocusDist * vU) - (dHalfHeight * dFocusDist * vV) - (dFocusDist * vW);
+	double3 vHorizontal = 2 * dHalfWidth*dFocusDist*vU;
+	double3 vVertical = 2 * dHalfHeight*dFocusDist*vV;
+	double3 vRD = (cam.aperture / 2) * (rud[tenrand(randomid)] / 5.234);
+	double3 vOffset = vU * vRD.x + vV * vRD.y;
+	return (Ray) { (double3)(vOrigin + vOffset), (double3)(vLowerLeftCorner + (s * vHorizontal) + (t * vVertical) - vOrigin - vOffset) };
 }
 
 kernel void Render(global double4 *pixel, global int2 *dims, global const double16 *cam, global const double *drand48, global const double16 *list, global const int *listLen, global const double3 *randomInUnitSphere, global const double8 *materials, global const double3 *randomInUnitDisk, global const uint2 *randomseed) {
@@ -539,7 +526,7 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const double
 		double u = (double)(i + drand4[randidx + s - raysPerPixel]) / (double)dim.x;
 		double v = (double)(j + drand4[randidx - 1 + s - raysPerPixel]) / (double)dim.y;
 		Ray r = getRay(u, v, dim, camx[0], &rud, randomseed[lid]);
-		col += Color(&r, &world, &mats, ObjLen, &rus, randomseed[lid]);
+		col += Color(&r, &world, &mats, ObjLen, &rus, randomseed[lid], 0);
 	}
 	col = sqrt(col / raysPerPixel);
 

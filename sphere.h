@@ -2,6 +2,8 @@
 #define SPHERE_H
 
 #include "object.h"
+#include "material.h"
+class Material;
 
 /*! Sphere creation and intersection functions */
 class Sphere : public Object {
@@ -14,7 +16,6 @@ public:
 	*		Sphere(Vector3D(-1), 1, new Lambertian(Vector3D(1, 0, 0)));
 	*/
 	Sphere(Vector3D cen, double r, Material *pm) : m_vCenter(cen), m_dRadius(r), m_pmCurMat(pm) {};
-	Sphere(Vector3D cen, double r, const int type, const Vector3D &color = Vector3D(0), const double dFuzz = 0, const double dRefIdx = 0) : m_vCenter(cen), m_dRadius(r), m_vColor(color), m_iType(type), m_dFuzz(dFuzz), m_dRefIdx(dRefIdx) {};
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
 	int clType() const {
 		return 0;
@@ -31,19 +32,9 @@ public:
 	Vector3D clBound2() const {
 		return Vector3D(0);
 	}
-	Vector3D clColor() const {
-		return m_vColor;
+	virtual cl_double8 CurMat() const {
+		return { cl_double(m_pmCurMat->MatColor().x()), cl_double(m_pmCurMat->MatColor().y()), cl_double(m_pmCurMat->MatColor().z()), cl_double(m_pmCurMat->MatFuzz()), cl_double(m_pmCurMat->MatRef()), cl_double(m_pmCurMat->MatType()), 0, 0 };
 	}
-	virtual int clMType() const {
-		return m_iType;
-	}
-	virtual double clFuzz() const {
-		return m_dFuzz;
-	}
-	virtual double clRefIdx() const {
-		return m_dRefIdx;
-	}
-
 	int m_iType;
 	Vector3D m_vCenter; //!< Vector3D center of Sphere Object
 	Vector3D m_vColor; //!< Vector3D center of Sphere Object

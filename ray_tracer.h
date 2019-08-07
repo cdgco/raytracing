@@ -13,13 +13,8 @@
 #include "box.h"
 #include "omp.h" // OpenMP used for performance tracking only
 
-#define CL_TARGET_OPENCL_VERSION 220
-#pragma warning(disable : 4996)
-#include "CL/cl.h"
-#include "CL/cl_platform.h"
-
 // Optional console progress bar to track render progress. Enable (1); Disable (2). Causes slight performance decrease; Disable for testing.
-#define PROGRESSBAR 1
+#define PROGRESSBAR 0
 
 #if PROGRESSBAR == 1
 #include "progressbar.hpp"
@@ -58,8 +53,9 @@ public:
 	*/
 	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera &cam) : m_dims(dims), m_iRaysPerPixel(iRaysPerPixel), m_camera(cam) {}
 
-	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = .1, double Fov = 90);
+	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = .1, double Fov = 40);
 	virtual void AddItem(Object *object);
+	virtual void RandomScene();
 	virtual Vector3D Color(const Ray &r, int iDepth);
 	virtual void Render(const std::string &strFileName);
 	virtual int clRender(const std::string &strFileName);

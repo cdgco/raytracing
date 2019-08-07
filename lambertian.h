@@ -19,6 +19,18 @@ public:
 		attenuation = m_vAlbedo;
 		return true;
 	}
+	virtual int MatType() const {
+		return 0;
+	}
+	virtual Vector3D MatColor() const {
+		return m_vAlbedo;
+	}
+	virtual double MatFuzz() const {
+		return 0;
+	}
+	virtual double MatRef() const {
+		return 0;
+	}
 	Vector3D m_vAlbedo; //!< Vector3D attenuation of light absorbed or reflected from Object.
 };
 #endif // LAMBERTIAN_H

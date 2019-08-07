@@ -2,6 +2,8 @@
 #define BOX_H
 
 #include "object.h"
+#include "material.h"
+class Material;
 
 /*! Box creation and intersection functions */
 class Box : public Object {
@@ -14,7 +16,6 @@ public:
 	*		Box(Vector3D(-1), Vector3D(1), new Lambertian(Vector3D(1, 0, 0)));
 	*/
 	Box(Vector3D bound1, Vector3D bound2, Material *pm) : m_pmCurMat(pm) { m_vBounds[0] = bound1; m_vBounds[1] = bound2; };
-	Box(Vector3D bound1, Vector3D bound2, const int type, const Vector3D &color = Vector3D(0), const double dFuzz = 0, const double dRefIdx = 0) : m_vColor(color), m_iType(type), m_dFuzz(dFuzz), m_dRefIdx(dRefIdx) { m_vBounds[0] = bound1; m_vBounds[1] = bound2; };
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
 	int clType() const {
 		return 1;
@@ -31,17 +32,8 @@ public:
 	Vector3D clBound2() const {
 		return m_vBounds[1];
 	}
-	Vector3D clColor() const {
-		return m_vColor;
-	}
-	virtual int clMType() const {
-		return m_iType;
-	}
-	virtual double clFuzz() const {
-		return m_dFuzz;
-	}
-	virtual double clRefIdx() const {
-		return m_dRefIdx;
+	virtual cl_double8 CurMat() const {
+		return { cl_double(m_pmCurMat->MatColor().x()), cl_double(m_pmCurMat->MatColor().y()), cl_double(m_pmCurMat->MatColor().z()), cl_double(m_pmCurMat->MatFuzz()), cl_double(m_pmCurMat->MatRef()), cl_double(m_pmCurMat->MatType()), 0, 0 };
 	}
 	virtual Vector3D NormalCalc(const Vector3D inter) const;
 	Material *m_pmCurMat; //!< Pointer to Material that the box should render.
