@@ -38,16 +38,18 @@ int main() {
 
 
 	//OpenCL
-	ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, 0, Vector3D(.2588,.5294,.9608), 1.0, 1.4));
+	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, 0, Vector3D(.2588,.5294,.9608), 1.0, 1.4));
 	//ray_tracer->AddItem(new Sphere(Vector3D(0, -100.5, 0), 100, 0, Vector3D(0, 0.8, 0)));
 	//ray_tracer->AddItem(new Box(Vector3D(-1), Vector3D(1), 0, Vector3D(0,1,0), 0.0, 1.4));
 
 	//CPU
-	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1), 0.5, new Lambertian(Vector3D(.2588, .5294, .9608))));
+	ray_tracer->AddItem(new Sphere(Vector3D(0, 0, -1.1), 0.5, new Lambertian(Vector3D(.9608, .5294, .2588))));
+	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, 0), 0.5, new Metal(Vector3D(.2588, .5294, .9608), 1.4)));
+	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, 1.1), 0.5, new Dielectric(1.3)));
 	//ray_tracer->AddItem(new Sphere(Vector3D(0, -100.5, 0), 100, new Lambertian(Vector3D(0, 0.8, 0))));
 	//ray_tracer->AddItem(new Box(Vector3D(-1), Vector3D(1), new Lambertian(Vector3D(0,0,1))));	
 	
-	ray_tracer->clRender("ray_tracer");
+	ray_tracer->Render("ray_tracer");
 
 	delete ray_tracer;
 	

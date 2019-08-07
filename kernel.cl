@@ -305,10 +305,7 @@ bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *atten
 	int gid = get_global_id(0);
 	// Lambertian
 	if (mat->m_MType == 0) {
-		double3 rand = rus[tenrand(randomid)];
-		rand.x = rand.x / 5.234;
-		rand.y = rand.y / 5.234;
-		rand.z = rand.z / 5.234;
+		double3 rand = (rus[tenrand(randomid)] / 5.234);
 		double3 vTarget = (rec->m_vP + rec->m_vNormal) + (double3)rand;
 		*scattered = (Ray) { rec->m_vP, vTarget - rec->m_vP };
 		*attenuation = (double3)mat->m_vColor;
@@ -316,8 +313,7 @@ bool scatter(Material *mat, const Ray r_in, const HitRecord *rec, double3 *atten
 	}
 	// Metal
 	else if (mat->m_MType == 1) {
-		double3 rand = rus[tenrand(randomid)];
-		rand /= 5.234;
+		double3 rand = (rus[tenrand(randomid)] / 5.234);
 		Ray scattered1;
 		double fuzz;
 		if (mat->m_dFuzz < 1) { fuzz = mat->m_dFuzz; }
@@ -436,32 +432,27 @@ bool worldHit(const sObject *x, const Material *m, int ObjLen, const Ray r, HitR
 	}
 	return hitAnything;
 }
-double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, int depth, const double3 *rus, uint2 randomid) {
-	int lid = get_local_id(0);
-	int gid = get_global_id(0);
+double3 Color(const Ray *r, sObject *x, Material *m, const int ObjLen, const double3 *rus, uint2 randomid) {
 	HitRecord rec;
 	if (worldHit(x, m, ObjLen, *r, &rec)) {
-		Ray scattered;
+		/*Ray scattered;
 		double3 attenuation;
-		// OpenCL does not support recursive functions, so the ray tracer is limited to 1 ray and 1 shadow ray :(
-		if (depth < 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
-			return (double3)attenuation*Color(&scattered, x, m, ObjLen, depth + 1, rus, randomid);
-		}
-		else if (depth == 1 && scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
+		// OpenCL does not support recursive functions, so the ray tracer is limited to primary rays only
+		if (scatter(&rec.m_curmat, *r, &rec, &attenuation, &scattered, rus, randomid)) {
 			return (double3)attenuation;
 		}
 		else {
 			return (double3)(0);
 		}
-	
+		*/
+		return 0.5*(double3)(rec.m_vNormal.x + 1, rec.m_vNormal.y + 1, rec.m_vNormal.z + 1);
+		//return (double3)(0);
 	}
 	else {
-		double3 unitDirection = UnitVector(r->b);
-		double t1 = 0.5*(unitDirection.y + 1.0);
+		double t1 = 0.5*(UnitVector(r->b).y + 1.0);
 		return (1.0 - t1) + (t1 * (double3)(0.5, 0.7, 1.0));
 	}
 }
-
 Ray getRay(double s, double t, int2 dims, Camera cam, const double3 *rud, uint2 randomid) {
 	
 	bool v = 0;
@@ -470,34 +461,28 @@ Ray getRay(double s, double t, int2 dims, Camera cam, const double3 *rud, uint2 
 	double theta = cam.Fov*M_PI / 180;
 	double half_height = tan(theta / 2);
 	double half_width = aspect * half_height;
+	double3 vOrigin = cam.lookFrom;
 	
 	if (!v) {
-		double3 lower_left_corner = (double3)(-half_width, -half_height, -1.0);
-		double3 horizontal = (double3)(2 * half_width, 0.0, 0.0);
-		double3 vertical = (double3)(0.0, 2 * half_height, 0.0);
-		double3 vOrigin = (double3)(0);
+		double3 lower_left_corner = { -half_width, -half_height, -1 };
+		double3 horizontal = { 2 * half_width, 0, 0 };
+		double3 vertical = { 0, 2 * half_height, 0 };
 
-		return (Ray) { (double3)vOrigin, (double3)((double3)lower_left_corner + (double3)(s * horizontal) + (double3)(t * vertical) - (double3)vOrigin) };
+		return (Ray) { vOrigin, (double3)(lower_left_corner + (s * horizontal) + (t * vertical) - vOrigin) };
 	}
 	if (v) {
 		double lens_radius = cam.aperture / 2;
-		double3 vOrigin = cam.lookFrom;
 		double dFocusDist = length(cam.lookFrom - cam.lookAt);
 		double3 m_vW = UnitVector(cam.lookFrom - cam.lookAt);
 		double3 m_vU = UnitVector(cross(cam.viewUp, m_vW));
 		double3 m_vV = cross(m_vW, m_vU);
-		double3 m_vLowerLeftCorner = vOrigin - (half_width * dFocusDist * m_vU) - (half_height * dFocusDist * m_vV) - (dFocusDist * m_vW);
-		double3 m_vHorizontal = 2 * half_width*dFocusDist*m_vU;
-		double3 m_vVertical = 2 * half_height*dFocusDist*m_vV;
-		double3 rand = rud[tenrand(randomid)];
-		rand.x = rand.x / 5.234;
-		rand.y = rand.y / 5.234;
-		rand.z = rand.z / 5.234;
-		double3 rd = lens_radius * rand;
+		double3 lower_left_corner = vOrigin - (half_width * dFocusDist * m_vU) - (half_height * dFocusDist * m_vV) - (dFocusDist * m_vW);
+		double3 horizontal = 2 * half_width*dFocusDist*m_vU;
+		double3 vertical = 2 * half_height*dFocusDist*m_vV;
+		double3 rd = lens_radius * (rud[tenrand(randomid)] / 5.234);
 		double3 offset = ((m_vU + rd.x) + (m_vV + rd.y));
 
-		return (Ray) { (double3)(vOrigin - offset), (double3)(m_vLowerLeftCorner + (s * m_vHorizontal) + (t * m_vVertical) - vOrigin - offset) };
-
+		return (Ray) { (double3)(vOrigin - offset), (double3)(lower_left_corner + (s * horizontal) + (t * vertical) - vOrigin - offset) };
 	}
 }
 
@@ -549,13 +534,12 @@ kernel void Render(global double4 *pixel, global int2 *dims, global const double
 	double3 col = (double3)(0);
 
 	int randomid = (int)(floor((double)(gid / lid)));
-	double u, v;
 	for (int s = 0; s < raysPerPixel; s++) {
 		int randidx = tenrand(randomseed[lid]);
-		u = (double)(i + drand4[randidx + s - raysPerPixel]) / (double)dim.x;
-		v = (double)(j + drand4[randidx - 1 + s - raysPerPixel]) / (double)dim.y;
+		double u = (double)(i + drand4[randidx + s - raysPerPixel]) / (double)dim.x;
+		double v = (double)(j + drand4[randidx - 1 + s - raysPerPixel]) / (double)dim.y;
 		Ray r = getRay(u, v, dim, camx[0], &rud, randomseed[lid]);
-		col += Color(&r, &world, &mats, ObjLen, 0, &rus, randomseed[lid]);
+		col += Color(&r, &world, &mats, ObjLen, &rus, randomseed[lid]);
 	}
 	col = sqrt(col / raysPerPixel);
 
