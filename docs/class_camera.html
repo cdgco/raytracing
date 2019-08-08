@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Camera Class Reference</title>
+<title>C++ / OpenCL Raytracer: Camera Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">C++ Raytracer
+   <div id="projectname">C++ / OpenCL Raytracer
    </div>
   </td>
  </tr>
@@ -87,6 +87,7 @@ $(document).ready(function(){initNavTree('class_camera.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_camera-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -102,8 +103,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8e76a4daf385e7c7eebe1653a3f3ddc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc79d24b2046136de5210185bb9e01aa"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_ray.html">Ray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#afc79d24b2046136de5210185bb9e01aa">GetRay</a> (double s, double t)</td></tr>
 <tr class="separator:afc79d24b2046136de5210185bb9e01aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91415f33582b57c1c9bf43cf3219d4d9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#a91415f33582b57c1c9bf43cf3219d4d9">RandomInUnitDisk</a> ()</td></tr>
-<tr class="separator:a91415f33582b57c1c9bf43cf3219d4d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a86de1055fab138506903009bff8017b1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_camera.html#a86de1055fab138506903009bff8017b1">RandomInUnitDisk</a> ()</td></tr>
+<tr class="separator:a86de1055fab138506903009bff8017b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -258,8 +262,8 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </pre> 
 </div>
 </div>
-<a id="a91415f33582b57c1c9bf43cf3219d4d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91415f33582b57c1c9bf43cf3219d4d9">&#9670;&nbsp;</a></span>RandomInUnitDisk()</h2>
+<a id="a86de1055fab138506903009bff8017b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86de1055fab138506903009bff8017b1">&#9670;&nbsp;</a></span>RandomInUnitDisk()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -268,7 +272,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Camera::RandomInUnitDisk </td>
+          <td class="memname">static <a class="el" href="class_vector3_d.html">Vector3D</a> Camera::RandomInUnitDisk </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -276,7 +280,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

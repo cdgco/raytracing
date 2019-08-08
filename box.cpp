@@ -37,6 +37,12 @@ bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
 	rec = { dT, r.PointAtParameter(dT), NormalCalc(r.PointAtParameter(dT)), m_pmCurMat };
 	return true;
 }
+/*! Return Vector3D surface normal for specified Vector3D point on ray.
+*
+*	Example:
+*
+*		Box::NormalCalc(vP);
+*/
 Vector3D Box::NormalCalc(const Vector3D vP) const {
 	// Intersects within front face
 	if (vP.x() > m_vCenter.x() && (vP.x() == m_vBounds[0].x() || vP.x() == m_vBounds[1].x())) {

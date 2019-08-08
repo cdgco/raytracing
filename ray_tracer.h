@@ -13,13 +13,6 @@
 #include "box.h"
 #include "omp.h" // OpenMP used for performance tracking only
 
-// Optional console progress bar to track render progress. Enable (1); Disable (2). Causes slight performance decrease; Disable for testing.
-#define PROGRESSBAR 0
-
-#if PROGRESSBAR == 1
-#include "progressbar.hpp"
-#endif
-
 /*! \mainpage C++ Ray Tracer
 *
 *	C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
@@ -56,6 +49,8 @@ public:
 	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = .1, double Fov = 40);
 	virtual void AddItem(Object *object);
 	virtual void RandomScene();
+	virtual void ShowPerformance();
+	virtual void OpenImage();
 	virtual Vector3D Color(const Ray &r, int iDepth);
 	virtual void Render(const std::string &strFileName);
 	virtual int clRender(const std::string &strFileName);

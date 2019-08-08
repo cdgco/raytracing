@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Member List</title>
+<title>C++ / OpenCL Raytracer: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">C++ Raytracer
+   <div id="projectname">C++ / OpenCL Raytracer
    </div>
   </td>
  </tr>
@@ -93,19 +93,21 @@ $(document).ready(function(){initNavTree('class_ray_tracer.html','');});
 <p>This is the complete list of members for <a class="el" href="class_ray_tracer.html">RayTracer</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#aa06183ba7829e1200a1bb56da8d90cf6">AddItem</a>(Object *object)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#a9d25b5eff2343dd69cdd3611e3a7299f">clColor</a>(const Ray &amp;r, int iDepth)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362">ClearItems</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#a6353af6b373614eabddbdb1cc58b6d9d">clRender</a>(const std::string &amp;strFileName)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#a3c3f043e7dd6e67ff234f7791282848a">Color</a>(const Ray &amp;r, int iDepth)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#aac767b22c0adf5fd85e03c3130d3fea4">m_camera</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#a118507c48ddd69a9c2ec208cde403ded">m_dims</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#aa065350a257f7ce144cd792001f65d57">m_iRaysPerPixel</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#ae0778dc62cc58b7a50314ac81c02ba0b">m_list</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#a7f59fcfc6b645680b6c5723df307e6e9">RayTracer</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#a249d0cd596cc3c7fb4885d34389ffd95">RayTracer</a>(const SDim &amp;dims, const int iRaysPerPixel=100)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#ad8afcdfc881d72e2199ef4b645a4ee97">RayTracer</a>(const SDim &amp;dims, const int iRaysPerPixel, Camera &amp;cam)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#adee1b8956b5522d79fa34a3491af9bb7">Render</a>(const std::string &amp;strFileName)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#af204216a38d9b97561fd473140314a3e">SetCamera</a>(Vector3D lookFrom, Vector3D lookAt=Vector3D(0), Vector3D viewUp=Vector3D(0, 1, 0), double aperture=0.1, double Fov=40)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362">ClearItems</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#a6353af6b373614eabddbdb1cc58b6d9d">clRender</a>(const std::string &amp;strFileName)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#a3c3f043e7dd6e67ff234f7791282848a">Color</a>(const Ray &amp;r, int iDepth)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#aac767b22c0adf5fd85e03c3130d3fea4">m_camera</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#a118507c48ddd69a9c2ec208cde403ded">m_dims</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#aa065350a257f7ce144cd792001f65d57">m_iRaysPerPixel</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#ae0778dc62cc58b7a50314ac81c02ba0b">m_list</a></td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#a80ed1bbb4abbc9f3600147b8ca6d7ba9">OpenImage</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#ad265ff165d4fa65158f21d55ab56275a">RandomScene</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#a7f59fcfc6b645680b6c5723df307e6e9">RayTracer</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#a249d0cd596cc3c7fb4885d34389ffd95">RayTracer</a>(const SDim &amp;dims, const int iRaysPerPixel=100)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#ad8afcdfc881d72e2199ef4b645a4ee97">RayTracer</a>(const SDim &amp;dims, const int iRaysPerPixel, Camera &amp;cam)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#adee1b8956b5522d79fa34a3491af9bb7">Render</a>(const std::string &amp;strFileName)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_ray_tracer.html#acf143af8680e121745cea13c79f5c59d">SetCamera</a>(Vector3D lookFrom, Vector3D lookAt=Vector3D(0), Vector3D viewUp=Vector3D(0, 1, 0), double aperture=.1, double Fov=40)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_ray_tracer.html#acae1085fc114910358f930344372e619">ShowPerformance</a>()</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>~RayTracer</b>() (defined in <a class="el" href="class_ray_tracer.html">RayTracer</a>)</td><td class="entry"><a class="el" href="class_ray_tracer.html">RayTracer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->

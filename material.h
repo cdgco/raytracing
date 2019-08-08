@@ -22,8 +22,26 @@ public:
 	*		MatType();
 	*/
 	virtual int MatType() const = 0;
+	/*! Return Vector3D value for material color.
+	*
+	*	Example:
+	*
+	*		MatColor();
+	*/
 	virtual Vector3D MatColor() const = 0;
+	/*! Return double value for material fuzz.
+	*
+	*	Example:
+	*
+	*		MatFuzz();
+	*/
 	virtual double MatFuzz() const = 0;
+	/*! Return double value for material refraction index.
+	*
+	*	Example:
+	*
+	*		MatRef();
+	*/
 	virtual double MatRef() const = 0;
 	/*! Return reflected Vector3D for input direction and normal.
 	*

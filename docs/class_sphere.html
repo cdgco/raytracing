@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Sphere Class Reference</title>
+<title>C++ / OpenCL Raytracer: Sphere Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">C++ Raytracer
+   <div id="projectname">C++ / OpenCL Raytracer
    </div>
   </td>
  </tr>
@@ -111,8 +111,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6ce190a28872e2182a22c2161999e03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87ddf107085f97a6c9827faadef8b3f4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#a87ddf107085f97a6c9827faadef8b3f4">Hit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
 <tr class="separator:a87ddf107085f97a6c9827faadef8b3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b5d8c5a768d2e4dee38c85a2a6f8122"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#a1b5d8c5a768d2e4dee38c85a2a6f8122">clHit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
-<tr class="separator:a1b5d8c5a768d2e4dee38c85a2a6f8122"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabe09990a9330a02b5e872feeef57897"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#aabe09990a9330a02b5e872feeef57897">clType</a> () const</td></tr>
+<tr class="separator:aabe09990a9330a02b5e872feeef57897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d2bf514c9f8905497076b17e9c30661"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#a8d2bf514c9f8905497076b17e9c30661">clCenter</a> () const</td></tr>
+<tr class="separator:a8d2bf514c9f8905497076b17e9c30661"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb556db17a6d5dfb6e349d705d5b3d11"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#adb556db17a6d5dfb6e349d705d5b3d11">clRadius</a> () const</td></tr>
+<tr class="separator:adb556db17a6d5dfb6e349d705d5b3d11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a371efc95372ea422a8dce23899f8ef83"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#a371efc95372ea422a8dce23899f8ef83">clBound1</a> () const</td></tr>
+<tr class="separator:a371efc95372ea422a8dce23899f8ef83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec76ceb490f5602ea0df34200be5faf7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#aec76ceb490f5602ea0df34200be5faf7">clBound2</a> () const</td></tr>
+<tr class="separator:aec76ceb490f5602ea0df34200be5faf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb56849ba7d72a69c8f784213184a931"><td class="memItemLeft" align="right" valign="top">virtual cl_double8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#acb56849ba7d72a69c8f784213184a931">CurMat</a> () const</td></tr>
+<tr class="separator:acb56849ba7d72a69c8f784213184a931"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -177,8 +187,8 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a1b5d8c5a768d2e4dee38c85a2a6f8122"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b5d8c5a768d2e4dee38c85a2a6f8122">&#9670;&nbsp;</a></span>clHit()</h2>
+<a id="a371efc95372ea422a8dce23899f8ef83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a371efc95372ea422a8dce23899f8ef83">&#9670;&nbsp;</a></span>clBound1()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,45 +197,167 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Sphere::clHit </td>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Sphere::clBound1 </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_ray.html">Ray</a> &amp;&#160;</td>
-          <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_hit_record.html">HitRecord</a> &amp;&#160;</td>
-          <td class="paramname"><em>rec</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>tMin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>tMax</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Return boolean value if box is hit by specified ray.</p>
-<p>Example: </p><pre class="fragment">Box::clHit(ray, hitrec, 0.001, DBL_MAX);
+<p>Returns first <a class="el" href="class_vector3_d.html">Vector3D</a> bound of object.</p>
+<p>Example: </p><pre class="fragment">clBound1();
 </pre> 
-<p>Implements <a class="el" href="class_object.html">Object</a>.</p>
+<p>Implements <a class="el" href="class_object.html#ac843d579f98bcbc036c2c3432cb9a4dc">Object</a>.</p>
+
+</div>
+</div>
+<a id="aec76ceb490f5602ea0df34200be5faf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec76ceb490f5602ea0df34200be5faf7">&#9670;&nbsp;</a></span>clBound2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Sphere::clBound2 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns second <a class="el" href="class_vector3_d.html">Vector3D</a> bound of object.</p>
+<p>Example: </p><pre class="fragment">clBound2();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#aa47c7c21399076aef74acbab270f2613">Object</a>.</p>
+
+</div>
+</div>
+<a id="a8d2bf514c9f8905497076b17e9c30661"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d2bf514c9f8905497076b17e9c30661">&#9670;&nbsp;</a></span>clCenter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Sphere::clCenter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns <a class="el" href="class_vector3_d.html">Vector3D</a> center of object.</p>
+<p>Example: </p><pre class="fragment">clCenter();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#ae2ba2432f2f0dd6bdc379ff831b9f130">Object</a>.</p>
+
+</div>
+</div>
+<a id="adb556db17a6d5dfb6e349d705d5b3d11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb556db17a6d5dfb6e349d705d5b3d11">&#9670;&nbsp;</a></span>clRadius()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Sphere::clRadius </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns double radius of object.</p>
+<p>Example: </p><pre class="fragment">clRadius();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#a345a6599759ed330d31fd69608e88f91">Object</a>.</p>
+
+</div>
+</div>
+<a id="aabe09990a9330a02b5e872feeef57897"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabe09990a9330a02b5e872feeef57897">&#9670;&nbsp;</a></span>clType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Sphere::clType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns type of object as int. <a class="el" href="class_sphere.html">Sphere</a> (0) or <a class="el" href="class_box.html">Box</a> (1).</p>
+<p>Example: </p><pre class="fragment">clType();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#a525901e1e89a1baf830ff61f69def484">Object</a>.</p>
+
+</div>
+</div>
+<a id="acb56849ba7d72a69c8f784213184a931"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb56849ba7d72a69c8f784213184a931">&#9670;&nbsp;</a></span>CurMat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual cl_double8 Sphere::CurMat </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns cl_double8 formatted object material.</p>
+<p>Example: </p><pre class="fragment">CurMat();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#a938dcd198753ea31820fdb87cf0418fd">Object</a>.</p>
 
 </div>
 </div>
@@ -283,7 +415,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="sphere_8h_source.html">sphere.h</a></li>
-<li>ray_tracer.cpp</li>
 <li>sphere.cpp</li>
 </ul>
 </div><!-- contents -->

@@ -31,7 +31,6 @@ public:
 	}
 
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const;
-
 	virtual int MatType() const {
 		return 2;
 	}

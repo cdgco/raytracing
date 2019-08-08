@@ -3,7 +3,6 @@ var class_camera =
     [ "Camera", "class_camera.html#a01f94c3543f56ede7af49dc778f19331", null ],
     [ "Camera", "class_camera.html#a8e76a4daf385e7c7eebe1653a3f3ddc7", null ],
     [ "GetRay", "class_camera.html#afc79d24b2046136de5210185bb9e01aa", null ],
-    [ "RandomInUnitDisk", "class_camera.html#a91415f33582b57c1c9bf43cf3219d4d9", null ],
     [ "m_dAperture", "class_camera.html#a4410e14f90dbff7f2ae14892bc77bde5", null ],
     [ "m_dFov", "class_camera.html#ada6c8d4c7e67b6d304618a00bf4d5c79", null ],
     [ "m_vHorizontal", "class_camera.html#ac49dd13b4a8dce43d37ff0f8b4c15582", null ],

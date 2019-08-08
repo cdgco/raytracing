@@ -1,8 +1,12 @@
 var searchData=
 [
-  ['scatter',['Scatter',['../class_dielectric.html#a04429b341f68dff811d8214cb1b24f53',1,'Dielectric::Scatter()'],['../class_lambertian.html#ade7e79cd1ea12a9aebe7f3f94a6dd508',1,'Lambertian::Scatter()'],['../class_material.html#a16accf2a15fd22ad8dac96f4a17e7654',1,'Material::Scatter()'],['../class_metal.html#a20b7bfc081ad2005d78e08ff3837bbd4',1,'Metal::Scatter()']]],
-  ['sdim',['SDim',['../struct_s_dim.html',1,'']]],
-  ['setcamera',['SetCamera',['../class_ray_tracer.html#af204216a38d9b97561fd473140314a3e',1,'RayTracer']]],
-  ['sphere',['Sphere',['../class_sphere.html',1,'Sphere'],['../class_sphere.html#a6ce190a28872e2182a22c2161999e03c',1,'Sphere::Sphere()']]],
-  ['squaredlength',['SquaredLength',['../class_vector3_d.html#a6773ac987e2ab0be9ee7881c1a4470c8',1,'Vector3D']]]
+  ['r',['r',['../class_vector3_d.html#ad6d319efb48c26deb8fc418651ff3788',1,'Vector3D']]],
+  ['randominunitdisk',['RandomInUnitDisk',['../class_camera.html#a86de1055fab138506903009bff8017b1',1,'Camera']]],
+  ['randominunitsphere',['RandomInUnitSphere',['../class_material.html#a714b7d7c4c2a9871183bbed2ea5ed5b6',1,'Material']]],
+  ['randomscene',['RandomScene',['../class_ray_tracer.html#ad265ff165d4fa65158f21d55ab56275a',1,'RayTracer']]],
+  ['ray',['Ray',['../class_ray.html',1,'Ray'],['../class_ray.html#a4d5c4b12e9375750324726bd184d4ba5',1,'Ray::Ray()']]],
+  ['raytracer',['RayTracer',['../class_ray_tracer.html',1,'RayTracer'],['../class_ray_tracer.html#a7f59fcfc6b645680b6c5723df307e6e9',1,'RayTracer::RayTracer()'],['../class_ray_tracer.html#a249d0cd596cc3c7fb4885d34389ffd95',1,'RayTracer::RayTracer(const SDim &amp;dims, const int iRaysPerPixel=100)'],['../class_ray_tracer.html#ad8afcdfc881d72e2199ef4b645a4ee97',1,'RayTracer::RayTracer(const SDim &amp;dims, const int iRaysPerPixel, Camera &amp;cam)']]],
+  ['reflect',['Reflect',['../class_material.html#a61e2546b09a6c761d137910e76c60f52',1,'Material']]],
+  ['refract',['Refract',['../class_dielectric.html#a0883e90e42f70d07458e2de57a9c2c73',1,'Dielectric']]],
+  ['render',['Render',['../class_ray_tracer.html#adee1b8956b5522d79fa34a3491af9bb7',1,'RayTracer']]]
 ];

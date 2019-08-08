@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Box Class Reference</title>
+<title>C++ / OpenCL Raytracer: Box Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">C++ Raytracer
+   <div id="projectname">C++ / OpenCL Raytracer
    </div>
   </td>
  </tr>
@@ -111,11 +111,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a23744cb6cbb33cb8a4c6c5c713e2496d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bd2091ead3712b2cc8ee27704d324f2"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a4bd2091ead3712b2cc8ee27704d324f2">Hit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
 <tr class="separator:a4bd2091ead3712b2cc8ee27704d324f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75d77419c2de72b4f2cc455f0efc035f"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a75d77419c2de72b4f2cc455f0efc035f">clHit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
-<tr class="separator:a75d77419c2de72b4f2cc455f0efc035f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15830e2d845b20b07ae799f4eda7b9ba"><td class="memItemLeft" align="right" valign="top"><a id="a15830e2d845b20b07ae799f4eda7b9ba"></a>
-virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>BoxNormal</b> (<a class="el" href="class_vector3_d.html">Vector3D</a> inter) const</td></tr>
-<tr class="separator:a15830e2d845b20b07ae799f4eda7b9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80cfb5901def0650b5eefb68ea27a793"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a80cfb5901def0650b5eefb68ea27a793">clType</a> () const</td></tr>
+<tr class="separator:a80cfb5901def0650b5eefb68ea27a793"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc1b02750888c8648a4ddfe44e0a308f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#abc1b02750888c8648a4ddfe44e0a308f">clCenter</a> () const</td></tr>
+<tr class="separator:abc1b02750888c8648a4ddfe44e0a308f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9af30a365404b0f4e133859bad1880fe"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a9af30a365404b0f4e133859bad1880fe">clRadius</a> () const</td></tr>
+<tr class="separator:a9af30a365404b0f4e133859bad1880fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe4373a2ce3397f5f24887e8a9ba6e22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#abe4373a2ce3397f5f24887e8a9ba6e22">clBound1</a> () const</td></tr>
+<tr class="separator:abe4373a2ce3397f5f24887e8a9ba6e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e8a0f4a643f43fa8a9a4d0cf14de823"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a2e8a0f4a643f43fa8a9a4d0cf14de823">clBound2</a> () const</td></tr>
+<tr class="separator:a2e8a0f4a643f43fa8a9a4d0cf14de823"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a535bc25f958ab43ee14de569a8fa94cc"><td class="memItemLeft" align="right" valign="top">virtual cl_double8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a535bc25f958ab43ee14de569a8fa94cc">CurMat</a> () const</td></tr>
+<tr class="separator:a535bc25f958ab43ee14de569a8fa94cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c45fe1416908c648cbba950886ef4aa"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a2c45fe1416908c648cbba950886ef4aa">NormalCalc</a> (const <a class="el" href="class_vector3_d.html">Vector3D</a> inter) const</td></tr>
+<tr class="separator:a2c45fe1416908c648cbba950886ef4aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -128,7 +137,8 @@ Public Attributes</h2></td></tr>
 <tr class="memdesc:a68f7a80fb0a734d66ed4fb6cdfa16a00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of <a class="el" href="class_vector3_d.html">Vector3D</a> bounds for box. <br /></td></tr>
 <tr class="separator:a68f7a80fb0a734d66ed4fb6cdfa16a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8be3c85fef9a912cfc238f44f1962d01"><td class="memItemLeft" align="right" valign="top"><a id="a8be3c85fef9a912cfc238f44f1962d01"></a>
-<a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_vCenter</b> = <a class="el" href="class_vector3_d.html">Vector3D</a>((<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].x() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].x()) / 2, (<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].y() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].y()) / 2, (<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].z() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].z()) / 2)</td></tr>
+<a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box.html#a8be3c85fef9a912cfc238f44f1962d01">m_vCenter</a> = <a class="el" href="class_vector3_d.html">Vector3D</a>((<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].x() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].x()) / 2, (<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].y() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].y()) / 2, (<a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[0].z() + <a class="el" href="class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00">m_vBounds</a>[1].z()) / 2)</td></tr>
+<tr class="memdesc:a8be3c85fef9a912cfc238f44f1962d01"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_vector3_d.html">Vector3D</a> center of <a class="el" href="class_box.html">Box</a> <a class="el" href="class_object.html">Object</a>. <br /></td></tr>
 <tr class="separator:a8be3c85fef9a912cfc238f44f1962d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -179,8 +189,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a75d77419c2de72b4f2cc455f0efc035f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75d77419c2de72b4f2cc455f0efc035f">&#9670;&nbsp;</a></span>clHit()</h2>
+<a id="abe4373a2ce3397f5f24887e8a9ba6e22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe4373a2ce3397f5f24887e8a9ba6e22">&#9670;&nbsp;</a></span>clBound1()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -189,45 +199,167 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Box::clHit </td>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Box::clBound1 </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_ray.html">Ray</a> &amp;&#160;</td>
-          <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_hit_record.html">HitRecord</a> &amp;&#160;</td>
-          <td class="paramname"><em>rec</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>tMin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>tMax</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Return boolean value if box is hit by specified ray.</p>
-<p>Example: </p><pre class="fragment">Box::clHit(ray, hitrec, 0.001, DBL_MAX);
+<p>Returns first <a class="el" href="class_vector3_d.html">Vector3D</a> bound of object.</p>
+<p>Example: </p><pre class="fragment">clBound1();
 </pre> 
-<p>Implements <a class="el" href="class_object.html">Object</a>.</p>
+<p>Implements <a class="el" href="class_object.html#ac843d579f98bcbc036c2c3432cb9a4dc">Object</a>.</p>
+
+</div>
+</div>
+<a id="a2e8a0f4a643f43fa8a9a4d0cf14de823"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e8a0f4a643f43fa8a9a4d0cf14de823">&#9670;&nbsp;</a></span>clBound2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Box::clBound2 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns second <a class="el" href="class_vector3_d.html">Vector3D</a> bound of object.</p>
+<p>Example: </p><pre class="fragment">clBound2();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#aa47c7c21399076aef74acbab270f2613">Object</a>.</p>
+
+</div>
+</div>
+<a id="abc1b02750888c8648a4ddfe44e0a308f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc1b02750888c8648a4ddfe44e0a308f">&#9670;&nbsp;</a></span>clCenter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Box::clCenter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns <a class="el" href="class_vector3_d.html">Vector3D</a> center of object.</p>
+<p>Example: </p><pre class="fragment">clCenter();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#ae2ba2432f2f0dd6bdc379ff831b9f130">Object</a>.</p>
+
+</div>
+</div>
+<a id="a9af30a365404b0f4e133859bad1880fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9af30a365404b0f4e133859bad1880fe">&#9670;&nbsp;</a></span>clRadius()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Box::clRadius </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns double radius of object.</p>
+<p>Example: </p><pre class="fragment">clRadius();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#a345a6599759ed330d31fd69608e88f91">Object</a>.</p>
+
+</div>
+</div>
+<a id="a80cfb5901def0650b5eefb68ea27a793"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80cfb5901def0650b5eefb68ea27a793">&#9670;&nbsp;</a></span>clType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Box::clType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns type of object as int. <a class="el" href="class_sphere.html">Sphere</a> (0) or <a class="el" href="class_box.html">Box</a> (1).</p>
+<p>Example: </p><pre class="fragment">clType();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#a525901e1e89a1baf830ff61f69def484">Object</a>.</p>
+
+</div>
+</div>
+<a id="a535bc25f958ab43ee14de569a8fa94cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a535bc25f958ab43ee14de569a8fa94cc">&#9670;&nbsp;</a></span>CurMat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual cl_double8 Box::CurMat </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns cl_double8 formatted object material.</p>
+<p>Example: </p><pre class="fragment">CurMat();
+</pre> 
+<p>Implements <a class="el" href="class_object.html#a938dcd198753ea31820fdb87cf0418fd">Object</a>.</p>
 
 </div>
 </div>
@@ -283,10 +415,37 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a2c45fe1416908c648cbba950886ef4aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c45fe1416908c648cbba950886ef4aa">&#9670;&nbsp;</a></span>NormalCalc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> Box::NormalCalc </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td>
+          <td class="paramname"><em>vP</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return <a class="el" href="class_vector3_d.html">Vector3D</a> surface normal for specified <a class="el" href="class_vector3_d.html">Vector3D</a> point on ray.</p>
+<p>Example: </p><pre class="fragment">Box::NormalCalc(vP);
+</pre> 
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="box_8h_source.html">box.h</a></li>
 <li>box.cpp</li>
-<li>ray_tracer.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

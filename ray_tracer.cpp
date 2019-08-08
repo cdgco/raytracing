@@ -1,6 +1,13 @@
 #include "ray_tracer.h"
 #include <memory>
 #include <random>
+
+cl_double3 double3(const Vector3D &v2) {
+	return { v2.m_dE[0], v2.m_dE[1], v2.m_dE[2] };
+}
+double dKilaPixels, dStartTime, dEndTime;
+std::string strFileName;
+
 /*! Specify the desired perspective of the output image for the instance.
 *	Only necessary if camera object not passed through inline initialization.
 *
@@ -9,9 +16,6 @@
 *		ray_tracer->SetCamera(Vector3D(10, 0, 0));
 *
 */
-cl_double3 double3(const Vector3D &v2) {
-	return { v2.m_dE[0], v2.m_dE[1], v2.m_dE[2] };
-}
 void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, double aperture, double Fov) {
 	m_camera = Camera(m_dims, lookFrom, lookAt, viewUp, aperture, Fov);
 }
@@ -24,6 +28,12 @@ void RayTracer::SetCamera(Vector3D lookFrom, Vector3D lookAt, Vector3D viewUp, d
 void RayTracer::AddItem(Object* object) {
 	m_list.push_back(object);
 }
+/*! Add a random set of objects to create a demo scene similar to the cover of Ray Tracing in One Weekend
+*
+*	Example:
+*
+*		ray_tracer->RandomScene();
+*/
 void RayTracer::RandomScene() {
 	m_list.push_back(new Sphere(Vector3D(0, -1000, 0), 1000, new Lambertian(Vector3D(0.5, 0.5, 0.5))));;
 
@@ -76,6 +86,26 @@ void RayTracer::ClearItems() {
 		it = m_list.erase(it);
 	}
 }
+/*! Print performance data to console after image finishes rendering.
+*
+*	Example:
+*
+*		ray_tracer->ShowPerformance();
+*/
+void RayTracer::ShowPerformance() {
+	dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
+	printf("\nDimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
+	printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
+}
+/*! Open image in default image viewer after rendering (Windows Only)
+*
+*	Example:
+*
+*		ray_tracer->OpenImage();
+*/
+void RayTracer::OpenImage() {
+	system(("start " + strFileName + ".ppm").c_str());
+}
 /*! Return Color Vector3D if ray intersects object.
 *
 *	Example:
@@ -117,14 +147,9 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 *
 *		ray_tracer->Render("image");
 */
-void RayTracer::Render(const std::string &strFileName) {
+void RayTracer::Render(const std::string &fileName) {
 
-	#if PROGRESSBAR == 1
-	ProgressBar progressBar(m_dims.m_iY, 70);
-	#endif
-
-	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
-
+	strFileName = fileName;
 	std::ofstream ofImage(strFileName + (std::string)".ppm"); // Open Image File
 	if (ofImage.is_open()) {
 		ofImage << "P3\n" << m_dims.m_iX << " " << m_dims.m_iY << "\n255\n"; // PPM Header with dimensions and color index
@@ -146,21 +171,9 @@ void RayTracer::Render(const std::string &strFileName) {
 				// Convert pixel color values to 8-bit color depth (0-255) and write to file
 				ofImage << int(255.99*col[0]) << " " << int(255.99*col[1]) << " " << int(255.99*col[2]) << "\n";
 			}
-			#if PROGRESSBAR == 1
-			++progressBar;
-			progressBar.display();
-			#endif
 		}
 		dEndTime = omp_get_wtime(); // Stop tracking performance
-
 		ofImage.close(); // Close image file
-		#if PROGRESSBAR == 1
-		progressBar.done();
-		#endif
-		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
-		printf("Dimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
-		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
-		//system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 	}
 }
 /*! Calculations and image output function for ray tracer instance.
@@ -169,12 +182,11 @@ void RayTracer::Render(const std::string &strFileName) {
 *
 *		ray_tracer->Render("image");
 */
-int RayTracer::clRender(const std::string &strFileName) {
+int RayTracer::clRender(const std::string &fileName) {
 
 	#define	NUM_ELEMENTS m_dims.m_iX * m_dims.m_iY
 
-	double dStartTime, dEndTime, dKilaPixels; // Initialize Performance Variables
-
+	strFileName = fileName;
 	const char * CL_FILE_NAME = { "kernel.cl" };
 	void Wait(cl_command_queue);
 
@@ -319,7 +331,6 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 		status = clEnqueueReadBuffer(cmdQueue, dA, CL_TRUE, 0, size_t(NUM_ELEMENTS * sizeof(cl_double4)), hA, 0, NULL, NULL);
 
-		// PRINTS IMAGE VERTICALLY MIRRORED
 		for (int i = NUM_ELEMENTS - 1; i >= 0; i--) {
 
 			double ix = 1 + (i / m_dims.m_iX);
@@ -328,25 +339,10 @@ int RayTracer::clRender(const std::string &strFileName) {
 
 			int curInt = ((curY - 1) * m_dims.m_iX) + curX;
 			ofImage << int(255.99*hA[curInt].x) << " " << int(255.99*hA[curInt].y) << " " << int(255.99*hA[curInt].z) << "\n";
-
-			//if (i > 10200 && i < 10300) {
-			//	printf("Pixel: %lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-			//}
-
 		}
 
 		dEndTime = omp_get_wtime(); // Stop tracking performance
-
 		ofImage.close(); // Close image file
-		/*
-		for (int i = 0; i < 50; i++) {
-			printf("Pixel: %.2lf\t Vector3D(%.2lf, %.2lf, %.2lf)\tRGB(%d, %d, %d)\n", hA[i].w, hA[i].x, hA[i].y, hA[i].z, int(255.99*hA[i].x), int(255.99*hA[i].y), int(255.99*hA[i].z));
-		}
-		*/
-		dKilaPixels = ((double)m_dims.m_iX * (double)m_dims.m_iY) / (dEndTime - dStartTime) / 1000; // Calculate Performance
-		printf("\nDimensions\tNum Objects\tRays Per Pixel\tPerformance (KP/Sec)\tExecution Time (Sec)\n"); // Output Performance
-		printf("%d x %d\t%zu\t\t%d\t\t%8.3lf\t\t%8.3lf\n", m_dims.m_iX, m_dims.m_iY, m_list.size(), m_iRaysPerPixel, dKilaPixels, (dEndTime - dStartTime));
-		//system(("start " + strFileName + ".ppm").c_str()); // Open image automatically after rendering
 
 		clReleaseKernel(kernel);
 		clReleaseProgram(program);

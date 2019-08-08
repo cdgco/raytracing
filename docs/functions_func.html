@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Class Members - Functions</title>
+<title>C++ / OpenCL Raytracer: Class Members - Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">C++ Raytracer
+   <div id="projectname">C++ / OpenCL Raytracer
    </div>
   </td>
  </tr>
@@ -108,24 +108,47 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>Camera()
 : <a class="el" href="class_camera.html#a8e76a4daf385e7c7eebe1653a3f3ddc7">Camera</a>
 </li>
-<li>clColor()
-: <a class="el" href="class_ray_tracer.html#a9d25b5eff2343dd69cdd3611e3a7299f">RayTracer</a>
+<li>clBound1()
+: <a class="el" href="class_box.html#abe4373a2ce3397f5f24887e8a9ba6e22">Box</a>
+, <a class="el" href="class_object.html#ac843d579f98bcbc036c2c3432cb9a4dc">Object</a>
+, <a class="el" href="class_sphere.html#a371efc95372ea422a8dce23899f8ef83">Sphere</a>
+</li>
+<li>clBound2()
+: <a class="el" href="class_box.html#a2e8a0f4a643f43fa8a9a4d0cf14de823">Box</a>
+, <a class="el" href="class_object.html#aa47c7c21399076aef74acbab270f2613">Object</a>
+, <a class="el" href="class_sphere.html#aec76ceb490f5602ea0df34200be5faf7">Sphere</a>
+</li>
+<li>clCenter()
+: <a class="el" href="class_box.html#abc1b02750888c8648a4ddfe44e0a308f">Box</a>
+, <a class="el" href="class_object.html#ae2ba2432f2f0dd6bdc379ff831b9f130">Object</a>
+, <a class="el" href="class_sphere.html#a8d2bf514c9f8905497076b17e9c30661">Sphere</a>
 </li>
 <li>ClearItems()
 : <a class="el" href="class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362">RayTracer</a>
 </li>
-<li>clHit()
-: <a class="el" href="class_box.html#a75d77419c2de72b4f2cc455f0efc035f">Box</a>
-, <a class="el" href="class_sphere.html#a1b5d8c5a768d2e4dee38c85a2a6f8122">Sphere</a>
+<li>clRadius()
+: <a class="el" href="class_box.html#a9af30a365404b0f4e133859bad1880fe">Box</a>
+, <a class="el" href="class_object.html#a345a6599759ed330d31fd69608e88f91">Object</a>
+, <a class="el" href="class_sphere.html#adb556db17a6d5dfb6e349d705d5b3d11">Sphere</a>
 </li>
 <li>clRender()
 : <a class="el" href="class_ray_tracer.html#a6353af6b373614eabddbdb1cc58b6d9d">RayTracer</a>
+</li>
+<li>clType()
+: <a class="el" href="class_box.html#a80cfb5901def0650b5eefb68ea27a793">Box</a>
+, <a class="el" href="class_object.html#a525901e1e89a1baf830ff61f69def484">Object</a>
+, <a class="el" href="class_sphere.html#aabe09990a9330a02b5e872feeef57897">Sphere</a>
 </li>
 <li>Color()
 : <a class="el" href="class_ray_tracer.html#a3c3f043e7dd6e67ff234f7791282848a">RayTracer</a>
 </li>
 <li>Cross()
 : <a class="el" href="class_vector3_d.html#aea3a9fdfc0d832925cf15176db04d5c2">Vector3D</a>
+</li>
+<li>CurMat()
+: <a class="el" href="class_box.html#a535bc25f958ab43ee14de569a8fa94cc">Box</a>
+, <a class="el" href="class_object.html#a938dcd198753ea31820fdb87cf0418fd">Object</a>
+, <a class="el" href="class_sphere.html#acb56849ba7d72a69c8f784213184a931">Sphere</a>
 </li>
 </ul>
 
@@ -176,13 +199,47 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>MakeUnitVector()
 : <a class="el" href="class_vector3_d.html#a1ccb8f460798069aa3fc86b53287d69c">Vector3D</a>
 </li>
+<li>MatColor()
+: <a class="el" href="class_dielectric.html#aacf25febc79937c8e3aba4637747b490">Dielectric</a>
+, <a class="el" href="class_lambertian.html#a22d59de20f59ed42e391fe5c64c2b751">Lambertian</a>
+, <a class="el" href="class_material.html#a20ce74a8a319ab494d525e50d171f4b3">Material</a>
+, <a class="el" href="class_metal.html#a3c90c890709abbf4b75e219630a0b043">Metal</a>
+</li>
+<li>MatFuzz()
+: <a class="el" href="class_dielectric.html#ad6f85fb0db28bf3349d5cc19ca02ec42">Dielectric</a>
+, <a class="el" href="class_lambertian.html#a821c79e7d74a90880c1db355dc9d5256">Lambertian</a>
+, <a class="el" href="class_material.html#a1ec0c28fbedd8b94df056150197d0ae6">Material</a>
+, <a class="el" href="class_metal.html#aef8f5d70ed29a1c69152ee85ecc1689c">Metal</a>
+</li>
+<li>MatRef()
+: <a class="el" href="class_dielectric.html#a2e412aec6108ba04ef0d7b441c32348b">Dielectric</a>
+, <a class="el" href="class_lambertian.html#a55a1fa265fb0bc24eff12a9c624043a9">Lambertian</a>
+, <a class="el" href="class_material.html#a617e62a96982bfe1bd63924fee1ed761">Material</a>
+, <a class="el" href="class_metal.html#abe9c41a9e1ed1fd291939b40035f30e7">Metal</a>
+</li>
+<li>MatType()
+: <a class="el" href="class_dielectric.html#a936f7e7f95354a96302248121195ea92">Dielectric</a>
+, <a class="el" href="class_lambertian.html#a007f966868212095072d2aeff229ac69">Lambertian</a>
+, <a class="el" href="class_material.html#ae76fd2d097c7fc4a2f6599e111bc4e93">Material</a>
+, <a class="el" href="class_metal.html#a3ff26866968b81ec3b569e2df2ec1b34">Metal</a>
+</li>
 <li>Metal()
 : <a class="el" href="class_metal.html#a62a0a25fb987ea0a309954e18906bddc">Metal</a>
 </li>
 </ul>
 
 
+<h3><a id="index_n"></a>- n -</h3><ul>
+<li>NormalCalc()
+: <a class="el" href="class_box.html#a2c45fe1416908c648cbba950886ef4aa">Box</a>
+</li>
+</ul>
+
+
 <h3><a id="index_o"></a>- o -</h3><ul>
+<li>OpenImage()
+: <a class="el" href="class_ray_tracer.html#a80ed1bbb4abbc9f3600147b8ca6d7ba9">RayTracer</a>
+</li>
 <li>operator *=()
 : <a class="el" href="class_vector3_d.html#af75dcb559424735d74c87758ac1bcc9b">Vector3D</a>
 </li>
@@ -199,7 +256,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 : <a class="el" href="class_vector3_d.html#a9ad48e34c6f1a31704f4f0e8b62fb69f">Vector3D</a>
 </li>
 <li>operator/=()
-: <a class="el" href="class_vector3_d.html#a445f80c212f2bf8f3965d27217f42836">Vector3D</a>
+: <a class="el" href="class_vector3_d.html#a660a25ad22afee2680dfdfbd6a9f5308">Vector3D</a>
 </li>
 <li>operator[]()
 : <a class="el" href="class_vector3_d.html#afe5b7a31ea91bc3ce01d7e81a388d8ff">Vector3D</a>
@@ -222,10 +279,13 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 : <a class="el" href="class_vector3_d.html#ad6d319efb48c26deb8fc418651ff3788">Vector3D</a>
 </li>
 <li>RandomInUnitDisk()
-: <a class="el" href="class_camera.html#a91415f33582b57c1c9bf43cf3219d4d9">Camera</a>
+: <a class="el" href="class_camera.html#a86de1055fab138506903009bff8017b1">Camera</a>
 </li>
 <li>RandomInUnitSphere()
 : <a class="el" href="class_material.html#a714b7d7c4c2a9871183bbed2ea5ed5b6">Material</a>
+</li>
+<li>RandomScene()
+: <a class="el" href="class_ray_tracer.html#ad265ff165d4fa65158f21d55ab56275a">RayTracer</a>
 </li>
 <li>Ray()
 : <a class="el" href="class_ray.html#a4d5c4b12e9375750324726bd184d4ba5">Ray</a>
@@ -253,7 +313,10 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 , <a class="el" href="class_metal.html#a20b7bfc081ad2005d78e08ff3837bbd4">Metal</a>
 </li>
 <li>SetCamera()
-: <a class="el" href="class_ray_tracer.html#af204216a38d9b97561fd473140314a3e">RayTracer</a>
+: <a class="el" href="class_ray_tracer.html#acf143af8680e121745cea13c79f5c59d">RayTracer</a>
+</li>
+<li>ShowPerformance()
+: <a class="el" href="class_ray_tracer.html#acae1085fc114910358f930344372e619">RayTracer</a>
 </li>
 <li>Sphere()
 : <a class="el" href="class_sphere.html#a6ce190a28872e2182a22c2161999e03c">Sphere</a>

@@ -19,7 +19,7 @@ var searchData=
   ['m_5fvalbedo',['m_vAlbedo',['../class_lambertian.html#a85ee6109887971f74021e08d46d20bd9',1,'Lambertian::m_vAlbedo()'],['../class_metal.html#af803d7f06cf86e6993a56613b4b4dee4',1,'Metal::m_vAlbedo()']]],
   ['m_5fvb',['m_vB',['../class_ray.html#a7623b738a013585c1cbd5fa3bc86a7d1',1,'Ray']]],
   ['m_5fvbounds',['m_vBounds',['../class_box.html#a68f7a80fb0a734d66ed4fb6cdfa16a00',1,'Box']]],
-  ['m_5fvcenter',['m_vCenter',['../class_sphere.html#ade29546cc2a206bbc239e676363b1184',1,'Sphere']]],
+  ['m_5fvcenter',['m_vCenter',['../class_box.html#a8be3c85fef9a912cfc238f44f1962d01',1,'Box::m_vCenter()'],['../class_sphere.html#ade29546cc2a206bbc239e676363b1184',1,'Sphere::m_vCenter()']]],
   ['m_5fvhorizontal',['m_vHorizontal',['../class_camera.html#ac49dd13b4a8dce43d37ff0f8b4c15582',1,'Camera']]],
   ['m_5fvinvdir',['m_vInvDir',['../class_ray.html#af844069a5e30a68afe21148d17ee7bb8',1,'Ray']]],
   ['m_5fvlookat',['m_vLookAt',['../class_camera.html#a606d13fb739b9e864b72b3aa3ebfd610',1,'Camera']]],

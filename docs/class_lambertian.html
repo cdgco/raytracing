@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>C++ Raytracer: Lambertian Class Reference</title>
+<title>C++ / OpenCL Raytracer: Lambertian Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">C++ Raytracer
+   <div id="projectname">C++ / OpenCL Raytracer
    </div>
   </td>
  </tr>
@@ -111,6 +111,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a18404393ce4347b7f32aeb82d115b9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade7e79cd1ea12a9aebe7f3f94a6dd508"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lambertian.html#ade7e79cd1ea12a9aebe7f3f94a6dd508">Scatter</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r_in, const <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, <a class="el" href="class_vector3_d.html">Vector3D</a> &amp;attenuation, <a class="el" href="class_ray.html">Ray</a> &amp;scattered) const</td></tr>
 <tr class="separator:ade7e79cd1ea12a9aebe7f3f94a6dd508"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a007f966868212095072d2aeff229ac69"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lambertian.html#a007f966868212095072d2aeff229ac69">MatType</a> () const</td></tr>
+<tr class="separator:a007f966868212095072d2aeff229ac69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d59de20f59ed42e391fe5c64c2b751"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lambertian.html#a22d59de20f59ed42e391fe5c64c2b751">MatColor</a> () const</td></tr>
+<tr class="separator:a22d59de20f59ed42e391fe5c64c2b751"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a821c79e7d74a90880c1db355dc9d5256"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lambertian.html#a821c79e7d74a90880c1db355dc9d5256">MatFuzz</a> () const</td></tr>
+<tr class="separator:a821c79e7d74a90880c1db355dc9d5256"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55a1fa265fb0bc24eff12a9c624043a9"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lambertian.html#a55a1fa265fb0bc24eff12a9c624043a9">MatRef</a> () const</td></tr>
+<tr class="separator:a55a1fa265fb0bc24eff12a9c624043a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -159,6 +167,122 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a22d59de20f59ed42e391fe5c64c2b751"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22d59de20f59ed42e391fe5c64c2b751">&#9670;&nbsp;</a></span>MatColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="class_vector3_d.html">Vector3D</a> Lambertian::MatColor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return <a class="el" href="class_vector3_d.html">Vector3D</a> value for material color.</p>
+<p>Example: </p><pre class="fragment">MatColor();
+</pre> 
+<p>Implements <a class="el" href="class_material.html#a20ce74a8a319ab494d525e50d171f4b3">Material</a>.</p>
+
+</div>
+</div>
+<a id="a821c79e7d74a90880c1db355dc9d5256"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a821c79e7d74a90880c1db355dc9d5256">&#9670;&nbsp;</a></span>MatFuzz()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual double Lambertian::MatFuzz </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return double value for material fuzz.</p>
+<p>Example: </p><pre class="fragment">MatFuzz();
+</pre> 
+<p>Implements <a class="el" href="class_material.html#a1ec0c28fbedd8b94df056150197d0ae6">Material</a>.</p>
+
+</div>
+</div>
+<a id="a55a1fa265fb0bc24eff12a9c624043a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55a1fa265fb0bc24eff12a9c624043a9">&#9670;&nbsp;</a></span>MatRef()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual double Lambertian::MatRef </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return double value for material refraction index.</p>
+<p>Example: </p><pre class="fragment">MatRef();
+</pre> 
+<p>Implements <a class="el" href="class_material.html#a617e62a96982bfe1bd63924fee1ed761">Material</a>.</p>
+
+</div>
+</div>
+<a id="a007f966868212095072d2aeff229ac69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a007f966868212095072d2aeff229ac69">&#9670;&nbsp;</a></span>MatType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int Lambertian::MatType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return int value based on which material an object has. Used to determine normal calculation for box</p>
+<p>Example: </p><pre class="fragment">MatType();
+</pre> 
+<p>Implements <a class="el" href="class_material.html#ae76fd2d097c7fc4a2f6599e111bc4e93">Material</a>.</p>
+
+</div>
+</div>
 <a id="ade7e79cd1ea12a9aebe7f3f94a6dd508"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ade7e79cd1ea12a9aebe7f3f94a6dd508">&#9670;&nbsp;</a></span>Scatter()</h2>
 

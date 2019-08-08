@@ -17,6 +17,7 @@ public:
 	*/
 	Sphere(Vector3D cen, double r, Material *pm) : m_vCenter(cen), m_dRadius(r), m_pmCurMat(pm) {};
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
+	
 	int clType() const {
 		return 0;
 	}
@@ -35,12 +36,8 @@ public:
 	virtual cl_double8 CurMat() const {
 		return { cl_double(m_pmCurMat->MatColor().x()), cl_double(m_pmCurMat->MatColor().y()), cl_double(m_pmCurMat->MatColor().z()), cl_double(m_pmCurMat->MatFuzz()), cl_double(m_pmCurMat->MatRef()), cl_double(m_pmCurMat->MatType()), 0, 0 };
 	}
-	int m_iType;
 	Vector3D m_vCenter; //!< Vector3D center of Sphere Object
-	Vector3D m_vColor; //!< Vector3D center of Sphere Object
 	double m_dRadius; //!< Radius of Sphere Object
-	double m_dFuzz; //!< Radius of Sphere Object
-	double m_dRefIdx; //!< Radius of Sphere Object
 	Material *m_pmCurMat; //!< Pointer to Material that the Sphere should render.
 };
 

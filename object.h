@@ -33,11 +33,47 @@ public:
 	*		Hit(ray, hitrec, 0.001, DBL_MAX);
 	*/
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const = 0;
+	/*! Returns type of object as int. Sphere (0) or Box (1).
+	*
+	*	Example:
+	*
+	*		clType();
+	*/
 	virtual int clType() const = 0;
+	/*! Returns Vector3D center of object.
+	*
+	*	Example:
+	*
+	*		clCenter();
+	*/
 	virtual Vector3D clCenter() const = 0;
+	/*! Returns double radius of object.
+	*
+	*	Example:
+	*
+	*		clRadius();
+	*/
 	virtual double clRadius() const = 0;
+	/*! Returns first Vector3D bound of object.
+	*
+	*	Example:
+	*
+	*		clBound1();
+	*/
 	virtual Vector3D clBound1() const = 0;
+	/*! Returns second Vector3D bound of object.
+	*
+	*	Example:
+	*
+	*		clBound2();
+	*/
 	virtual Vector3D clBound2() const = 0;
+	/*! Returns cl_double8 formatted object material.
+	*
+	*	Example:
+	*
+	*		CurMat();
+	*/
 	virtual cl_double8 CurMat() const = 0;
 };
 
