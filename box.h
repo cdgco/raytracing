@@ -17,6 +17,7 @@ public:
 	*/
 	Box(Vector3D bound1, Vector3D bound2, Material *pm) : m_pmCurMat(pm) { m_vBounds[0] = bound1; m_vBounds[1] = bound2; };
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const;
+
 	int clType() const {
 		return 1;
 	}
@@ -43,5 +44,6 @@ public:
 	Vector3D m_vColor; //!< Vector3D center of Sphere Object
 	double m_dFuzz; //!< Radius of Sphere Object
 	double m_dRefIdx; //!< Radius of Sphere Object
+
 };
 #endif // BOXH
