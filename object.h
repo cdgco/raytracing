@@ -2,6 +2,11 @@
 #define OBJECT_H
 
 #include "ray.h"
+#define CL_TARGET_OPENCL_VERSION 220
+#pragma warning(disable : 4996)
+#pragma warning(disable : 4244)
+#include "CL/cl.h"
+#include "CL/cl_platform.h"
 
 class Material;
 
@@ -28,6 +33,12 @@ public:
 	*		Hit(ray, hitrec, 0.001, DBL_MAX);
 	*/
 	virtual bool Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const = 0;
+	virtual int clType() const = 0;
+	virtual Vector3D clCenter() const = 0;
+	virtual double clRadius() const = 0;
+	virtual Vector3D clBound1() const = 0;
+	virtual Vector3D clBound2() const = 0;
+	virtual cl_double8 CurMat() const = 0;
 };
 
 typedef std::vector<Object*> vList;

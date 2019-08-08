@@ -15,6 +15,16 @@ public:
 	*		Scatter(StartingRay, rec, attenuation, ScatteredRay);
 	*/
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const = 0;
+	/*! Return int value based on which material an object has. Used to determine normal calculation for box
+	*
+	*	Example:
+	*
+	*		MatType();
+	*/
+	virtual int MatType() const = 0;
+	virtual Vector3D MatColor() const = 0;
+	virtual double MatFuzz() const = 0;
+	virtual double MatRef() const = 0;
 	/*! Return reflected Vector3D for input direction and normal.
 	*
 	*	Example:

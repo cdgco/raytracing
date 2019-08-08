@@ -111,6 +111,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6ce190a28872e2182a22c2161999e03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87ddf107085f97a6c9827faadef8b3f4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#a87ddf107085f97a6c9827faadef8b3f4">Hit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
 <tr class="separator:a87ddf107085f97a6c9827faadef8b3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b5d8c5a768d2e4dee38c85a2a6f8122"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sphere.html#a1b5d8c5a768d2e4dee38c85a2a6f8122">clHit</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, <a class="el" href="struct_hit_record.html">HitRecord</a> &amp;rec, double tMin, double tMax) const</td></tr>
+<tr class="separator:a1b5d8c5a768d2e4dee38c85a2a6f8122"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -175,6 +177,58 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1b5d8c5a768d2e4dee38c85a2a6f8122"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b5d8c5a768d2e4dee38c85a2a6f8122">&#9670;&nbsp;</a></span>clHit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Sphere::clHit </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_ray.html">Ray</a> &amp;&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_hit_record.html">HitRecord</a> &amp;&#160;</td>
+          <td class="paramname"><em>rec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tMin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tMax</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return boolean value if box is hit by specified ray.</p>
+<p>Example: </p><pre class="fragment">Box::clHit(ray, hitrec, 0.001, DBL_MAX);
+</pre> 
+<p>Implements <a class="el" href="class_object.html">Object</a>.</p>
+
+</div>
+</div>
 <a id="a87ddf107085f97a6c9827faadef8b3f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87ddf107085f97a6c9827faadef8b3f4">&#9670;&nbsp;</a></span>Hit()</h2>
 
@@ -229,6 +283,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="sphere_8h_source.html">sphere.h</a></li>
+<li>ray_tracer.cpp</li>
 <li>sphere.cpp</li>
 </ul>
 </div><!-- contents -->

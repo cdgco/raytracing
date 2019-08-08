@@ -1,4 +1,5 @@
 #include "box.h"
+#include "material.h"
 
 /*! Return boolean value if box is hit by specified ray.
 *
@@ -7,25 +8,33 @@
 *		Box::Hit(ray, hitrec, 0.001, DBL_MAX);
 */
 bool Box::Hit(const Ray &r, HitRecord &rec, double tMin, double tMax) const {
-	double tmin = (m_vBounds[r.m_iSign[0]].x() - r.Origin().x()) * r.m_vInvDir.x();
-	double tmax = (m_vBounds[1 - r.m_iSign[0]].x() - r.Origin().x()) * r.m_vInvDir.x();
-	double tymin = (m_vBounds[r.m_iSign[1]].y() - r.Origin().y()) * r.m_vInvDir.y();
-	double tymax = (m_vBounds[1 - r.m_iSign[1]].y() - r.Origin().y()) * r.m_vInvDir.y();
-	double tzmin = (m_vBounds[r.m_iSign[2]].z() - r.Origin().z()) * r.m_vInvDir.z();
-	double tzmax = (m_vBounds[1 - r.m_iSign[2]].z() - r.Origin().z()) * r.m_vInvDir.z();
+	Vector3D bounds[2] = { m_vBounds[0], m_vBounds[1] };
 
-	if ((tmin > tymax) || (tymin > tmax)) return false;
-	if (tymin > tmin) tmin = tymin;
-	if (tymax < tmax) tmax = tymax;
+	double tmin = (bounds[r.m_iSign[0]].x() - r.m_vA.x()) * r.m_vInvDir.x();
+	double tmax = (bounds[1 - r.m_iSign[0]].x() - r.m_vA.x()) * r.m_vInvDir.x();
+	double tymin = (bounds[r.m_iSign[1]].y() - r.m_vA.y()) * r.m_vInvDir.y();
+	double tymax = (bounds[1 - r.m_iSign[1]].y() - r.m_vA.y()) * r.m_vInvDir.y();
 
-	if ((tmin > tzmax) || (tzmin > tmax)) return false;
-	if (tzmin > tmin) tmin = tzmin;
-	if (tzmax < tmax) tmax = tzmax;
+	if ((tmin > tymax) || (tymin > tmax)) { return false; }
+	if (tymin > tmin) { tmin = tymin; }
+	if (tymax < tmax) { tmax = tymax; }
+
+	double tzmin = (bounds[r.m_iSign[2]].z() - r.m_vA.z()) * r.m_vInvDir.z();
+	double tzmax = (bounds[1 - r.m_iSign[2]].z() - r.m_vA.z()) * r.m_vInvDir.z();
+
+	if ((tmin > tzmax) || (tzmin > tmax)) { return false; }
+	if (tzmin > tmin) { tmin = tzmin; }
+	if (tzmax < tmax) { tmax = tzmax; }
 
 	double dT = tmin;
-	if (dT < 0) { dT = tmax; if (dT < 0) return false; }
 
-	rec = { dT, r.PointAtParameter(dT), NormalCalc(r.PointAtParameter(dT)), m_pmCurMat }; // Renders darkened color if camera off axis, if on axis, renders black
+	if (dT < 0) {
+		dT = tmax;
+		if (dT < 0) return false;
+	}
+	if (m_pmCurMat->MatType() == 0 || m_pmCurMat->MatType() == 2) { dT *= 1.000001; }
+	else { dT *= 1.76000001; }
+	rec = { dT, r.PointAtParameter(dT), NormalCalc(r.PointAtParameter(dT)), m_pmCurMat };
 	return true;
 }
 Vector3D Box::NormalCalc(const Vector3D vP) const {

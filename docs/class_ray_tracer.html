@@ -110,8 +110,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa06183ba7829e1200a1bb56da8d90cf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c3f043e7dd6e67ff234f7791282848a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ray_tracer.html#a3c3f043e7dd6e67ff234f7791282848a">Color</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, int iDepth)</td></tr>
 <tr class="separator:a3c3f043e7dd6e67ff234f7791282848a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d25b5eff2343dd69cdd3611e3a7299f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_vector3_d.html">Vector3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ray_tracer.html#a9d25b5eff2343dd69cdd3611e3a7299f">clColor</a> (const <a class="el" href="class_ray.html">Ray</a> &amp;r, int iDepth)</td></tr>
+<tr class="separator:a9d25b5eff2343dd69cdd3611e3a7299f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adee1b8956b5522d79fa34a3491af9bb7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ray_tracer.html#adee1b8956b5522d79fa34a3491af9bb7">Render</a> (const std::string &amp;strFileName)</td></tr>
 <tr class="separator:adee1b8956b5522d79fa34a3491af9bb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6353af6b373614eabddbdb1cc58b6d9d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ray_tracer.html#a6353af6b373614eabddbdb1cc58b6d9d">clRender</a> (const std::string &amp;strFileName)</td></tr>
+<tr class="separator:a6353af6b373614eabddbdb1cc58b6d9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad73650432e4754017ae7c42b37e23362"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ray_tracer.html#ad73650432e4754017ae7c42b37e23362">ClearItems</a> ()</td></tr>
 <tr class="separator:ad73650432e4754017ae7c42b37e23362"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -267,6 +271,44 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </pre> 
 </div>
 </div>
+<a id="a9d25b5eff2343dd69cdd3611e3a7299f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d25b5eff2343dd69cdd3611e3a7299f">&#9670;&nbsp;</a></span>clColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3_d.html">Vector3D</a> RayTracer::clColor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_ray.html">Ray</a> &amp;&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>iDepth</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return Color <a class="el" href="class_vector3_d.html">Vector3D</a> if ray intersects object.</p>
+<p>Example: </p><pre class="fragment">Color(ray, vectorList, 0);
+</pre> 
+</div>
+</div>
 <a id="ad73650432e4754017ae7c42b37e23362"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad73650432e4754017ae7c42b37e23362">&#9670;&nbsp;</a></span>ClearItems()</h2>
 
@@ -292,6 +334,34 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <p>Remove all objects from ray tracer instance vector list</p>
 <p>Example: </p><pre class="fragment">ray_tracer-&gt;ClearItems();
 </pre><p> or </p><pre class="fragment">delete ray_tracer;
+</pre> 
+</div>
+</div>
+<a id="a6353af6b373614eabddbdb1cc58b6d9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6353af6b373614eabddbdb1cc58b6d9d">&#9670;&nbsp;</a></span>clRender()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RayTracer::clRender </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>strFileName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calculations and image output function for ray tracer instance.</p>
+<p>Example: </p><pre class="fragment">ray_tracer-&gt;Render("image");
 </pre> 
 </div>
 </div>

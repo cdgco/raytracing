@@ -31,6 +31,19 @@ public:
 	}
 
 	virtual bool Scatter(const Ray &r_in, const HitRecord &rec, Vector3D &attenuation, Ray &scattered) const;
+
+	virtual int MatType() const {
+		return 2;
+	}
+	virtual Vector3D MatColor() const {
+		return Vector3D(0);
+	}
+	virtual double MatFuzz() const {
+		return 0;
+	}
+	virtual double MatRef() const {
+		return m_dRefId;
+	}
 	double m_dRefId; //!< Refractive index of Dielectric. Air = 1.0; Glass = 1.3 - 1.7; Diamond = 2.4.
 };
 #endif // DIELECTRIC_H
