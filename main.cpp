@@ -23,7 +23,6 @@ int main() {
 	//ray_tracer->AddItem(new Box(Vector3D(-.5), Vector3D(.5), new Lambertian(Vector3D(0, 1, 0))));
 	//ray_tracer->AddItem(new Sphere(Vector3D(0, 0, 2.5), 1, new Lambertian(Vector3D(1, 0, 0))));
 
-
 	if (type == 0) {
 		ray_tracer->Render("ray_tracer");
 	}
