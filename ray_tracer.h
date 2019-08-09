@@ -15,9 +15,9 @@
 
 /*! \mainpage C++ Ray Tracer
 *
-*	C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
+*	C++ / OpenCL Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 *
-*	![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.jpg)
+*	![VWI Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.png)
 */
 
 /*! Ray Tracing wrapper; intialization and calculation functions. */
