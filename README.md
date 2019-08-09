@@ -1,5 +1,5 @@
-﻿# C++ Ray Tracer
-C++ Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
+﻿# C++ / OpenCL Ray Tracer
+C++ / OpenCL Ray Tracer based on Peter Shirley's Ray Tracing in One Weekend
 
 ![Ray Tracer Banner](https://raw.githubusercontent.com/cdgco/raytracing/master/Demo.png)
 <hr>
@@ -15,7 +15,9 @@ Then, set the camera parameters for the output image (only necessary if not init
 
 Next, use the following format for each object in the render: `tracer->AddItem(new OBJECT)`.
  
-Then, call the render function to output an image: `tracer->Render(FILENAME)`.
+Then, call the render function to output an image: `tracer->Render(FILENAME)` or `tracer->clRender(FILENAME)`.
+
+Use `Render()` to render in C++ on the CPU or `clRender()` to render in OpenCL on the GPU.
 
 Finally, destruct the instance: `delete tracer;` or `ray_tracer->ClearItems();`.
  
