@@ -20,6 +20,8 @@ Then, call the render function to output an image: `tracer->Render(FILENAME)` or
 Use `Render()` to render in C++ on the CPU or `clRender()` to render in OpenCL on the GPU.
 
 Finally, destruct the instance: `delete tracer;` or `ray_tracer->ClearItems();`.
+
+Optionally, you may display the performance data or automatically open the image in the default image viewer by calling: `ray_tracer->ShowPerformance();` or `ray_tracer->OpenImage();`
  
 Example:
 ```
