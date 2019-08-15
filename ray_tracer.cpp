@@ -127,7 +127,7 @@ Vector3D RayTracer::Color(const Ray &r, int iDepth) {
 	if (bHitAnything) {
 		Ray rScattered;
 		Vector3D vAttenuation;
-		if (iDepth < 50 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
+		if (iDepth < 20 && rec.m_pmCurMat->Scatter(r, rec, vAttenuation, rScattered)) {
 			return vAttenuation * Color(rScattered, iDepth + 1);
 			//return 0.5*Vector3D(rec.m_vNormal.x() + 1, rec.m_vNormal.y() + 1, rec.m_vNormal.z() + 1);
 		}

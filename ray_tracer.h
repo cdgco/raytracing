@@ -46,7 +46,7 @@ public:
 	*/
 	RayTracer(const SDim &dims, const int iRaysPerPixel, Camera &cam) : m_dims(dims), m_iRaysPerPixel(iRaysPerPixel), m_camera(cam) {}
 
-	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = .1, double Fov = 40);
+	virtual void SetCamera(Vector3D lookFrom, Vector3D lookAt = Vector3D(0, 10, 0), Vector3D viewUp = Vector3D(0, 1, 0), double aperture = .1, double Fov = 40);
 	virtual void AddItem(Object *object);
 	virtual void RandomScene();
 	virtual void ShowPerformance();
